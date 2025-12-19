@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Unique;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -47,32 +48,30 @@ class AuthController extends Controller
     {
         // 1. Validasi format input
         $credentials = $request->validate([
-            'email' => 'required|email',
+            'login' => 'required|string',
             'password' => 'required',
         ]);
 
-        // 2. Coba Otentikasi
-        if (Auth::attempt($credentials)) {
-            // Autentikasi berhasil, regenerasi session untuk keamanan
+        $login = $request->login;
+        $password = $request->password;
+
+        $fieldtype = filter_var($login, FILTER_VALIDATE_EMAIL)
+            ? 'email' : 'name';
+
+        if (Auth::attempt([$fieldtype => $login, 'password' => $password])) {
             $request->session()->regenerate();
 
-            /** @var User $user */
             $user = Auth::user();
 
-            // Tentukan tujuan redirect berdasarkan role
             if ($user->role === 'admin') {
-                // Pastikan rute '/admin/dashboard' terdaftar di routes/web.php
-                return redirect()->intended('/admin/dashboard')->with('success', 'Selamat Datang Admin');
+                return redirect()->route('admin.dashboard')->with('success', 'Selamat Datang Admin');
             }
 
-            // Default redirect untuk customer
-            return redirect()->intended('pelanggan/dashboard')->with('success', 'Login berhasil!');
+            return redirect()->route('pelanggan/dashboard')->with('success', 'Selamat Datang');
         }
 
-        // 3. Otentikasi Gagal
-        // Jika Auth::attempt gagal, throw error ke Laravel untuk redirect kembali dengan pesan
         throw ValidationException::withMessages([
-            'email' => [trans('auth.failed')], // Menggunakan pesan standar 'auth.failed' (Email atau password tidak cocok)
+            'login' => ['Nama / Email Salah'],
         ]);
     }
 
@@ -90,7 +89,7 @@ class AuthController extends Controller
     public function registerPost(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'unique:users,name' ,'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'min:6', 'confirmed'],
         ]);
@@ -99,12 +98,12 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'customer',
+            'role' => in_array($request->role, ['admin', 'customer']) ? $request->role : 'customer',
         ]);
 
         // Auth::login($user); // Login otomatis setelah registrasi
 
-        return redirect()->route('admin/dashboard')->with('success', 'Registrasi berhasil!');
+        return redirect()->route('admin.dashboard')->with('success', 'Registrasi berhasil!');
     }
 
     /**

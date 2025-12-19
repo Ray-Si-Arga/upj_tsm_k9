@@ -2,21 +2,24 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ServiceAdvisorController;
 use Illuminate\Support\Facades\Route;
 
 
 // --- Rute Dashboard ---
-Route::get('/', function (){
+Route::get('/', function () {
     return view('dashboard');
 });
 
-Route::get('pelanggan/dashboard', function (){
+Route::get('pelanggan/dashboard', function () {
     return view('pelanggan/dashboard');
 });
 
 
-// --- Rute Otentikasi & Registrasi (Akses Publik) ---
+// ------------------------------------------------------------- //
+// ---------------- Otentikasi & Registrasi -------------------- //
+// ------------------------------------------------------------- //
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginPost'])->name('login.post');
 Route::get('/register', [AuthController::class, 'register'])->name('register');
@@ -25,27 +28,54 @@ Route::get('/hapus/{id}', [AuthController::class, 'hapus'])->name('hapus');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
-// --- Rute Service Advisor (Dikelompokkan) ---
+// ----------------------------------------------- //
+// ---------------- Advisor -------------------- //
+// ----------------------------------------------- //
 Route::prefix('advisor')->name('advisor.')->group(function () {
+    Route::get('/history', [ServiceAdvisorController::class, 'index'])->name('index');
     Route::get('/create', [ServiceAdvisorController::class, 'create'])->name('create');
     Route::post('/store', [ServiceAdvisorController::class, 'store'])->name('store');
     Route::get('/{advisor}/print', [ServiceAdvisorController::class, 'print'])->name('print');
 });
 
 
-// --- Rute yang Membutuhkan Otentikasi (Auth Middleware) ---
+// ---------------------------------------------------------------------- //
+// ---------------- Rute Yang Diharuskan Autentikasi -------------------- //
+// ---------------------------------------------------------------------- //
 Route::middleware(['auth'])->group(function () {
+    // ------------------------------------------------------------------------ //
+    // ---------------- Booking Admin jika customer gaptek -------------------- //
+    // ------------------------------------------------------------------------ //
+    Route::get('admin/booking/create', [BookingController::class, 'createWalkIn'])->name('booking.walkin');
+    Route::post('admin/booking/store', [BookingController::class, 'storeWalkIn'])->name('booking.store');
 
-    // --- Rute DASHBOARD ADMIN BARU ---
-    // Dipanggil saat login admin berhasil
-    Route::get('/admin/dashboard', [BookingController::class, 'adminDashboard'])->name('admin.dashboard');
-    // ----------------------------------
 
-    // Rute Profile
+    // ----------------------------------------------------------- //
+    // ---------------- Dashboard Autentikasi -------------------- //
+    // ----------------------------------------------------------- //
+    Route::get('/dashboard', [BookingController::class, 'adminDashboard'])->name('admin.dashboard');
+
+    // ----------------------------------------------- //
+    // ---------------- Inventory -------------------- //
+    // ----------------------------------------------- //
+    Route::prefix('inventory')->name('inventory.')->group(function () {
+        Route::get('/', [InventoryController::class, 'index'])->name('index');
+        Route::get('/create', [InventoryController::class, 'create'])->name('create');
+        Route::post('/store', [InventoryController::class, 'store'])->name('store');
+        Route::get('/edit/{inventory}', [InventoryController::class, 'edit'])->name('edit');
+        Route::put('/update/{inventory}', [InventoryController::class, 'update'])->name('update');
+        Route::delete('/destroy/{inventory}', [InventoryController::class, 'destroy'])->name('destroy');
+    });
+
+    // --------------------------------------------- //
+    // ---------------- Profile -------------------- //
+    // --------------------------------------------- //
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile', [AuthController::class, 'profileUpdate'])->name('profile.update');
 
-    // Rute Booking (Dikelompokkan & Diurutkan dengan Benar)
+    // --------------------------------------------- //
+    // ---------------- Booking -------------------- //
+    // --------------------------------------------- //
     Route::prefix('booking')->name('booking.')->group(function () {
 
         // 1. Rute dengan Fixed Segment (Diutamakan)
@@ -65,7 +95,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/history', [BookingController::class, 'historyDetail'])->name('history.detail');
     });
 
-    // Rute Customers (Dikelompokkan)
+    // ----------------------------------------------- //
+    // ---------------- Customers -------------------- //
+    // ----------------------------------------------- //
     Route::prefix('customers')->name('customers.')->group(function () {
         Route::get('/', [BookingController::class, 'customers'])->name('index');
         Route::get('/{whatsapp}/bookings', [BookingController::class, 'customerBookings'])->name('bookings');

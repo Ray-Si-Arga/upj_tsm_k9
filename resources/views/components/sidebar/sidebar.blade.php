@@ -7,7 +7,7 @@
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(20px);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        height: 100vh;
+        height: 104vh;
         padding: 20px 0;
         position: fixed;
         left: 0;
@@ -237,10 +237,10 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
         width: 50px;
         height: 50px;
+        transform: translateY(-0.5px);
         border-radius: 12px;
-        display: none;
+        display: flex;
         align-items: center;
-        justify-content: center;
         cursor: pointer;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         transition: all 0.3s ease;
@@ -297,7 +297,7 @@
         top: 0;
     }
 
-    /* Logout Section Modern */
+    /* Logout Section  */
     .sidebar-logout {
         padding: 15px;
         background: rgba(255, 255, 255, 0.8);
@@ -354,11 +354,8 @@
 
     /* Main Content */
     .main-content-with-sidebar {
-        margin-left: 280px;
         padding: 20px;
         transition: margin-left 0.3s ease;
-        min-height: 100vh;
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     }
 
     /* Scrollbar Styling */
@@ -520,9 +517,22 @@
                 </a>
             </li>
 
+            {{-- Inventory --}}
+            <li class="sidebar-divider"></li>
+            <li class="sidebar-label">Inventory</li>
+            <li class="sidebar-menu-item">
+                <a href="{{ route('inventory.index') }}"
+                    class="sidebar-menu-link {{ request()->routeIs('inventory.index') ? 'active' : '' }}">
+                    <i class="sidebar-menu-icon">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </i>
+                    <span class="sidebar-menu-text">Inventory</span>
+                </a>
+            </li>
+
             {{-- Registrasi --}}
             <li class="sidebar-divider"></li>
-            <li class="sidebar-label">Buat Akun Baru</li>
+            <li class="sidebar-label">Buat Pengguna Baru</li>
             <li class="sidebar-menu-item">
                 <a href="{{ route('register') }}"
                     class="sidebar-menu-link {{ request()->routeIs('register') ? 'active' : '' }}">
@@ -533,16 +543,19 @@
                 </a>
             </li>
 
-            {{-- Advisor --}}
+
+            {{-- tugas membuat form nama mekanik dan relasi Inventory ke form service --}}
+
+            {{-- Advisor & Nama Mekanik--}}
             <li class="sidebar-divider"></li>
             <li class="sidebar-label">Advisor</li>
             <li class="sidebar-menu-item">
                 <a href="{{ route('advisor.create') }}"
                     class="sidebar-menu-link {{ request()->routeIs('advisor.*') ? 'active' : '' }}">
                     <i class="sidebar-menu-icon">
-                        <i class="fa-solid fa-user-secret"></i>
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
                     </i>
-                    <span class="sidebar-menu-text">Create Advisor</span>
+                    <span class="sidebar-menu-text">Form Keluhan</span>
                 </a>
             </li>
         </ul>

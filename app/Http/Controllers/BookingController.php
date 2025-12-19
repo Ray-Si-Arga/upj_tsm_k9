@@ -46,6 +46,73 @@ class BookingController extends Controller
         ));
     }
 
+    public function createWalkIn()
+    {
+        // hanya admin yang boleh akses
+        if (auth::user()->role !== 'admin') {
+            return redirect()->route('booking.create')->with('error', 'Hanya admin yang boleh akses');
+        }
+
+        $services = Service::all();
+
+        // dd($request->all());
+
+        $todayactive = Booking::whereDate('booking_date', date('Y-m-d'))
+            ->whereIn('status', ['pending', 'approved', 'on_progress'])
+            ->count();
+
+        return view('booking.admin_create', compact('services', 'todayactive'));
+    }
+
+    public function storeWalkIn(Request $request)
+    {
+        // 1. VALIDASI DIPERBAIKI
+        // Hapus 'booking_date' dari sini karena kita generate otomatis di bawah
+        // Pastikan customer_whatsapp 'nullable' (bukan required)
+        $request->validate([
+            'customer_name' => 'required|string|max:225',
+            'vehicle_type' => 'required|string|max:50',
+            'plate_number' => 'required|string|max:25',
+            'service_id' => 'required|exists:services,id',
+            'customer_whatsapp' => 'nullable|string|max:15',
+        ]);
+
+        // 2. LOGIKA UTAMA
+        try {
+            $today = date('Y-m-d');
+
+            // Hitung antrian
+            $lastqueue = Booking::whereDate('booking_date', $today)->max('queue_number');
+            $newQueueNumber = $lastqueue ? $lastqueue + 1 : 1;
+
+            $booking = new Booking();
+            $booking->user_id = null; // Pastikan kolom database user_id sudah Nullable
+
+            $booking->customer_name = $request->customer_name;
+
+            // Isi default jika kosong
+            $booking->customer_whatsapp = $request->customer_whatsapp ?? '000000000000';
+
+            $booking->vehicle_type = $request->vehicle_type;
+            $booking->plate_number = $request->plate_number;
+            $booking->service_id = $request->service_id;
+
+            // Generate Tanggal Otomatis (Bukan dari Request)
+            $booking->booking_date = $today;
+
+            $booking->queue_number = $newQueueNumber;
+            $booking->status = 'approved';
+
+            $booking->save();
+
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Booking Walk-in Berhasil! Antrian No: ' . $newQueueNumber);
+        } catch (\Exception $e) {
+            // Jika masih gagal, tampilkan error asli untuk debugging
+            return back()->with('error', 'Gagal menyimpan: ' . $e->getMessage())->withInput();
+        }
+    }
+
 
     /**
      * Menampilkan daftar semua booking (Index utama untuk admin)

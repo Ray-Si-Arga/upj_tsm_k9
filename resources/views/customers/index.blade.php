@@ -57,7 +57,7 @@
                                                     <!-- Kita passing 'whatsappNumber' yang sudah dipastikan ada ke route -->
                                                     <a href="{{ route('customers.bookings', ['email' => $customer->email, 'whatsapp' => $whatsappNumber ?? 'N/A']) }}"
                                                         class="btn btn-sm btn-outline-info fw-bold">
-                                                        <i class="fas fa-search me-1"></i> Lihat Semua Booking
+                                                        <i class="fas fa-search me-1"></i> Semua Riwayat
                                                     </a>
                                                 @else
                                                     <button class="btn btn-sm btn-outline-secondary" disabled>Tidak ada

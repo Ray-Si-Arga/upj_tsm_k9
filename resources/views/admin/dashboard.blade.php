@@ -7,13 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        /* Custom styles untuk dashboard */
-        .dashboard-container {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
         .stat-card {
             border-radius: 16px;
             border: none;
@@ -176,14 +169,20 @@
         });
     </script>
 
-    <!-- Main Content -->
-    <main class="dashboard-container">
-        <div class="max-w-7xl mx-auto">
+    <body>
+        <!-- Main Content -->
+        <main class="dashboard-container">
+            {{-- <div class="max-w-7xl mx-auto"> --}}
             <!-- Header -->
             <div class="dashboard-header mb-8 animate-fade-in-up">
                 <h1 class="text-4xl md:text-5xl font-bold mb-2">Dashboard Admin</h1>
                 <p class="text-lg text-gray-600">Overview sistem dan monitoring booking</p>
             </div>
+            
+            {{-- booking guest --}}
+            <a href="{{ route('booking.walkin') }}" class="btn btn-success">
+                <i class="bi bi-person-plus"></i> Tambah Booking Manual
+            </a>
 
             <!-- Statistics Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -192,7 +191,8 @@
                     <div class="p-6">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-sm font-semibold opacity-90 mb-2 uppercase tracking-wide">Total Booking Hari
+                                <p class="text-sm font-semibold opacity-90 mb-2 uppercase tracking-wide">Total Booking
+                                    Hari
                                     Ini</p>
                                 <h2 class="text-3xl font-bold mb-1">{{ $totalBookingsToday ?? 0 }}</h2>
                                 <p class="text-sm opacity-75">Booking hari ini</p>
@@ -208,7 +208,8 @@
                     <div class="p-6">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-sm font-semibold opacity-90 mb-2 uppercase tracking-wide">Booking Menunggu
+                                <p class="text-sm font-semibold opacity-90 mb-2 uppercase tracking-wide">Booking
+                                    Menunggu
                                 </p>
                                 <h2 class="text-3xl font-bold mb-1">{{ $pendingBookings ?? 0 }}</h2>
                                 <p class="text-sm opacity-75">Perlu konfirmasi</p>
@@ -223,7 +224,8 @@
                     <div class="p-6">
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="text-sm font-semibold opacity-90 mb-2 uppercase tracking-wide">Customer Terdaftar
+                                <p class="text-sm font-semibold opacity-90 mb-2 uppercase tracking-wide">Customer
+                                    Terdaftar
                                 </p>
                                 <h2 class="text-3xl font-bold mb-1">{{ $registeredCustomers ?? 0 }}</h2>
                                 <p class="text-sm opacity-75">Total customer</p>
@@ -360,7 +362,8 @@
                 </div>
             </div>
         </div> --}}
-    </main>
+        </main>
+    </body>
 
     <script src="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.js"></script>
 

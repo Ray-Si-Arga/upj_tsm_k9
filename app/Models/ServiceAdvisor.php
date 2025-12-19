@@ -10,9 +10,15 @@ class ServiceAdvisor extends Model
     use HasFactory;
 
     protected $fillable = [
-        'booking_id', 'jobs', 'estimation_cost',
-        'spareparts', 'estimation_parts', 'total_estimation',
-        'customer_complaint', 'advisor_notes'
+        'booking_id',
+        'nama_mekanik', 
+        'jobs', 
+        'estimation_cost',
+        'spareparts', 
+        'estimation_parts', 
+        'total_estimation',
+        'customer_complaint', 
+        'advisor_notes',
     ];
 
     protected $casts = [
