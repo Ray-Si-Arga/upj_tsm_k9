@@ -137,7 +137,7 @@ class BookingController extends Controller
         // Ambil semua booking dengan eager loading (user dan service)
         $bookings = Booking::with(['user', 'service'])
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(5);
 
         return view('booking.index', compact('bookings'));
     }
@@ -325,9 +325,12 @@ class BookingController extends Controller
         return view('customers.bookings', compact('bookings', 'customerName'));
     }
 
-    public function destroy(Booking $booking)
+    public function destroy($id)
     {
+        $booking = Booking::findOrFail($id);
         $booking -> delete();
+        // dd('Hapus berhasil' , $booking->all());
+
         return redirect()->route('booking.index')->with('success', 'Data booking berhasil dihapus');
     }
 }

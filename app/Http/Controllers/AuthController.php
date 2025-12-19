@@ -89,8 +89,13 @@ class AuthController extends Controller
     public function registerPost(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'unique:users,name' ,'max:255'],
+            'name' => ['required', 'string', 'unique:users,name', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
+            'role' => ['required', 'in:admin,customer'], // Pastikan role valid
+
+            // Validasi: Phone wajib diisi HANYA JIKA role = customer
+            'phone' => ['required_if:role,customer', 'nullable', 'string', 'max:20'],
+
             'password' => ['required', 'min:6', 'confirmed'],
         ]);
 
@@ -98,10 +103,9 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => in_array($request->role, ['admin', 'customer']) ? $request->role : 'customer',
+            'role' => $request->role,
+            'phone' => $request->phone, // Simpan No WA
         ]);
-
-        // Auth::login($user); // Login otomatis setelah registrasi
 
         return redirect()->route('admin.dashboard')->with('success', 'Registrasi berhasil!');
     }

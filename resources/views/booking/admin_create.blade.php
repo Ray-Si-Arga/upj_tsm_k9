@@ -50,7 +50,7 @@
                                 <div class="col-md-12 mb-3">
                                     <label class="form-label fw-bold">Nama Customer</label>
                                     <input type="text" name="customer_name" class="form-control form-control-lg"
-                                        placeholder="Contoh: Pak Budi (Vario Merah)" required autofocus>
+                                        placeholder="Contoh: Pak Budi" required autofocus>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -90,7 +90,7 @@
                                         <input type="number" name="estimation_hours" class="form-control" placeholder="0"
                                             min="0">
                                         <span class="input-group-text">Jam</span>
-                                        
+
                                         {{-- Input Menit --}}
                                         <input type="number" name="estimation_minutes" class="form-control" placeholder="0"
                                             min="0" max="59">

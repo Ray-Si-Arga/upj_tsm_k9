@@ -1,236 +1,279 @@
-{{-- @extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Register')
+@section('title', 'Registrasi Pengguna Baru')
 
-@section('content') --}}
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        text-decoration: none;
-        list-style: none;
-        border: none;
-        outline: none;
-        font-family: Poppins, sans-serif;
-        color: #fff
-    }
+@section('content')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    body {
-        min-height: 100vh;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: url('/images/bg.webp') center/cover no-repeat;
-    }
+    <style>
+        .form-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            background: white;
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
-    .content {
-        width: 100%;
-        max-width: 400px;
-        background: rgba(255, 255, 255, .08);
-        border: 2px solid rgba(255, 255, 255, .2);
-        backdrop-filter: blur(13px);
-        padding: 30px 35px;
-        border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, .2);
-    }
+        .form-header {
+            background: linear-gradient(135deg, #198754 0%, #157347 100%);
+            padding: 25px 30px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .content h2 {
-        font-size: 38px;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 10px;
-    }
+        .form-label-custom {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
 
-    .input-box {
-        position: relative;
-        width: 100%;
-        height: 55px;
-        margin: 24px 0;
-    }
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
 
-    .input-box input {
-        width: 100%;
-        height: 100%;
-        background: transparent;
-        border: 2px solid rgba(255, 255, 255, .25);
-        border-radius: 30px;
-        padding: 0 45px 0 20px;
-        font-size: 16px;
-        transition: border .3s;
-    }
+        .form-control:focus,
+        .form-select:focus {
+            box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
+            border-color: #198754;
+        }
 
-    .input-box input:focus {
-        border-color: #fff
-    }
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            color: #6c757d;
+        }
 
-    input::placeholder {
-        color: #fff;
-        font-size: 16px
-    }
+        .form-control {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+        }
 
-    .input-box i {
-        position: absolute;
-        top: 50%;
-        right: 18px;
-        transform: translateY(-50%);
-        font-size: 18px;
-        cursor: pointer;
-    }
+        .form-select {
+            border-radius: 10px;
+        }
 
-    .alert-danger {
-        background: rgba(220, 53, 69, .85);
-        color: #fff;
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 16px;
-        font-size: 14px;
-    }
+        .btn-toggle-password {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+            background-color: white;
+            cursor: pointer;
+            color: #6c757d;
+            border: 1px solid #ced4da;
+            z-index: 5;
+        }
 
-    .alert-danger ul {
-        margin: 0;
-        padding-left: 16px
-    }
+        input[type="password"],
+        input[type="text"].password-shown {
+            border-right: none;
+            border-radius: 0;
+        }
 
-    /* Tombol Utama (Register) - Biru Cerah */
-    .btnn {
-        width: 100%;
-        height: 48px;
-        background: #3b82f6;
-        /* Biru modern */
-        color: #fff;
-        border-radius: 30px;
-        font-size: 16px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        margin: 16px 0 12px;
-        transition: all .3s ease;
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-        /* Glow biru */
-    }
+        .btn-modern {
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
 
-    .btnn:hover {
-        background: #2563eb;
-        /* Biru lebih gelap saat hover */
-        transform: translateY(-2px);
-    }
+        .btn-modern:active {
+            transform: scale(0.98);
+        }
+    </style>
 
-    /* Tombol Sekunder (Kembali) - Outline Style */
-    .back {
-        width: 100%;
-        height: 48px;
-        background: transparent;
-        /* Transparan */
-        color: #fff;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-        /* Garis tepi putih transparan */
-        border-radius: 30px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all .3s ease;
-        display: flex;
-        /* Untuk mempermudah centering jika diganti tag <a> */
-        align-items: center;
-        justify-content: center;
-    }
+    <main class="py-4">
+        <div class="container">
 
-    .back:hover {
-        background: rgba(255, 255, 255, 0.1);
-        /* Efek hover halus */
-        border-color: #fff;
-    }
+            @if ($errors->any())
+                <div class="alert alert-danger border-0 shadow-sm mb-4 rounded-3" style="max-width: 800px; margin: 0 auto;">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-exclamation-circle fs-4 me-2"></i>
+                        <h6 class="mb-0 fw-bold">Terjadi Kesalahan</h6>
+                    </div>
+                    <ul class="mb-0 ps-3 small">
+                        @foreach ($errors->all() as $err)
+                            <li>{{ $err }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-    .input-box select {
-        width: 100%;
-        height: 55px;
-        background: transparent;
-        border: 2px solid rgba(255, 255, 255, .25);
-        border-radius: 30px;
-        padding: 0 20px;
-        font-size: 16px;
-        color: #fff;
-    }
+            <form action="{{ route('register.post') }}" method="POST">
+                @csrf
 
-    .input-box select option {
-        color: #000;
-    }
+                <div class="form-card">
+                    <div class="form-header">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-white bg-opacity-25 p-2 rounded-3">
+                                <i class="fas fa-user-plus fs-4"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0 fw-bold">Registrasi Pengguna</h5>
+                                <small class="opacity-75">Tambahkan Staff atau Customer Baru</small>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="card-body p-4 p-md-5">
+                        <div class="row g-4">
 
-    .text-center {
-        text-align: center;
-        font-size: 14px
-    }
+                            {{-- 1. Nama Lengkap --}}
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Nama Lengkap</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" name="name" class="form-control"
+                                        placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required>
+                                </div>
+                            </div>
 
-    .text-center a {
-        color: #fff;
-        text-decoration: underline
-    }
-</style>
+                            {{-- 2. Email --}}
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Alamat Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <input type="email" name="email" class="form-control" placeholder="contoh@email.com"
+                                        value="{{ old('email') }}" required>
+                                </div>
+                            </div>
 
-<div class="content">
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $err)
-                    <li>{{ $err }}</li>
-                @endforeach
-            </ul>
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Role (Hak Akses)</label>
+                                {{-- Tambahkan ID="roleSelect" dan onchange --}}
+                                <select name="role" id="roleSelect" class="form-select" required
+                                    onchange="toggleWhatsapp()">
+                                    <option value="" disabled selected>-- Pilih Role --</option>
+                                    <option value="customer" {{ old('role') == 'customer' ? 'selected' : '' }}>👤 Customer
+                                        (Pelanggan)</option>
+                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>🛠️ Admin
+                                        (Staff/Mekanik)</option>
+                                </select>
+                            </div>
+
+                            {{-- Input WhatsApp (Awalnya Tersembunyi) --}}
+                            <div class="col-md-12" id="whatsappField" style="display: none;">
+                                <label class="form-label-custom">Nomor WhatsApp</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-success text-white"><i
+                                            class="fab fa-whatsapp"></i></span>
+                                    <input type="text" name="phone" class="form-control" placeholder="08xxxxxxxxxx"
+                                        value="{{ old('phone') }}">
+                                </div>
+                                <small class="text-muted">*Wajib diisi untuk Customer</small>
+                            </div>
+
+                            {{-- ... Input Password di bawahnya ... --}}
+
+                            {{-- 3. Nomor WhatsApp (INPUT BIASA) --}}
+                            {{-- <div class="col-md-6">
+                                <label class="form-label-custom">Nomor WhatsApp</label>
+                                <div class="input-group">
+                                    <span class="input-group-text text-success"><i class="fab fa-whatsapp"></i></span>
+                                    <input type="text" name="phone" class="form-control" placeholder="08xxxxxxxxxx"
+                                        value="{{ old('phone') }}" required>
+                                </div>
+                            </div> --}}
+
+                            {{-- 4. Role --}}
+                           
+
+                            <hr class="text-muted my-2 opacity-25">
+
+                            {{-- 5. Password --}}
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" name="password" id="password" class="form-control"
+                                        placeholder="Minimal 8 karakter" required>
+                                    <button class="btn btn-toggle-password" type="button" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Konfirmasi Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" name="password_confirmation" id="password_confirmation"
+                                        class="form-control" placeholder="Ulangi password" required>
+                                    <button class="btn btn-toggle-password" type="button" id="togglePasswordConfirm">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 mt-5">
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="btn btn-light btn-modern text-secondary border">
+                                <i class="fas fa-arrow-left me-2"></i> Kembali
+                            </a>
+                            <button type="submit" class="btn btn-success btn-modern px-5 shadow">
+                                <i class="fas fa-save me-2"></i> Simpan Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-    @endif
+    </main>
 
-    <form action="{{ route('register.post') }}" method="POST">
-        @csrf
-        <h2>Create User</h2>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function setupToggle(buttonId, inputId) {
+                const button = document.getElementById(buttonId);
+                const input = document.getElementById(inputId);
+                const icon = button.querySelector('i');
 
-        <div class="input-box">
-            <input type="text" name="name" placeholder="Nama Lengkap" required>
-            <i class="ri-user-fill"></i>
-        </div>
+                button.addEventListener('click', function() {
+                    const isPassword = input.type === 'password';
+                    input.type = isPassword ? 'text' : 'password';
 
-        <div class="input-box">
-            <input type="email" name="email" placeholder="Email" required>
-            <i class="ri-mail-fill"></i>
-        </div>
-
-        <div class="input-box">
-            <input type="password" name="password" id="password" placeholder="Password" required>
-            <i class="ri-eye-off-fill toggle-password" id="togglePassword"></i>
-        </div>
-
-        <div class="input-box">
-            <input type="password" name="password_confirmation" id="password_confirmation"
-                placeholder="Konfirmasi Password" required>
-            <i class="ri-eye-off-fill toggle-password" id="togglePasswordConfirm"></i>
-        </div>
-
-        <div class="input-box">
-            <select name="role" required>
-                <option value="" disabled selected>Pilih Role</option>
-                <option value="customer">Customer</option>
-                <option value="admin">Admin</option>
-            </select>
-        </div>
-
-        <button type="submit" class="btnn">Simpan User</button>
-        <a href="{{ route('admin.dashboard') }}" class="back">Kembali</a>
-    </form>
-
-</div>
-
-<script>
-    // toggle password & confirm
-    ['togglePassword', 'togglePasswordConfirm'].forEach(id => {
-        document.getElementById(id).addEventListener('click', function() {
-            const target = id === 'togglePassword' ? 'password' : 'password_confirmation';
-            const input = document.getElementById(target);
-            const isPwd = input.type === 'password';
-            input.type = isPwd ? 'text' : 'password';
-            this.classList.toggle('ri-eye-off-fill', !isPwd);
-            this.classList.toggle('ri-eye-fill', isPwd);
+                    if (isPassword) {
+                        input.classList.add('password-shown');
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.classList.remove('password-shown');
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            }
+            setupToggle('togglePassword', 'password');
+            setupToggle('togglePasswordConfirm', 'password_confirmation');
         });
-    });
-</script>
-{{-- @endsection --}}
+    </script>
+    <script>
+        // Fungsi untuk menampilkan/menyembunyikan input WhatsApp
+        function toggleWhatsapp() {
+            const roleSelect = document.getElementById('roleSelect');
+            const whatsappField = document.getElementById('whatsappField');
+
+            if (roleSelect.value === 'customer') {
+                whatsappField.style.display = 'block'; // Munculkan
+                // Animasi halus (opsional)
+                whatsappField.classList.add('animate__animated', 'animate__fadeIn');
+            } else {
+                whatsappField.style.display = 'none'; // Sembunyikan
+            }
+        }
+
+        // Jalankan saat halaman dimuat (untuk handle old input jika validasi gagal)
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleWhatsapp();
+        });
+    </script>
+@endsection
