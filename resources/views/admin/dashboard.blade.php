@@ -1,116 +1,130 @@
-@extends('Layouts.app')
+@extends('layouts.app')
 
 @section('content')
-    <!-- CSS Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Card Styles */
         .stat-card {
-            border-radius: 16px;
+            border-radius: 1rem;
             border: none;
-            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            z-index: 1;
         }
 
         .stat-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.3);
+            top: -50%;
+            right: -50%;
+            bottom: -50%;
+            left: -50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+            z-index: -1;
+            transform: scale(0);
+            transition: transform 0.6s ease-out;
+        }
+
+        .stat-card:hover::before {
+            transform: scale(2);
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
 
         .stat-icon {
-            font-size: 2.5rem;
-            opacity: 0.8;
+            font-size: 3rem;
+            opacity: 0.2;
+            position: absolute;
+            right: 1.5rem;
+            bottom: 1.5rem;
             transition: all 0.3s ease;
         }
 
         .stat-card:hover .stat-icon {
-            transform: scale(1.1);
-            opacity: 1;
+            transform: scale(1.2) rotate(-10deg);
+            opacity: 0.3;
         }
 
-        .queue-item {
-            border: none;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .queue-item:hover {
-            background: rgba(177, 0, 0, 0.03);
-            transform: translateX(5px);
-        }
-
-        .queue-item:last-child {
-            border-bottom: none;
-        }
-
-        .queue-number {
-            background: linear-gradient(135deg, #B10000 0%, #8B0000 100%);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 12px rgba(177, 0, 0, 0.3);
-        }
-
-        .status-badge {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: capitalize;
-        }
-
+        /* Modern Button */
         .btn-modern {
-            border-radius: 12px;
-            padding: 10px 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
             font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .btn-modern:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        .card-modern {
-            border-radius: 16px;
-            border: none;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
+        /* Table Styles */
+        .modern-table-container {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
         }
 
-        .dashboard-header h1 {
-            background: linear-gradient(135deg, #B10000 0%, #8B0000 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .modern-table th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding: 1rem;
+        }
+
+        .modern-table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .modern-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .modern-table tr:hover {
+            background-color: #f8fafc;
         }
 
         /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(20px);
             }
 
             to {
@@ -119,8 +133,8 @@
             }
         }
 
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s ease-out forwards;
+        .animate-enter {
+            animation: fadeInUp 0.5s ease-out forwards;
         }
 
         .delay-100 {
@@ -136,262 +150,205 @@
         }
     </style>
 
-    {{-- Notifikasi menggunakan library --}}
+    <div class="container mx-auto px-4 py-8">
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 animate-enter">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Dashboard Admin</h1>
+                <p class="text-gray-500 mt-1">Overview sistem dan monitoring antrian booking</p>
+            </div>
+
+            <a href="{{ route('booking.walkin') }}" class="btn-modern bg-green-600 text-white hover:bg-green-700">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Booking Manual</span>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 animate-enter delay-100">
+                <div class="relative z-10">
+                    <p class="text-blue-100 text-sm font-medium uppercase tracking-wider mb-1">Total Booking Hari Ini</p>
+                    <h2 class="text-4xl font-bold">{{ $totalBookingsToday ?? 0 }}</h2>
+                    <p class="text-blue-100 text-sm mt-2 flex items-center gap-1">
+                        <i class="fa-solid fa-calendar-day"></i> Data per hari ini
+                    </p>
+                </div>
+                <i class="fa-solid fa-clipboard-list stat-icon"></i>
+            </div>
+
+            <div class="stat-card bg-gradient-to-br from-amber-500 to-orange-500 text-white p-6 animate-enter delay-200">
+                <div class="relative z-10">
+                    <p class="text-amber-100 text-sm font-medium uppercase tracking-wider mb-1">Booking Menunggu</p>
+                    <h2 class="text-4xl font-bold">{{ $pendingBookings ?? 0 }}</h2>
+                    <p class="text-amber-100 text-sm mt-2 flex items-center gap-1">
+                        <i class="fa-solid fa-clock"></i> Perlu konfirmasi
+                    </p>
+                </div>
+                <i class="fa-solid fa-hourglass-half stat-icon"></i>
+            </div>
+
+            <div class="stat-card bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-6 animate-enter delay-300">
+                <div class="relative z-10">
+                    <p class="text-emerald-100 text-sm font-medium uppercase tracking-wider mb-1">Customer Terdaftar</p>
+                    <h2 class="text-4xl font-bold">{{ $registeredCustomers ?? 0 }}</h2>
+                    <p class="text-emerald-100 text-sm mt-2 flex items-center gap-1">
+                        <i class="fa-solid fa-users"></i> Total basis data
+                    </p>
+                </div>
+                <i class="fa-solid fa-users-line stat-icon"></i>
+            </div>
+        </div>
+
+        <div class="modern-table-container animate-enter delay-300">
+            <div class="p-6 border-b border-gray-100 bg-white flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-100 text-blue-600 p-2 rounded-lg">
+                        <i class="fa-solid fa-list-ol text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Antrian Booking Hari Ini</h3>
+                </div>
+                <a href="{{ route('booking.index') }}"
+                    class="text-sm font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors">
+                    Lihat Semua <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left modern-table">
+                    @if ($queueBookings->isEmpty())
+                        <tbody>
+                            <tr>
+                                <td colspan="7" class="text-center py-12">
+                                    <div class="flex flex-col items-center justify-center text-gray-400">
+                                        <i class="fa-regular fa-calendar-check text-5xl mb-3"></i>
+                                        <p class="text-lg font-medium">Tidak ada antrian booking hari ini.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    @else
+                        <thead>
+                            <tr>
+                                <th class="text-center w-24">No. Antrian</th>
+                                <th>Pelanggan</th>
+                                <th>Kendaraan</th>
+                                <th>Layanan</th>
+                                <th class="text-center">Estimasi Selesai</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($queueBookings as $booking)
+                                <tr>
+                                    <td class="text-center">
+                                        <span
+                                            class="inline-block bg-gray-100 text-gray-800 font-bold px-3 py-1 rounded-lg text-lg border border-gray-200">
+                                            {{ $booking->queue_number }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="font-bold text-gray-800">{{ $booking->customer_name }}</div>
+                                        <div class="text-sm text-gray-500">
+                                            <i class="fa-brands fa-whatsapp text-green-500 mr-1"></i>
+                                            {{ $booking->customer_whatsapp }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-gray-800">{{ $booking->vehicle_type }}</div>
+                                        <span
+                                            class="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded border border-gray-200 mt-1 uppercase">
+                                            {{ $booking->plate_number }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="font-medium text-gray-700">{{ $booking->service->name }}</span>
+                                    </td>
+
+                                    {{-- Estimasi Selesai --}}
+                                    <td class="text-center">
+                                        @if ($booking->estimation_duration)
+                                            @php
+                                                $waktuBooking = \Carbon\Carbon::parse($booking->booking_date);
+                                                $waktuSelesai = $waktuBooking->addMinutes(
+                                                    $booking->estimation_duration,
+                                                );
+                                            @endphp
+                                            <div class="flex flex-col items-center">
+                                                <span
+                                                    class="bg-blue-50 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full border border-blue-100">
+                                                    <i class="fa-regular fa-clock mr-1"></i>
+                                                    {{ $waktuSelesai->format('H:i') }} WIB
+                                                </span>
+                                                {{-- <span
+                                                    class="text-xs text-gray-400 mt-1">{{ $booking->estimation_duration }}
+                                                    Menit</span> --}}
+                                            </div>
+                                        @else
+                                            <span class="text-gray-400">-</span>
+                                        @endif
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if ($booking->status == 'pending')
+                                            <span
+                                                class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full border border-amber-200">Menunggu</span>
+                                        @elseif($booking->status == 'approved')
+                                            <span
+                                                class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full border border-blue-200">Diterima</span>
+                                        @elseif($booking->status == 'on_progress')
+                                            <span
+                                                class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full border border-indigo-200">Dikerjakan</span>
+                                        @elseif($booking->status == 'done')
+                                            <span
+                                                class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full border border-green-200">Selesai</span>
+                                        @endif
+                                    </td>
+
+                                    <td class="text-center">
+                                        <a href="{{ route('booking.show', $booking->id) }}"
+                                            class="text-gray-400 hover:text-blue-600 transition-colors p-2"
+                                            title="Lihat Detail">
+                                            <i class="fa-solid fa-eye text-lg"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    @endif
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            @if (Session::has('success'))
+            // Notifikasi (Helper Function)
+            function showNotify(status, title, text) {
                 new Notify({
-                    status: 'success',
-                    title: 'Berhasil',
-                    text: '{{ Session::get('success') }}',
-                    effect: 'slide',
+                    status: status,
+                    title: title,
+                    text: text,
+                    effect: 'fade',
                     speed: 300,
                     showCloseButton: true,
                     autoclose: true,
                     autotimeout: 3000,
+                    gap: 20,
+                    distance: 20,
+                    type: 1,
                     position: 'right top'
                 });
+            }
+
+            @if (Session::has('success'))
+                showNotify('success', 'Berhasil', '{{ Session::get('success') }}');
             @endif
 
             @if (Session::has('error'))
-                new Notify({
-                    status: 'error',
-                    title: 'Gagal',
-                    text: '{{ Session::get('error') }}',
-                    effect: 'slide',
-                    speed: 300,
-                    showCloseButton: true,
-                    autoclose: true,
-                    autotimeout: 5000,
-                    position: 'right top'
-                });
+                showNotify('error', 'Gagal', '{{ Session::get('error') }}');
             @endif
-        });
-    </script>
-
-    <body>
-        <!-- Main Content -->
-        <main class="dashboard-container">
-            {{-- <div class="max-w-7xl mx-auto"> --}}
-            <!-- Header -->
-            <div class="dashboard-header mb-8 animate-fade-in-up">
-                <h1 class="text-4xl md:text-5xl font-bold mb-2">Dashboard Admin</h1>
-                <p class="text-lg text-gray-600">Overview sistem dan monitoring booking</p>
-            </div>
-            
-            {{-- booking guest --}}
-            <a href="{{ route('booking.walkin') }}" class="btn btn-success">
-                <i class="bi bi-person-plus"></i> Tambah Booking Manual
-            </a>
-
-            <!-- Statistics Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Total Booking Hari Ini -->
-                <div class="stat-card bg-gradient-to-r from-green-500 to-emerald-600 text-white animate-fade-in-up">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-sm font-semibold opacity-90 mb-2 uppercase tracking-wide">Total Booking
-                                    Hari
-                                    Ini</p>
-                                <h2 class="text-3xl font-bold mb-1">{{ $totalBookingsToday ?? 0 }}</h2>
-                                <p class="text-sm opacity-75">Booking hari ini</p>
-                            </div>
-                            <i class="fas fa-calendar-check stat-icon"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Booking Menunggu -->
-                <div
-                    class="stat-card bg-gradient-to-r from-amber-400 to-orange-500 text-white animate-fade-in-up delay-100">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-sm font-semibold opacity-90 mb-2 uppercase tracking-wide">Booking
-                                    Menunggu
-                                </p>
-                                <h2 class="text-3xl font-bold mb-1">{{ $pendingBookings ?? 0 }}</h2>
-                                <p class="text-sm opacity-75">Perlu konfirmasi</p>
-                            </div>
-                            <i class="fas fa-hourglass-half stat-icon"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Customer Terdaftar -->
-                <div class="stat-card bg-gradient-to-r from-blue-500 to-cyan-600 text-white animate-fade-in-up delay-200">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-sm font-semibold opacity-90 mb-2 uppercase tracking-wide">Customer
-                                    Terdaftar
-                                </p>
-                                <h2 class="text-3xl font-bold mb-1">{{ $registeredCustomers ?? 0 }}</h2>
-                                <p class="text-sm opacity-75">Total customer</p>
-                            </div>
-                            <i class="fas fa-users stat-icon"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Queue Section -->
-            <div class="card-modern animate-fade-in-up delay-300">
-                <div class="bg-gradient-to-r from-blue-600 to-rose-700 text-white rounded-t-2xl p-6">
-                    <div class="flex justify-between items-center">
-                        <h5 class="text-xl font-bold mb-0">
-                            <i class="fas fa-list-ol mr-3"></i>Antrian Booking Hari Ini
-                        </h5>
-                        <a href="{{ route('booking.index') }}" class="btn-modern bg-white text-blue-600 hover:bg-gray-100">
-                            Lihat Semua <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="p-0">
-                    @if ($queueBookings->isEmpty())
-                        <div class="text-center py-12">
-                            <i class="fas fa-check-circle text-5xl text-green-500 mb-4"></i>
-                            <p class="text-gray-500 text-lg mb-0">Tidak ada antrian booking hari ini</p>
-                        </div>
-                    @else
-                        <div class="divide-y divide-gray-100">
-                            @foreach ($queueBookings as $booking)
-                                <div class="queue-item p-6">
-                                    <div class="flex flex-col md:flex-row md:items-center justify-between">
-                                        <div class="flex items-center mb-4 md:mb-0">
-                                            <div class="queue-number mr-4">
-                                                #{{ $booking->queue_number }}
-                                            </div>
-                                            <div>
-                                                <h6 class="font-bold text-gray-800 text-lg mb-1">
-                                                    {{ $booking->customer_name }}</h6>
-                                                <div class="flex flex-wrap gap-2 text-sm text-gray-600">
-                                                    <span class="flex items-center">
-                                                        <i class="fas fa-motorcycle mr-2"></i>
-                                                        {{ $booking->license_plate }}
-                                                    </span>
-                                                    <span class="flex items-center">
-                                                        <i class="fas fa-wrench mr-2"></i>
-                                                        {{ $booking->service->name ?? 'Layanan Tidak Dikenal' }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center gap-4">
-                                            @php
-                                                $statusConfig = [
-                                                    'pending' => [
-                                                        'class' => 'bg-amber-100 text-amber-800',
-                                                        'icon' => 'fa-clock',
-                                                    ],
-                                                    'approved' => [
-                                                        'class' => 'bg-blue-100 text-blue-800',
-                                                        'icon' => 'fa-check',
-                                                    ],
-                                                    'on_progress' => [
-                                                        'class' => 'bg-purple-100 text-purple-800',
-                                                        'icon' => 'fa-spinner',
-                                                    ],
-                                                    'done' => [
-                                                        'class' => 'bg-green-100 text-green-800',
-                                                        'icon' => 'fa-check-double',
-                                                    ],
-                                                    'cancelled' => [
-                                                        'class' => 'bg-red-100 text-red-800',
-                                                        'icon' => 'fa-times',
-                                                    ],
-                                                ];
-                                                $statusInfo = $statusConfig[strtolower($booking->status)] ?? [
-                                                    'class' => 'bg-gray-100 text-gray-800',
-                                                    'icon' => 'fa-question',
-                                                ];
-                                            @endphp
-                                            <span class="status-badge {{ $statusInfo['class'] }} flex items-center gap-2">
-                                                <i class="fas {{ $statusInfo['icon'] }}"></i>
-                                                {{ ucfirst($booking->status) }}
-                                            </span>
-                                            <a href="{{ route('booking.show', $booking->id) }}"
-                                                class="btn-modern bg-gradient-to-r from-blue-500 to-cyan-600 text-white hover:from-blue-600 hover:to-cyan-700">
-                                                Detail <i class="fas fa-chevron-right ml-2"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            {{-- <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                <div class="card-modern p-6 text-center hover:shadow-xl transition-all duration-300">
-                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-plus text-blue-600 text-2xl"></i>
-                    </div>
-                    <h4 class="font-bold text-gray-800 mb-2">Tambah Booking</h4>
-                    <p class="text-gray-600 text-sm mb-4">Buat booking baru untuk customer</p>
-                    <a href="{{ route('booking.create') }}"
-                        class="btn-modern bg-blue-600 text-white hover:bg-blue-700 w-full">
-                        Buat Booking
-                    </a>
-                </div>
-
-                <div class="card-modern p-6 text-center hover:shadow-xl transition-all duration-300">
-                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-user-plus text-green-600 text-2xl"></i>
-                    </div>
-                    <h4 class="font-bold text-gray-800 mb-2">Tambah Customer</h4>
-                    <p class="text-gray-600 text-sm mb-4">Registrasi customer baru</p>
-                    <a href="{{ route('customers.create') }}"
-                        class="btn-modern bg-green-600 text-white hover:bg-green-700 w-full">
-                        Tambah Customer
-                    </a>
-                </div>
-
-                <div class="card-modern p-6 text-center hover:shadow-xl transition-all duration-300">
-                    <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-chart-bar text-purple-600 text-2xl"></i>
-                    </div>
-                    <h4 class="font-bold text-gray-800 mb-2">Laporan</h4>
-                    <p class="text-gray-600 text-sm mb-4">Lihat laporan dan statistik</p>
-                    <a href="#" class="btn-modern bg-purple-600 text-white hover:bg-purple-700 w-full">
-                        Lihat Laporan
-                    </a>
-                </div>
-            </div>
-        </div> --}}
-        </main>
-    </body>
-
-    <script src="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.js"></script>
-
-    <script>
-        // Tambahan JavaScript untuk interaksi
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animasi scroll reveal
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Observe semua elemen dengan animasi
-            document.querySelectorAll('.stat-card, .card-modern').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
-                el.style.transition = 'all 0.6s ease-out';
-                observer.observe(el);
-            });
         });
     </script>
 @endsection

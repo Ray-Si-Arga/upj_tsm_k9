@@ -86,7 +86,7 @@
             <td><strong>Nama Customer</strong></td>
             <td>: {{ $advisor->booking->customer_name }}</td>
             <td><strong>Kendaraan</strong></td>
-            <td>: {{ $advisor->booking->vehicle_type }} ({{ $advisor->plate_number }})</td>
+            <td>: {{ $advisor->booking->vehicle_type }}</td>
         </tr>
         <tr>
             {{-- Menampilkan Nama Mekanik yang baru kita tambahkan --}}

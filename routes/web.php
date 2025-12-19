@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ServiceAdvisorController;
+use FontLib\Table\Type\name;
 use Illuminate\Support\Facades\Route;
 
 
@@ -43,11 +44,12 @@ Route::prefix('advisor')->name('advisor.')->group(function () {
 // ---------------- Rute Yang Diharuskan Autentikasi -------------------- //
 // ---------------------------------------------------------------------- //
 Route::middleware(['auth'])->group(function () {
+
     // ------------------------------------------------------------------------ //
     // ---------------- Booking Admin jika customer gaptek -------------------- //
     // ------------------------------------------------------------------------ //
     Route::get('admin/booking/create', [BookingController::class, 'createWalkIn'])->name('booking.walkin');
-    Route::post('admin/booking/store', [BookingController::class, 'storeWalkIn'])->name('booking.store');
+    Route::post('admin/booking/store', [BookingController::class, 'storeWalkIn'])->name('booking.storeWalkIn');
 
 
     // ----------------------------------------------------------- //
@@ -93,6 +95,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}', [BookingController::class, 'show'])->name('show');
         Route::post('/{id}/update-status', [BookingController::class, 'updateStatus'])->name('updateStatus');
         Route::get('/{id}/history', [BookingController::class, 'historyDetail'])->name('history.detail');
+
+        Route::delete('/destroy/{id}', [BookingController::class, 'destroy'])->name('destroy');
     });
 
     // ----------------------------------------------- //

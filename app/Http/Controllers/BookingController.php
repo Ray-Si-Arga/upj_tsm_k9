@@ -66,49 +66,59 @@ class BookingController extends Controller
 
     public function storeWalkIn(Request $request)
     {
-        // 1. VALIDASI DIPERBAIKI
-        // Hapus 'booking_date' dari sini karena kita generate otomatis di bawah
-        // Pastikan customer_whatsapp 'nullable' (bukan required)
         $request->validate([
             'customer_name' => 'required|string|max:225',
             'vehicle_type' => 'required|string|max:50',
             'plate_number' => 'required|string|max:25',
             'service_id' => 'required|exists:services,id',
             'customer_whatsapp' => 'nullable|string|max:15',
+
+            // Validasi Baru: Jam dan Menit terpisah
+            'estimation_hours' => 'nullable|integer|min:0',
+            'estimation_minutes' => 'nullable|integer|min:0|max:59',
         ]);
 
-        // 2. LOGIKA UTAMA
         try {
-            $today = date('Y-m-d');
+            $now = now();
+            $todayDate = $now->format('Y-m-d');
 
-            // Hitung antrian
-            $lastqueue = Booking::whereDate('booking_date', $today)->max('queue_number');
+            $lastqueue = Booking::whereDate('booking_date', $todayDate)->max('queue_number');
             $newQueueNumber = $lastqueue ? $lastqueue + 1 : 1;
 
             $booking = new Booking();
-            $booking->user_id = null; // Pastikan kolom database user_id sudah Nullable
-
+            $booking->user_id = null;
             $booking->customer_name = $request->customer_name;
-
-            // Isi default jika kosong
             $booking->customer_whatsapp = $request->customer_whatsapp ?? '000000000000';
-
             $booking->vehicle_type = $request->vehicle_type;
             $booking->plate_number = $request->plate_number;
             $booking->service_id = $request->service_id;
+            $booking->booking_date = $now;
 
-            // Generate Tanggal Otomatis (Bukan dari Request)
-            $booking->booking_date = $today;
+            // === LOGIKA BARU: GABUNGKAN JAM & MENIT ===
+            $hours = $request->estimation_hours ?? 0;
+            $minutes = $request->estimation_minutes ?? 0;
+            $totalMinutes = ($hours * 60) + $minutes;
+
+            // Simpan Durasi
+            $booking->estimation_duration = $totalMinutes > 0 ? $totalMinutes : null;
 
             $booking->queue_number = $newQueueNumber;
-            $booking->status = 'approved';
+            $booking->status = 'pending';
+            $booking->save(); // Data tersimpan (Start Time & Durasi)
 
-            $booking->save();
+            // --- TAMBAHAN: HITUNG JAM SELESAI UNTUK PESAN SUKSES ---
+            $pesanSukses = 'Booking Walk-in Berhasil! Antrian No: ' . $newQueueNumber;
+
+            if ($totalMinutes > 0) {
+                // Ambil waktu booking, tambahkan durasi menit, lalu format jam:menit
+                $jamSelesai = $booking->booking_date->copy()->addMinutes($totalMinutes)->format('H:i');
+                $pesanSukses .= ". Estimasi selesai pukul: " . $jamSelesai . " WIB";
+            }
+            // --------------------------------------------------------
 
             return redirect()->route('admin.dashboard')
-                ->with('success', 'Booking Walk-in Berhasil! Antrian No: ' . $newQueueNumber);
+                ->with('success', $pesanSukses);
         } catch (\Exception $e) {
-            // Jika masih gagal, tampilkan error asli untuk debugging
             return back()->with('error', 'Gagal menyimpan: ' . $e->getMessage())->withInput();
         }
     }
@@ -313,5 +323,11 @@ class BookingController extends Controller
         $customerName = $bookings->first()->customer_name ?? 'Customer Tidak Ditemukan';
 
         return view('customers.bookings', compact('bookings', 'customerName'));
+    }
+
+    public function destroy(Booking $booking)
+    {
+        $booking -> delete();
+        return redirect()->route('booking.index')->with('success', 'Data booking berhasil dihapus');
     }
 }

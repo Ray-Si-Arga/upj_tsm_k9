@@ -8,6 +8,7 @@
         <div class="container mt-4">
             <div>
                 <h1 class="h4 pb-2 mb-4 text-danger border-bottom border-danger">Daftar Booking</h1>
+                <p class="text-danger">Note: Ada kelebihan waktu 15 menit</p>
             </div>
             <table class="table table-bordered">
                 <thead>
@@ -30,7 +31,7 @@
                         @endphp
                         <tr>
                             <td>{{ $booking->customer_name }}</td>
-                            <td>{{ $booking->vehicle_type }} - {{ $booking->plate_number }}</td>
+                            <td>{{ $booking->vehicle_type }} - {{ strtoupper($booking->plate_number) }}</td>
                             <td>{{ $bookingTime->format('d-m-Y H:i') }}</td>
                             <td>
                                 {{ $startTime->format('H:i') }} - {{ $endTime->format('H:i') }} WIB
@@ -58,7 +59,16 @@
                                 </form>
                             </td>
                             <td>
-                                <a href="{{ route('booking.show', $booking->id) }}" class="btn btn-danger btn-sm">Detail</a>
+                                <a href="{{ route('booking.show', $booking->id) }}"
+                                    class="btn btn-danger btn-sm">Detail</a>
+
+                                <form action="{{ route('booking.destroy', $booking->id) }}" method="POST"
+                                    class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
