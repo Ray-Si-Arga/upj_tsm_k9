@@ -315,93 +315,121 @@
         </div>
         <div class="sidebar-brand">
             <span class="brand-title">Honda Service</span>
-            <span class="user-name">Hi, {{ Str::limit(Auth::user()->name, 15) }}</span>
+            <span class="user-name">Hai, {{ Str::limit(Auth::user()->name, 15) }}</span>
         </div>
     </div>
 
     <div class="sidebar-content">
         <ul class="sidebar-menu">
-            {{-- Dashboard --}}
-            <li class="sidebar-menu-item">
-                <a href="{{ route('admin.dashboard') }}"
-                    class="sidebar-menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <div class="sidebar-menu-icon">
-                        <i class="fa-solid fa-house"></i>
-                    </div>
-                    <span>Dashboard</span>
-                </a>
-            </li>
 
-            {{-- Booking --}}
-            <li class="sidebar-menu-item">
-                <a href="{{ route('booking.index') }}"
-                    class="sidebar-menu-link {{ request()->routeIs('booking.*') ? 'active' : '' }}">
-                    <div class="sidebar-menu-icon">
-                        <i class="fa-solid fa-calendar-check"></i>
-                    </div>
-                    <span>Booking</span>
+            {{-- Khusus Admin --}}
+            @if (auth()->check() && auth()->user()->role === 'admin')
+                {{-- Dashboard --}}
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            @else
+            {{-- Pelanggan --}}
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('pelanggan.dashboard') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            @endif
 
-                    @php
-                        $pendingCount = \App\Models\Booking::where('status', 'pending')->count();
-                    @endphp
-                    @if ($pendingCount > 0)
-                        <span class="sidebar-badge">{{ $pendingCount }}</span>
-                    @endif
-                </a>
-            </li>
+            @if (auth()->check() && auth()->user()->role === 'admin')
+                {{-- Booking --}}
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('booking.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('booking.*') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <span>Booking</span>
 
-            {{-- Customers --}}
-            <li class="sidebar-menu-item">
-                <a href="{{ route('customers.index') }}"
-                    class="sidebar-menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}"
-                    id="customers-menu-link">
-                    <div class="sidebar-menu-icon">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-                    <span>Customers</span>
-                </a>
-            </li>
+                        @php
+                            $pendingCount = \App\Models\Booking::where('status', 'pending')->count();
+                        @endphp
+                        @if ($pendingCount > 0)
+                            <span class="sidebar-badge">{{ $pendingCount }}</span>
+                        @endif
+                    </a>
+                </li>
 
-            {{-- SECTION: INVENTORY --}}
-            <li class="sidebar-divider"></li>
-            <li class="sidebar-label">Gudang</li>
+                {{-- Customers --}}
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('customers.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}"
+                        id="customers-menu-link">
+                        <div class="sidebar-menu-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <span>Akun Customers</span>
+                    </a>
+                </li>
 
-            <li class="sidebar-menu-item">
-                <a href="{{ route('inventory.index') }}"
-                    class="sidebar-menu-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
-                    <div class="sidebar-menu-icon">
-                        <i class="fa-solid fa-boxes-stacked"></i>
-                    </div>
-                    <span>Inventory</span>
-                </a>
-            </li>
+                {{-- SECTION: INVENTORY --}}
+                {{-- <li class="sidebar-divider"></li>
+                <li class="sidebar-label">Gudang</li>
 
-            {{-- SECTION: ADVISOR --}}
-            <li class="sidebar-label">Layanan</li>
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('inventory.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                        <span>Inventory</span>
+                    </a>
+                </li> --}}
 
-            <li class="sidebar-menu-item">
-                <a href="{{ route('advisor.create') }}"
-                    class="sidebar-menu-link {{ request()->routeIs('advisor.*') ? 'active' : '' }}">
-                    <div class="sidebar-menu-icon">
-                        <i class="fa-solid fa-screwdriver-wrench"></i>
-                    </div>
-                    <span>Form Keluhan</span>
-                </a>
-            </li>
+                {{-- SECTION: ADVISOR --}}
+                <li class="sidebar-label">Layanan</li>
 
-            {{-- SECTION: ADMIN --}}
-            <li class="sidebar-divider"></li>
-            <li class="sidebar-label">Administrator</li>
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('advisor.create') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('advisor.*') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                        </div>
+                        <span>Form Keluhan</span>
+                    </a>
+                </li>
 
-            <li class="sidebar-menu-item">
-                <a href="{{ route('register') }}"
-                    class="sidebar-menu-link {{ request()->routeIs('register') ? 'active' : '' }}">
+                {{-- SECTION: ADMIN --}}
+                <li class="sidebar-divider"></li>
+                <li class="sidebar-label">Administrator</li>
+
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.register') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <span>Registrasi</span>
+                    </a>
+                </li>
+
+                {{-- Mekanik --}}
+                {{-- <li class="sidebar-menu-item">
+                <a href="{{ route('admin.register') }}"
+                    class="sidebar-menu-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">
                     <div class="sidebar-menu-icon">
                         <i class="fa-solid fa-user-plus"></i>
                     </div>
                     <span>Registrasi</span>
                 </a>
-            </li>
+            </li> --}}
+            @endif
         </ul>
     </div>
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ServiceAdvisorController;
 use FontLib\Table\Type\name;
@@ -13,24 +14,28 @@ Route::get('/', function () {
     return view('dashboard');
 });
 
-Route::get('pelanggan/dashboard', function () {
-    return view('pelanggan/dashboard');
-});
-
-
 // ------------------------------------------------------------- //
 // ---------------- Otentikasi & Registrasi -------------------- //
 // ------------------------------------------------------------- //
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginPost'])->name('login.post');
-Route::get('/register', [AuthController::class, 'register'])->name('register');
-Route::post('/register', [AuthController::class, 'registerPost'])->name('register.post');
+
+Route::get('/register', [AuthController::class, 'publicRegister'])->name('public.register');
+Route::post('/register', [AuthController::class, 'publicRegisterPost'])->name('public.register.post');
+
+
 Route::get('/hapus/{id}', [AuthController::class, 'hapus'])->name('hapus');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
+// -------------------------------------------------------- //
+// ---------------- Pelanggan/Customer -------------------- //
+// -------------------------------------------------------- //
+Route::get('/pelanggan', [CustomerController::class, 'index'])->name('pelanggan.dashboard');
+
+
 // ----------------------------------------------- //
-// ---------------- Advisor -------------------- //
+// ----------------- Advisor --------------------- //
 // ----------------------------------------------- //
 Route::prefix('advisor')->name('advisor.')->group(function () {
     Route::get('/history', [ServiceAdvisorController::class, 'index'])->name('index');
@@ -44,6 +49,12 @@ Route::prefix('advisor')->name('advisor.')->group(function () {
 // ---------------- Rute Yang Diharuskan Autentikasi -------------------- //
 // ---------------------------------------------------------------------- //
 Route::middleware(['auth'])->group(function () {
+
+    // ----------------------------------------------------- //
+    // ---------------- Register Admin  -------------------- //
+    // ----------------------------------------------------- //
+    Route::get('/admin/register', [AuthController::class, 'register'])->name('admin.register');
+    Route::post('/admin/register', [AuthController::class, 'registerPost'])->name('admin.register.post');
 
     // ------------------------------------------------------------------------ //
     // ---------------- Booking Admin jika customer gaptek -------------------- //

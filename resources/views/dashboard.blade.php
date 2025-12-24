@@ -310,7 +310,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             @if (Session::has('success'))
                 new Notify({
-                    status: 'success',
+                    status: 'info',
                     title: 'Berhasil',
                     text: '{{ Session::get('success') }}',
                     effect: 'slide',

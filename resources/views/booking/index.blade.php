@@ -77,6 +77,7 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="table-header">
                                 <tr>
+                                    <th class="py-3 px-4">No Antrian</th>
                                     <th class="py-3 px-4">Pelanggan</th>
                                     <th class="py-3 px-4">Kendaraan</th>
                                     <th class="py-3 px-4">Jadwal & Estimasi</th>
@@ -221,8 +222,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             @if (Session::has('success'))
                 new Notify({
-                    status: 'success',
-                    title: 'Berhasil',
+                    status: 'info',
+                    title: 'Info',
                     text: '{{ Session::get('success') }}',
                     effect: 'slide',
                     speed: 300,

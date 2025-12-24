@@ -55,10 +55,13 @@ class AuthController extends Controller
         $login = $request->login;
         $password = $request->password;
 
-        $fieldtype = filter_var($login, FILTER_VALIDATE_EMAIL)
-            ? 'email' : 'name';
+        // Ambil nilai checkbox 'remember' (true/false)
+        $remember = $request->has('remember');
 
-        if (Auth::attempt([$fieldtype => $login, 'password' => $password])) {
+        $fieldtype = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+
+        // Masukkan $remember sebagai parameter kedua di Auth::attempt
+        if (Auth::attempt([$fieldtype => $login, 'password' => $password], $remember)) {
             $request->session()->regenerate();
 
             $user = Auth::user();
@@ -67,12 +70,45 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard')->with('success', 'Selamat Datang Admin');
             }
 
-            return redirect()->route('pelanggan/dashboard')->with('success', 'Selamat Datang');
+            // Ganti route ini sesuai route dashboard pelanggan kamu
+            return redirect()->route('pelanggan.dashboard')->with('success', 'Selamat Datang');
         }
 
         throw ValidationException::withMessages([
             'login' => ['Nama / Email Salah'],
         ]);
+    }
+
+    /**
+     * Halaman registrasi PUBLIK (Tanpa Login)
+     */
+    public function publicRegister()
+    {
+        return view('auth.public_register');
+    }
+
+    /**
+     * Proses registrasi PUBLIK
+     */
+    public function publicRegisterPost(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:users,name'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'phone' => ['required', 'string', 'max:20'],
+            'password' => ['required', 'min:6', 'confirmed'],
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
+            'role' => 'customer', // Paksa role jadi Customer
+        ]);
+
+        return redirect()->route('login')
+            ->with('success', 'Registrasi berhasil! Silakan login.');
     }
 
     /**
