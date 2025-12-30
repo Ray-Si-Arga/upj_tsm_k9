@@ -32,7 +32,7 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 // ---------------- Pelanggan/Customer -------------------- //
 // -------------------------------------------------------- //
 Route::get('/pelanggan', [CustomerController::class, 'index'])->name('pelanggan.dashboard');
-
+Route::get('/pelanggan/service', [CustomerController::class, 'ServisCustomer'])->name('pelanggan.service');
 
 // ----------------------------------------------- //
 // ----------------- Advisor --------------------- //

@@ -72,17 +72,37 @@ class BookingController extends Controller
             'plate_number' => 'required|string|max:25',
             'service_id' => 'required|exists:services,id',
             'customer_whatsapp' => 'nullable|string|max:15',
+            'booking_date' => 'required|date', // Pastikan required
 
-            // Validasi Baru: Jam dan Menit terpisah
             'estimation_hours' => 'nullable|integer|min:0',
             'estimation_minutes' => 'nullable|integer|min:0|max:59',
         ]);
 
         try {
-            $now = now();
-            $todayDate = $now->format('Y-m-d');
+            // 1. Ambil waktu yang diinginkan dari Input Form
+            $bookingTime = \Carbon\Carbon::parse($request->booking_date);
 
-            $lastqueue = Booking::whereDate('booking_date', $todayDate)->max('queue_number');
+            // 2. Cek Slot (PERBAIKAN FORMAT DATE DISINI)
+            // Menggunakan format('Y-m-d H:i:s') -> Huruf 'd' kecil
+            $existBooking = Booking::whereBetween('booking_date', [
+                $bookingTime->format('Y-m-d H:i:s'),
+                $bookingTime->copy()->addMinutes(59)->format('Y-m-d H:i:s'),
+            ])->count();
+
+            $maxCapacity = 2; // Batas 2 motor per jam
+
+            if ($existBooking >= $maxCapacity) {
+                return back()
+                    ->with('error', 'Mohon maaf, slot waktu jam ' . $bookingTime->format('H:i') . ' sudah penuh! Silakan pilih jam lain.')
+                    ->withInput();
+            }
+
+            // 3. Persiapkan Data
+            // Hapus variabel $now = now() karena kita pakai inputan admin
+
+            // Hitung nomor antrian untuk TANGGAL BOOKING TERSEBUT
+            $dateOnly = $bookingTime->format('Y-m-d');
+            $lastqueue = Booking::whereDate('booking_date', $dateOnly)->max('queue_number');
             $newQueueNumber = $lastqueue ? $lastqueue + 1 : 1;
 
             $booking = new Booking();
@@ -92,29 +112,27 @@ class BookingController extends Controller
             $booking->vehicle_type = $request->vehicle_type;
             $booking->plate_number = $request->plate_number;
             $booking->service_id = $request->service_id;
-            $booking->booking_date = $now;
 
-            // === LOGIKA BARU: GABUNGKAN JAM & MENIT ===
+            // PERBAIKAN: Simpan waktu sesuai inputan, BUKAN waktu sekarang
+            $booking->booking_date = $bookingTime;
+
+            // Logic Durasi
             $hours = $request->estimation_hours ?? 0;
             $minutes = $request->estimation_minutes ?? 0;
             $totalMinutes = ($hours * 60) + $minutes;
-
-            // Simpan Durasi
             $booking->estimation_duration = $totalMinutes > 0 ? $totalMinutes : null;
 
             $booking->queue_number = $newQueueNumber;
-            $booking->status = 'pending';
-            $booking->save(); // Data tersimpan (Start Time & Durasi)
+            $booking->status = 'approved'; // Walk-in biasanya langsung approved
+            $booking->save();
 
-            // --- TAMBAHAN: HITUNG JAM SELESAI UNTUK PESAN SUKSES ---
+            // Pesan Sukses
             $pesanSukses = 'Booking Walk-in Berhasil! Antrian No: ' . $newQueueNumber;
 
             if ($totalMinutes > 0) {
-                // Ambil waktu booking, tambahkan durasi menit, lalu format jam:menit
                 $jamSelesai = $booking->booking_date->copy()->addMinutes($totalMinutes)->format('H:i');
                 $pesanSukses .= ". Estimasi selesai pukul: " . $jamSelesai . " WIB";
             }
-            // --------------------------------------------------------
 
             return redirect()->route('admin.dashboard')
                 ->with('success', $pesanSukses);
@@ -129,17 +147,26 @@ class BookingController extends Controller
      */
     public function index()
     {
-        // Pengecekan role manual
         if (Auth::user()->role !== 'admin') {
             return redirect()->route('booking.create')->with('error', 'Akses dibatasi untuk Admin.');
         }
 
-        // Ambil semua booking dengan eager loading (user dan service)
-        $bookings = Booking::with(['user', 'service'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(5);
+        $today = date('Y-m-d');
 
-        return view('booking.index', compact('bookings'));
+        // 1. DATA HARI INI (Diurutkan berdasarkan Nomor Antrian)
+        $todayBookings = Booking::with(['user', 'service'])
+            ->whereDate('booking_date', $today)
+            ->orderBy('queue_number', 'asc') // Urutkan 1, 2, 3...
+            ->get();
+
+        // 2. DATA MENDATANG (Booking Besok dst)
+        $upcomingBookings = Booking::with(['user', 'service'])
+            ->whereDate('booking_date', '>', $today)
+            ->orderBy('booking_date', 'asc')
+            ->orderBy('queue_number', 'asc')
+            ->paginate(10); // Tetap pakai pagination agar tidak kepanjangan
+
+        return view('booking.index', compact('todayBookings', 'upcomingBookings'));
     }
 
     /**
@@ -328,7 +355,7 @@ class BookingController extends Controller
     public function destroy($id)
     {
         $booking = Booking::findOrFail($id);
-        $booking -> delete();
+        $booking->delete();
         // dd('Hapus berhasil' , $booking->all());
 
         return redirect()->route('booking.index')->with('success', 'Data booking berhasil dihapus');

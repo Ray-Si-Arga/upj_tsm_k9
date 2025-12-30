@@ -311,7 +311,7 @@
             @if (Session::has('success'))
                 new Notify({
                     status: 'info',
-                    title: 'Berhasil',
+                    title: 'Info',
                     text: '{{ Session::get('success') }}',
                     effect: 'slide',
                     speed: 300,

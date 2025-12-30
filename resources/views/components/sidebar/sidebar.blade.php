@@ -335,14 +335,25 @@
                     </a>
                 </li>
             @else
-            {{-- Pelanggan --}}
+                {{-- Pelanggan Dashboard --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('pelanggan.dashboard') }}"
-                        class="sidebar-menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                        class="sidebar-menu-link {{ request()->routeIs('pelanggan.dashboard') ? 'active' : '' }}">
                         <div class="sidebar-menu-icon">
                             <i class="fa-solid fa-house"></i>
                         </div>
                         <span>Dashboard</span>
+                    </a>
+                </li>
+
+                {{-- Pelanggan Service --}}
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('pelanggan.service') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('pelanggan.service') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                        </div>
+                        <span>Service</span>
                     </a>
                 </li>
             @endif
@@ -377,6 +388,10 @@
                         <span>Akun Customers</span>
                     </a>
                 </li>
+
+                {{-- ///////////////// --}}
+                {{-- - Jangan Dihapus --}}
+                {{-- //////////////// --}}
 
                 {{-- SECTION: INVENTORY --}}
                 {{-- <li class="sidebar-divider"></li>
