@@ -47,7 +47,8 @@
 
     {{-- Kolom 4: Status --}}
     <td class="px-4 text-center">
-        <form action="{{ route('booking.updateStatus', $booking->id) }}" method="POST">
+        <form action="{{ route('booking.updateStatus', $booking->id) }}" method="POST"
+            id="form-status-{{ $booking->id }}">
             @csrf
             @php
                 $statusColor = match ($booking->status) {
@@ -59,8 +60,12 @@
                     default => 'border-secondary text-secondary',
                 };
             @endphp
+
+            {{-- PERUBAHAN DI SINI: onchange panggil fungsi JS --}}
             <select name="status" class="form-select form-select-sm status-select {{ $statusColor }}"
-                onchange="this.form.submit()" style="min-width: 140px;">
+                onchange="handleStatusChange(this, '{{ $booking->id }}', '{{ route('booking.updateStatus', $booking->id) }}')"
+                style="min-width: 140px;">
+
                 <option value="pending" {{ $booking->status == 'pending' ? 'selected' : '' }}>⏳ Menunggu</option>
                 <option value="approved" {{ $booking->status == 'approved' ? 'selected' : '' }}>✅ Diterima</option>
                 <option value="on_progress" {{ $booking->status == 'on_progress' ? 'selected' : '' }}>🔧 Dikerjakan

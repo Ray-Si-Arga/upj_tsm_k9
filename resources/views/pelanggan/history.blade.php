@@ -66,29 +66,48 @@
                                 <tbody>
                                     @foreach ($historyBookings as $history)
                                         <tr>
-                                            <td class="px-4">
-                                                {{-- Format Tanggal Indonesia --}}
-                                                <div class="fw-bold text-dark">
-                                                    {{ \Carbon\Carbon::parse($history->booking_date)->locale('id')->translatedFormat('d F Y') }}
-                                                </div>
-                                                <small class="text-muted">
-                                                    {{ \Carbon\Carbon::parse($history->booking_date)->format('H:i') }} WIB
-                                                </small>
-                                            </td>
-                                            <td class="px-4">
-                                                <div class="fw-semibold">{{ $history->vehicle_type }}</div>
-                                                <small class="text-muted">{{ strtoupper($history->plate_number) }}</small>
-                                            </td>
-                                            <td class="px-4">
-                                                {{ $history->service->name ?? 'Layanan Umum' }}
-                                            </td>
                                             <td class="px-4 text-center">
                                                 @if ($history->status == 'done')
                                                     <span class="status-badge-done"><i class="fas fa-check-circle me-1"></i>
                                                         Selesai</span>
-                                                @else
-                                                    <span class="status-badge-cancelled"><i
-                                                            class="fas fa-times-circle me-1"></i> Dibatalkan</span>
+                                                @elseif($history->status == 'cancelled')
+                                                    {{-- Tombol Merah yang memicu Modal Alasan --}}
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-danger rounded-pill px-3 fw-bold"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#reasonModal{{ $history->id }}">
+                                                        <i class="fas fa-times-circle me-1"></i> Dibatalkan
+                                                    </button>
+
+                                                    {{-- MODAL ALASAN (Khusus Booking Ini) --}}
+                                                    <div class="modal fade" id="reasonModal{{ $history->id }}"
+                                                        tabindex="-1" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content text-start"> {{-- text-start agar teks rata kiri --}}
+                                                                <div class="modal-header bg-danger text-white">
+                                                                    <h6 class="modal-title fw-bold">Alasan Pembatalan</h6>
+                                                                    <button type="button" class="btn-close btn-close-white"
+                                                                        data-bs-dismiss="modal"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div
+                                                                        class="alert alert-light border-danger text-danger">
+                                                                        <i class="fas fa-info-circle me-2"></i>
+                                                                        <strong>Pesan dari Admin:</strong>
+                                                                    </div>
+                                                                    <p class="mb-0 fs-5 text-dark">
+                                                                        "{{ $history->rejection_reason ?? 'Maaf, booking dibatalkan tanpa catatan khusus.' }}"
+                                                                    </p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary btn-sm"
+                                                                        data-bs-dismiss="modal">Tutup</button>
+                                                                    <a href="{{ route('pelanggan.service') }}"
+                                                                        class="btn btn-primary btn-sm">Booking Ulang</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 @endif
                                             </td>
                                         </tr>

@@ -310,20 +310,21 @@ class BookingController extends Controller
      */
     public function updateStatus(Request $request, $id)
     {
-        // Otorisasi Manual: Hanya Admin yang boleh memperbarui status
-        if (Auth::user()->role !== 'admin') {
-            abort(403, 'Hanya Admin yang diizinkan memperbarui status.');
+        $booking = Booking::findOrFail($id);
+
+        $booking->status = $request->status;
+
+        // Jika statusnya cancelled, simpan alasannya
+        if ($request->status == 'cancelled') {
+            $booking->rejection_reason = $request->rejection_reason;
+        } else {
+            // Jika status berubah jadi aktif lagi, hapus alasan lama (opsional)
+            $booking->rejection_reason = null;
         }
 
-        // 1. Validasi Status Baru
-        $request->validate([
-            'status' => ['required', Rule::in(['pending', 'approved', 'on_progress', 'done', 'cancelled'])],
-        ]);
-
-        // 2. Update Data
-        $booking = Booking::findOrFail($id);
-        $booking->status = $request->status;
         $booking->save();
+
+        // Kirim notifikasi WA disini jika perlu (Nanti)
 
         return back()->with('success', 'Status booking berhasil diperbarui.');
     }

@@ -6,6 +6,7 @@
         <p><strong>Nama:</strong> {{ $booking->customer_name }}</p>
         <p><strong>Motor:</strong> {{ $booking->vehicle_type }} - {{ $booking->plate_number }}</p>
         <p><strong>Tanggal Booking:</strong> {{ $booking->booking_date }}</p>
+        <p><strong>Komplain:</strong> {{ $booking->complaint }}</p>
         <p><strong>Status:</strong> <span class="badge bg-info">{{ ucfirst($booking->status) }}</span></p>
 
         <form action="{{ route('booking.updateStatus', $booking->id) }}" method="POST" class="mt-3">

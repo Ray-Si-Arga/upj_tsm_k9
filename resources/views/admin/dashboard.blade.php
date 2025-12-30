@@ -264,32 +264,34 @@
                                     <td>
                                         <span class="font-medium text-gray-700">{{ $booking->service->name }}</span>
                                     </td>
-                                    <td>
-                                        <span class="font-medium text-gray-700">{{ $booking->complaint }} </span>
-                                    </td>
 
                                     {{-- Estimasi Selesai --}}
+                                    {{-- Estimasi Selesai --}}
                                     <td class="text-center">
-                                        @if ($booking->estimation_duration)
-                                            @php
-                                                $waktuBooking = \Carbon\Carbon::parse($booking->booking_date);
-                                                $waktuSelesai = $waktuBooking->addMinutes(
-                                                    $booking->estimation_duration,
-                                                );
-                                            @endphp
-                                            <div class="flex flex-col items-center">
-                                                <span
-                                                    class="bg-blue-50 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full border border-blue-100">
-                                                    <i class="fa-regular fa-clock mr-1"></i>
-                                                    {{ $waktuSelesai->format('H:i') }} WIB
-                                                </span>
-                                                {{-- <span
-                                                    class="text-xs text-gray-400 mt-1">{{ $booking->estimation_duration }}
-                                                    Menit</span> --}}
-                                            </div>
-                                        @else
-                                            <span class="text-gray-400">-</span>
-                                        @endif
+                                        @php
+                                            // 1. Parse waktu booking dari database
+                                            $waktuBooking = \Carbon\Carbon::parse($booking->booking_date);
+
+                                            // 2. Ambil durasi. Jika kosong/null, pakai default 60 menit
+                                            $durasi = $booking->estimation_duration ?? 60;
+
+                                            // 3. Hitung waktu selesai (gunakan copy() agar variabel asli tidak berubah)
+                                            $waktuSelesai = $waktuBooking->copy()->addMinutes($durasi);
+                                        @endphp
+
+                                        <div class="flex flex-col items-center">
+                                            {{-- Tampilkan Jam Selesai --}}
+                                            <span
+                                                class="bg-blue-50 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full border border-blue-100">
+                                                <i class="fa-regular fa-clock mr-1"></i>
+                                                {{ $waktuSelesai->format('H:i') }} WIB
+                                            </span>
+
+                                            {{-- Tampilkan Durasi di bawahnya (Opsional, agar admin tahu ini estimasi berapa lama) --}}
+                                            <span class="text-xs text-gray-400 mt-1">
+                                                (+{{ $durasi }} Menit)
+                                            </span>
+                                        </div>
                                     </td>
 
                                     <td class="text-center">

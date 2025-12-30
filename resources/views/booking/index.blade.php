@@ -193,8 +193,63 @@
                     </div>
                 @endif
             </div>
-
         </div>
+
+        {{-- MODAL ALASAN PEMBATALAN --}}
+        <div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title fw-bold"><i class="fas fa-exclamation-triangle me-2"></i>Batalkan Booking
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form id="cancelForm" action="" method="POST">
+                        @csrf
+                        <div class="modal-body">
+                            <p>Apakah Anda yakin ingin membatalkan booking ini?</p>
+
+                            {{-- Input Hidden untuk status --}}
+                            <input type="hidden" name="status" value="cancelled">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Alasan Pembatalan <span
+                                        class="text-danger">*</span></label>
+                                <textarea name="rejection_reason" class="form-control" rows="3" required
+                                    placeholder="Contoh: Slot penuh, Mekanik sakit, Sparepart tidak tersedia..."></textarea>
+                                <div class="form-text">Alasan ini akan muncul di dashboard pelanggan.</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-danger">Konfirmasi Pembatalan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- SCRIPT KHUSUS --}}
+        <script>
+            function handleStatusChange(selectElement, bookingId, updateUrl) {
+                if (selectElement.value === 'cancelled') {
+                    // 1. Jika pilih Cancelled -> Buka Modal
+                    var modal = new bootstrap.Modal(document.getElementById('cancelModal'));
+
+                    // Set action form ke URL update booking yang sesuai
+                    document.getElementById('cancelForm').action = updateUrl;
+
+                    modal.show();
+
+                    // Reset dropdown ke status sebelumnya jika modal ditutup (opsional, biar UX bagus)
+                    // (Untuk simpelnya kita biarkan dulu)
+                } else {
+                    // 2. Jika status lain -> Submit Form Langsung seperti biasa
+                    selectElement.form.submit();
+                }
+            }
+        </script>
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.js"></script>
