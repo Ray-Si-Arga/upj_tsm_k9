@@ -190,65 +190,81 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-
-        $validasi = $request->validate([
-            'vehicle_type' => ['required', 'string', 'max:50'],
-            'plate_number' => ['required', 'string', 'max:20'],
-            'booking_date' => ['required', 'date'],
-            'service_id' => ['required', 'exists:services,id'],
-            'customer_name' => ['required', 'string', 'max:255'],
-            'customer_whatsapp' => ['required', 'string', 'max:15'],
+        // 1. Validasi Input
+        $request->validate([
+            'service_ids'       => 'required|array|min:1', // Wajib array & minimal pilih 1
+            'service_ids.*'     => 'exists:services,id',   // Pastikan ID service ada di database
+            'booking_date'      => 'required|date',        // Tanggal wajib diisi
+            'plate_number'      => 'required|string',
+            'vehicle_type'      => 'required|string',
+            'customer_whatsapp' => 'required|string',
+            'customer_name'     => 'required|string', // Pastikan nama terkirim
+            'complaint'         => 'nullable|string',
         ]);
 
-        $datetime = strtotime($request->booking_date);
-        $date = date('Y-m-d', $datetime);
-        $time = date('H:i', $datetime);
+        $user = Auth::user();
 
-        // Hitung nomor antrian per hari
-        $lastQueue = Booking::whereDate('booking_date', $date)->max('queue_number');
-        $newQueueNumber = $lastQueue ? $lastQueue + 1 : 1;
+        // 2. Looping (Perulangan) untuk menyimpan setiap service yang dicentang
+        foreach ($request->service_ids as $serviceId) {
 
+            // Logic Nomor Antrian: Reset per hari
+            // Kita cari nomor antrian tertinggi di tanggal yang dipilih
+            $date = \Carbon\Carbon::parse($request->booking_date)->format('Y-m-d');
 
-        $booking = new Booking();
-        $booking->user_id = Auth::id();
-        $booking->vehicle_type = $request->vehicle_type;
-        $booking->plate_number = $request->plate_number;
-        $booking->booking_date = $request->booking_date;
-        $booking->service_id = $request->service_id;
-        $booking->customer_name = $request->customer_name;
-        $booking->customer_whatsapp = $request->customer_whatsapp;
-        $booking->queue_number = $newQueueNumber;
-        $booking->status = 'pending';
-        $booking->save();
+            // Ambil nomor antrian terakhir hari itu, kalau belum ada mulai dari 0
+            $lastQueue = Booking::whereDate('booking_date', $date)->max('queue_number') ?? 0;
 
-        return redirect()->route('booking.success', $booking->id)
-            ->with('success', 'Booking berhasil dibuat!');
+            // Simpan ke Database
+            Booking::create([
+                'user_id'           => $user->id,
+                'service_id'        => $serviceId, // Simpan ID service satu per satu
+                'booking_date'      => $request->booking_date,
+                'customer_name'     => $request->customer_name,
+                'customer_whatsapp' => $request->customer_whatsapp,
+                'vehicle_type'      => $request->vehicle_type,
+                'plate_number'      => strtoupper($request->plate_number),
+                'status'            => 'pending', // Default status menunggu
+                'queue_number'      => $lastQueue + 1, // Nomor antrian bertambah
+                'complaint'         => $request->complaint,
+            ]);
+        }
+
+        // Redirect ke dashboard setelah semua tersimpan
+        return redirect()->route('pelanggan.dashboard')->with('success', 'Booking berhasil! Layanan telah ditambahkan ke antrian.');
     }
 
+    /**
+     * Dashboard: Hanya menampilkan booking yang SEDANG AKTIF
+     */
     public function pelangganDashboard()
     {
         $user = Auth::user();
 
-        // 1. Booking AKTIF (Pending, Approved, On Progress)
-        // Ini yang akan muncul di Stepper / Tracking
+        // Ambil Booking Aktif (Pending, Approved, On Progress)
         $activeBookings = Booking::with('service')
             ->where('user_id', $user->id)
             ->whereIn('status', ['pending', 'approved', 'on_progress'])
             ->orderBy('booking_date', 'asc')
             ->get();
 
-        // 2. RIWAYAT (Done, Cancelled)
-        // Ini yang akan muncul di tabel Riwayat
+        return view('pelanggan.dashboard', compact('activeBookings'));
+    }
+
+    /**
+     * Halaman Baru: Menampilkan RIWAYAT (Selesai / Batal)
+     */
+    public function pelangganHistory()
+    {
+        $user = Auth::user();
+
+        // Ambil Riwayat (Done, Cancelled)
         $historyBookings = Booking::with('service')
             ->where('user_id', $user->id)
             ->whereIn('status', ['done', 'cancelled'])
-            ->orderBy('booking_date', 'desc') // Yang terbaru (baru selesai) di atas
+            ->orderBy('booking_date', 'desc')
             ->get();
 
-        // Hitung total servis sukses
-        $totalService = $historyBookings->where('status', 'done')->count();
-
-        return view('pelanggan.dashboard', compact('activeBookings', 'historyBookings', 'totalService'));
+        return view('pelanggan.history', compact('historyBookings'));
     }
 
 

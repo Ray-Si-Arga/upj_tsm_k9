@@ -26,401 +26,400 @@
             color: var(--text-primary);
         }
 
-        /* Card */
-        .form-service-card {
+        /* Card Modern */
+        .card-modern {
             border: none;
             border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(42, 110, 127, 0.1);
-            background: linear-gradient(135deg, #ffffff 0%, var(--brand-light) 100%);
+            box-shadow: 0 10px 30px rgba(42, 110, 127, 0.08);
+            background: white;
             overflow: hidden;
-            transition: transform 0.3s ease;
+            height: 100%;
         }
 
-        .form-service-card:hover {
-            transform: translateY(-5px);
-        }
-
-        /* Header */
-        .form-header {
-            background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
-            padding: 40px 32px;
-            color: white;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .form-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--brand-secondary), var(--brand-secondary-dark));
-        }
-
-        .form-header h3 {
+        /* Header Style */
+        .section-header {
+            background: var(--brand-soft);
+            color: var(--brand-primary);
+            padding: 20px 25px;
             font-weight: 700;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            align-items: center;
         }
 
-        .form-header p {
-            opacity: 0.9;
-            font-size: 1.05rem;
+        .section-header i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            color: var(--brand-secondary);
         }
 
-        /* Labels */
+        /* Input Styling */
         .form-label-custom {
             font-weight: 600;
             color: var(--text-primary);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            border: 2px solid var(--border-soft);
+            padding: 10px 15px;
             font-size: 0.95rem;
-            margin-bottom: 8px;
-            display: block;
+            transition: all 0.2s;
         }
 
-        /* Input Groups */
-        .input-group {
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .input-group:focus-within {
+        .form-control:focus {
             border-color: var(--brand-primary);
             box-shadow: 0 0 0 3px rgba(42, 110, 127, 0.1);
         }
 
         .input-group-text {
-            background: linear-gradient(135deg, var(--brand-soft), #ffffff);
-            color: var(--brand-primary);
+            background-color: white;
             border: 2px solid var(--border-soft);
             border-right: none;
-            font-size: 1.1rem;
-            padding: 0.75rem 1rem;
-        }
-
-        .form-control,
-        .form-select {
-            border-radius: 12px;
-            border: 2px solid var(--border-soft);
-            padding: 0.75rem 1rem;
-            color: var(--text-primary);
-            background-color: white;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--brand-primary);
-            box-shadow: 0 0 0 3px rgba(42, 110, 127, 0.15);
-            color: var(--text-primary);
-        }
-
-        .form-control[readonly] {
-            background-color: var(--brand-light);
-            color: var(--text-secondary);
-        }
-
-        /* Alert */
-        .alert-custom {
-            background: linear-gradient(135deg, var(--brand-soft), white);
-            border: 2px solid var(--brand-primary);
-            border-left: 6px solid var(--brand-secondary);
-            color: var(--text-primary);
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .alert-custom i {
             color: var(--brand-secondary);
+            border-radius: 10px 0 0 10px;
         }
 
-        .badge-queue {
-            background: linear-gradient(135deg, var(--brand-secondary), var(--brand-secondary-dark));
-            color: white;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 20px;
+        .form-control {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
         }
 
-        /* Service Buttons */
-        .btn-service {
+        /* Service Cards (Selectable) */
+        .service-card-label {
+            cursor: pointer;
+            transition: all 0.2s;
             border: 2px solid var(--border-soft);
-            background: white;
-            color: var(--text-primary);
-            border-radius: 12px;
-            padding: 20px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: left;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .btn-service:hover {
-            border-color: var(--brand-primary);
-            background: var(--brand-soft);
-            color: var(--brand-primary);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(42, 110, 127, 0.15);
-        }
-
-        .btn-service i {
-            color: var(--brand-secondary);
-            transition: all 0.3s ease;
-        }
-
-        .btn-service:hover i {
-            color: var(--brand-primary);
-            transform: scale(1.1);
-        }
-
-        .btn-service small {
-            background: var(--brand-light);
-            color: var(--brand-primary);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: 700;
-            transition: all 0.3s ease;
-        }
-
-        .btn-check:checked+.btn-service {
-            background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
-            color: white;
-            border-color: var(--brand-primary);
-            transform: scale(1.02);
-        }
-
-        .btn-check:checked+.btn-service i {
-            color: white;
-        }
-
-        .btn-check:checked+.btn-service small {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        /* Submit Button */
-        .btn-submit {
-            background: linear-gradient(135deg, var(--brand-secondary), var(--brand-secondary-dark));
-            border: none;
-            border-radius: 50px;
-            padding: 18px 40px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            font-size: 1.1rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 25px rgba(255, 122, 69, 0.3);
-            position: relative;
+            border-radius: 15px;
             overflow: hidden;
+            display: block;
+            height: 100%;
+            background: white;
         }
 
-        .btn-submit::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+        .service-card-label:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-color: var(--brand-primary);
+        }
+
+        /* CHECKBOX LOGIC (Multi Select) */
+        .btn-check:checked+.service-card-label {
+            border-color: var(--brand-secondary);
+            background-color: #fff9f5;
+            /* Orange muda */
+            box-shadow: 0 5px 20px rgba(255, 122, 69, 0.2);
+        }
+
+        .btn-check:checked+.service-card-label .check-icon {
+            display: inline-block !important;
+            color: var(--brand-secondary);
+        }
+
+        /* Summary Box (Sticky) */
+        .summary-box {
+            background: var(--brand-primary-dark);
+            color: white;
+            border-radius: 20px;
+            padding: 25px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .total-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--brand-secondary);
+        }
+
+        .btn-submit {
+            background: var(--brand-secondary);
+            color: white;
+            border: none;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.6s;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s;
         }
 
         .btn-submit:hover {
-            background: linear-gradient(135deg, var(--brand-secondary-dark), #D44A1A);
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(255, 122, 69, 0.4);
-        }
-
-        .btn-submit:hover::before {
-            left: 100%;
-        }
-
-        .btn-submit:active {
-            transform: translateY(-1px);
-        }
-
-        /* Form Text */
-        .form-text {
-            color: var(--text-light);
-            font-size: 0.875rem;
-            margin-top: 8px;
-        }
-
-        /* Error Messages */
-        .alert-danger {
-            background: linear-gradient(135deg, #FFEBEE, white);
-            border: 2px solid var(--danger);
-            border-left: 6px solid var(--danger);
-            color: var(--danger);
-            border-radius: 12px;
-        }
-
-        /* Animation for radio buttons */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .col-md-6 {
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        .col-md-6:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-
-        .col-md-6:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        .col-md-6:nth-child(4) {
-            animation-delay: 0.3s;
+            background: var(--brand-secondary-dark);
+            transform: translateY(-2px);
         }
     </style>
 
-    <main class="py-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
+    <main class="py-4">
+        <div class="container-fluid px-4"> {{-- Gunakan fluid agar landscape/lebar --}}
 
-                    {{-- Alert Error --}}
-                    @if ($errors->any())
-                        <div class="alert alert-danger border-0 rounded-3 mb-4">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+            {{-- Error Alerts --}}
+            @if ($errors->any())
+                <div class="alert alert-danger border-0 rounded-3 mb-4">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-                    <div class="form-service-card">
-                        <div class="form-header">
-                            <h3 class="fw-bold mb-2"><i class="fas fa-screwdriver-wrench me-3"></i>Booking Service</h3>
-                            <p class="mb-0">Dapatkan nomor antrian servis kendaraan Anda di sini.</p>
-                        </div>
+            <form method="POST" action="{{ route('booking.store') }}" id="bookingForm">
+                @csrf
 
-                        <div class="card-body p-4 p-md-5">
+                <div class="row g-4">
 
-                            {{-- Info Antrian --}}
-                            <div class="alert alert-custom d-flex align-items-center rounded-3 mb-4" role="alert">
-                                <i class="fas fa-users me-4 fs-3"></i>
-                                <div>
-                                    <strong class="d-block mb-1">Info Antrian</strong>
-                                    <span class="text-muted">Saat ini terdapat</span>
-                                    <span class="badge-queue mx-2">{{ $todayActive }}</span>
-                                    <span class="text-muted">kendaraan dalam antrian hari ini.</span>
+                    {{-- KOLOM KIRI: DATA DIRI & RINGKASAN HARGA --}}
+                    <div class="col-lg-4">
+                        <div class="card-modern h-auto mb-4">
+                            <div class="section-header">
+                                <i class="fas fa-user-circle"></i> Data Pelanggan & Kendaraan
+                            </div>
+                            <div class="card-body p-4">
+                                {{-- Nama --}}
+                                <div class="mb-3">
+                                    <label class="form-label-custom">Nama Pemilik</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <input type="text" name="customer_name" class="form-control bg-light"
+                                            value="{{ $user->name }}" readonly>
+                                    </div>
+                                </div>
+
+                                {{-- WA --}}
+                                <div class="mb-3">
+                                    <label class="form-label-custom">WhatsApp</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fab fa-whatsapp"></i></span>
+                                        <input type="text" name="customer_whatsapp" class="form-control"
+                                            value="{{ $user->phone }}" placeholder="08xxx" required>
+                                    </div>
+                                </div>
+
+                                {{-- Motor --}}
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label-custom">Jenis Motor</label>
+                                        <input type="text" name="vehicle_type" class="form-control"
+                                            placeholder="Vario 150" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label-custom">Plat Nomor</label>
+                                        <input type="text" name="plate_number" class="form-control text-uppercase"
+                                            placeholder="B 1234 XYZ" required>
+                                    </div>
+                                </div>
+
+                                {{-- Keluhan --}}
+                                <div class="mb-3">
+                                    <label class="form-label-custom">Keluhan / Catatan</label>
+                                    <textarea name="complaint" class="form-control" rows="3"
+                                        placeholder="Contoh: Rem depan bunyi, tarikan berat, lampu sen mati..."></textarea>
+                                    <div class="form-text small text-muted">
+                                        <i class="fas fa-info-circle me-1"></i> Ceritakan kondisi motor Anda agar mekanik
+                                        lebih paham.
+                                    </div>
+                                </div>
+
+                                {{-- Tanggal --}}
+                                <div class="mb-3">
+                                    <label class="form-label-custom">Rencana Booking</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                        <input type="datetime-local" name="booking_date" class="form-control" required>
+                                    </div>
+                                    <div class="form-text small text-danger"><i class="fas fa-exclamation-circle"></i> Slot
+                                        terbatas.</div>
                                 </div>
                             </div>
+                        </div>
 
-                            <form method="POST" action="{{ route('booking.store') }}">
-                                @csrf
+                        {{-- RINGKASAN & TOTAL (STICKY) --}}
+                        <div class="summary-box shadow">
+                            <h5 class="fw-bold mb-3"><i class="fas fa-receipt me-2"></i>Ringkasan Pesanan</h5>
+                            <div id="empty-state" class="text-white-50 small fst-italic">Belum ada layanan yang dipilih.
+                            </div>
 
-                                <div class="row g-4">
-                                    {{-- Nama (Readonly) --}}
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">Nama Pemilik</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                            <input type="text" name="customer_name" class="form-control"
-                                                value="{{ $user->name }}" readonly>
-                                        </div>
-                                    </div>
+                            {{-- Daftar Item yang Dipilih (Generated by JS) --}}
+                            <ul class="summary-list" id="summary-list"></ul>
 
-                                    {{-- WhatsApp --}}
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">Nomor WhatsApp</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fab fa-whatsapp"></i></span>
-                                            <input type="text" name="customer_whatsapp" class="form-control"
-                                                value="{{ $user->phone ?? old('customer_whatsapp') }}"
-                                                placeholder="08xxxxxxxxxx" required>
-                                        </div>
-                                    </div>
+                            <hr class="border-white opacity-25">
 
-                                    {{-- Kendaraan --}}
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">Jenis Motor</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-motorcycle"></i></span>
-                                            <input type="text" name="vehicle_type" class="form-control"
-                                                placeholder="Contoh: Vario 150, Beat" value="{{ old('vehicle_type') }}"
-                                                required>
-                                        </div>
-                                    </div>
+                            <div class="d-flex justify-content-between align-items-end mb-3">
+                                <span class="small opacity-75">Total Estimasi</span>
+                                <div class="total-price">Rp <span id="total-price-display">0</span></div>
+                            </div>
 
-                                    {{-- Plat Nomor --}}
-                                    <div class="col-md-6">
-                                        <label class="form-label-custom">Plat Nomor</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-                                            <input type="text" name="plate_number" class="form-control text-uppercase"
-                                                placeholder="B 1234 XYZ" value="{{ old('plate_number') }}" required>
-                                        </div>
-                                    </div>
-
-                                    {{-- Tanggal Booking --}}
-                                    <div class="col-md-12">
-                                        <label class="form-label-custom">Rencana Tanggal & Jam Servis</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                            <input type="datetime-local" name="booking_date" class="form-control"
-                                                value="{{ old('booking_date') }}" required>
-                                        </div>
-                                        <div class="form-text">
-                                            <i class="fas fa-info-circle me-1"></i>
-                                            Slot terbatas. Jika jam penuh, Anda akan diminta memilih jam lain.
-                                        </div>
-                                    </div>
-
-                                    {{-- Jenis Layanan --}}
-                                    <div class="col-md-12">
-                                        <label class="form-label-custom">Pilih Layanan</label>
-                                        <div class="row g-3">
-                                            @foreach ($services as $service)
-                                                <div class="col-md-6">
-                                                    <input type="radio" class="btn-check" name="service_id"
-                                                        id="service_{{ $service->id }}" value="{{ $service->id }}"
-                                                        required>
-                                                    <label
-                                                        class="btn btn-service w-100 text-start p-3 rounded-3 d-flex align-items-center justify-content-between"
-                                                        for="service_{{ $service->id }}">
-                                                        <span>
-                                                            <i class="fas fa-tools me-3"></i>
-                                                            <strong>{{ $service->name }}</strong>
-                                                        </span>
-                                                        <small class="fw-bold">Pilih</small>
-                                                    </label>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mt-5 text-center">
-                                    <button type="submit" class="btn btn-submit btn-lg">
-                                        <i class="fas fa-paper-plane me-3"></i> Ambil Antrian Sekarang
-                                    </button>
-                                </div>
-
-                            </form>
+                            <button type="submit" class="btn btn-submit shadow-lg">
+                                <i class="fas fa-paper-plane me-2"></i> Booking Sekarang
+                            </button>
                         </div>
                     </div>
+
+                    {{-- KOLOM KANAN: PILIHAN LAYANAN (GRID) --}}
+                    <div class="col-lg-8">
+                        <div class="card-modern">
+                            <div class="section-header justify-content-between">
+                                <div><i class="fas fa-th-large"></i> Pilih Layanan</div>
+                                <small class="fw-normal text-muted"><i class="fas fa-info-circle"></i> Anda bisa memilih
+                                    lebih dari satu.</small>
+                            </div>
+
+                            <div class="card-body p-4">
+
+                                {{-- 1. PAKET SPESIAL --}}
+                                <h6 class="fw-bold text-dark mb-3 ps-2 border-start border-4 border-danger">
+                                    &nbsp; Paket Spesial (Hemat)
+                                </h6>
+                                <div class="row g-3 mb-5">
+                                    @foreach ($services->where('type', 'paket') as $paket)
+                                        <div class="col-md-6">
+                                            {{-- Ubah RADIO menjadi CHECKBOX agar bisa pilih banyak --}}
+                                            {{-- name="service_ids[]" mengirim array ke controller --}}
+                                            <input type="checkbox" class="btn-check service-checkbox" name="service_ids[]"
+                                                id="service_{{ $paket->id }}" value="{{ $paket->id }}"
+                                                data-name="{{ $paket->name }}" data-price="{{ $paket->price }}">
+
+                                            <label class="service-card-label p-3 h-100 position-relative"
+                                                for="service_{{ $paket->id }}">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <h6 class="fw-bold text-dark mb-0">{{ $paket->name }}</h6>
+                                                    <span class="badge bg-danger">Rp
+                                                        {{ number_format($paket->price, 0, ',', '.') }}</span>
+                                                </div>
+                                                <p class="small text-muted mb-0">{{ $paket->description }}</p>
+
+                                                {{-- Icon Centang (Hidden by default) --}}
+                                                <div class="check-icon position-absolute bottom-0 end-0 p-3"
+                                                    style="display: none;">
+                                                    <i class="fas fa-check-circle fa-lg"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                    @if ($services->where('type', 'paket')->isEmpty())
+                                        <div class="col-12">
+                                            <div class="alert alert-light">Tidak ada paket tersedia.</div>
+                                        </div>
+                                    @endif
+                                </div>
+
+
+                                {{-- 2. LAYANAN SATUAN --}}
+                                <h6 class="fw-bold text-dark mb-3 ps-2 border-start border-4 border-secondary">
+                                    &nbsp; Layanan Satuan / Regular
+                                </h6>
+                                <div class="row g-3">
+                                    @foreach ($services->where('type', 'non_paket') as $layanan)
+                                        <div class="col-md-4 col-sm-6">
+                                            <input type="checkbox" class="btn-check service-checkbox"
+                                                name="service_ids[]" id="service_{{ $layanan->id }}"
+                                                value="{{ $layanan->id }}" data-name="{{ $layanan->name }}"
+                                                data-price="{{ $layanan->price }}">
+
+                                            <label
+                                                class="service-card-label p-3 d-flex flex-column justify-content-between h-100 position-relative"
+                                                for="service_{{ $layanan->id }}">
+                                                <div class="fw-bold text-dark mb-1">{{ $layanan->name }}</div>
+                                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                                    <span class="fw-bold text-secondary">Rp
+                                                        {{ number_format($layanan->price, 0, ',', '.') }}</span>
+                                                </div>
+
+                                                <div class="check-icon position-absolute bottom-0 end-0 p-2"
+                                                    style="display: none;">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                    @if ($services->where('type', 'non_paket')->isEmpty())
+                                        <div class="col-12">
+                                            <div class="alert alert-light">Layanan satuan kosong.</div>
+                                        </div>
+                                    @endif
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-            </div>
+            </form>
         </div>
     </main>
+
+    {{-- SCRIPT CALCULATOR --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.service-checkbox');
+            const summaryList = document.getElementById('summary-list');
+            const totalPriceDisplay = document.getElementById('total-price-display');
+            const emptyState = document.getElementById('empty-state');
+
+            // Fungsi Format Rupiah
+            const formatRupiah = (number) => {
+                return new Intl.NumberFormat('id-ID').format(number);
+            };
+
+            // Fungsi Update Ringkasan
+            const updateSummary = () => {
+                let total = 0;
+                let html = '';
+                let count = 0;
+
+                checkboxes.forEach(chk => {
+                    if (chk.checked) {
+                        count++;
+                        const name = chk.getAttribute('data-name');
+                        const price = parseFloat(chk.getAttribute('data-price'));
+                        total += price;
+
+                        html += `
+                            <li class="summary-item animate__animated animate__fadeInRight">
+                                <span>${name}</span>
+                                <span class="fw-bold">Rp ${formatRupiah(price)}</span>
+                            </li>
+                        `;
+                    }
+                });
+
+                // Update DOM
+                summaryList.innerHTML = html;
+                totalPriceDisplay.innerText = formatRupiah(total);
+
+                // Toggle Empty State
+                if (count > 0) {
+                    emptyState.style.display = 'none';
+                } else {
+                    emptyState.style.display = 'block';
+                }
+            };
+
+            // Event Listener tiap checkbox
+            checkboxes.forEach(chk => {
+                chk.addEventListener('change', updateSummary);
+            });
+        });
+    </script>
 @endsection

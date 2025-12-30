@@ -9,11 +9,15 @@ class Service extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'type', 'price'];
+    protected $fillable = [
+        'name',
+        'type',
+        'price',
+        'description',
+    ];
 
     public function bookings()
     {
         return $this->hasMany(Booking::class);
     }
 }
-

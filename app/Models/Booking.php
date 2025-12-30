@@ -13,6 +13,7 @@ class Booking extends Model
         'user_id',
         'vehicle_type',
         'plate_number',
+        'complaint',
         'booking_date',
         'quota',
         'service_id',

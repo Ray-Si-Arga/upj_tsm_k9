@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\LayananController;
 use App\Http\Controllers\ServiceAdvisorController;
 use FontLib\Table\Type\name;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,7 @@ Route::get('/pelanggan/dashboard', [BookingController::class, 'pelangganDashboar
 // Kita ubah URL-nya jadi /pelanggan/service, tapi controllernya tetap pakai method create & store yang lama
 Route::get('/pelanggan/service', [BookingController::class, 'create'])->name('pelanggan.service'); // Pengganti booking.create
 Route::post('/pelanggan/service', [BookingController::class, 'store'])->name('booking.store'); // Tetap pakai store yg sama
+Route::get('/pelanggan/history', [BookingController::class, 'pelangganHistory'])->name('pelanggan.history');
 
 // ----------------------------------------------- //
 // ----------------- Advisor --------------------- //
@@ -51,6 +53,16 @@ Route::prefix('advisor')->name('advisor.')->group(function () {
 // ---------------- Rute Yang Diharuskan Autentikasi -------------------- //
 // ---------------------------------------------------------------------- //
 Route::middleware(['auth'])->group(function () {
+    // ------------------------------------------------------ //
+    // ---------------- Service Layanan  -------------------- //
+    // ------------------------------------------------------ //
+    Route::get('/layanan', [LayananController::class, 'index']) -> name('layanan.index');
+    Route::get('/layanan/create', [LayananController::class, 'create']) -> name('layanan.create');
+    Route::post('/layanan/store', [LayananController::class, 'store']) -> name('layanan.store');
+    Route::get('/layanan/edit/{id}', [LayananController::class, 'edit']) -> name('layanan.edit');
+    Route::put('/layanan/update/{id}', [LayananController::class, 'update']) -> name('layanan.update');
+    Route::delete('/layanan/delete/{id}', [LayananController::class, 'destroy']) -> name('layanan.destroy');
+
 
     // ----------------------------------------------------- //
     // ---------------- Register Admin  -------------------- //

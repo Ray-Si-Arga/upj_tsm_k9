@@ -411,6 +411,16 @@
                 <li class="sidebar-label">Layanan</li>
 
                 <li class="sidebar-menu-item">
+                    <a href="{{ route('layanan.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('layanan.*') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                        <span>Paket & Layanan</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item">
                     <a href="{{ route('advisor.create') }}"
                         class="sidebar-menu-link {{ request()->routeIs('advisor.*') ? 'active' : '' }}">
                         <div class="sidebar-menu-icon">

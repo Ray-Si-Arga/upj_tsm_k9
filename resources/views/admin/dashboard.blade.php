@@ -264,6 +264,9 @@
                                     <td>
                                         <span class="font-medium text-gray-700">{{ $booking->service->name }}</span>
                                     </td>
+                                    <td>
+                                        <span class="font-medium text-gray-700">{{ $booking->complaint }} </span>
+                                    </td>
 
                                     {{-- Estimasi Selesai --}}
                                     <td class="text-center">
