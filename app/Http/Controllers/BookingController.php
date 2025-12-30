@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
-// BookingController ini fokus melayani Web View (Blade)
 class BookingController extends Controller
 {
     /**
@@ -172,6 +171,10 @@ class BookingController extends Controller
     /**
      * Menampilkan form untuk membuat booking baru (Untuk customer/user)
      */
+
+    // ----------------------------------------------------------------------- //
+    // ---------------- function Untuk Pelanggan/Customer -------------------- //
+    // ----------------------------------------------------------------------- //
     public function create()
     {
         $todayActive = Booking::whereDate('booking_date', date('Y-m-d'))
@@ -181,7 +184,7 @@ class BookingController extends Controller
         $services = Service::all();
         $user = Auth::user();
 
-        return view('booking.create', compact('services', 'user', 'todayActive'));
+        return view('pelanggan.service', compact('services', 'user', 'todayActive'));
     }
 
 
@@ -220,6 +223,32 @@ class BookingController extends Controller
 
         return redirect()->route('booking.success', $booking->id)
             ->with('success', 'Booking berhasil dibuat!');
+    }
+
+    public function pelangganDashboard()
+    {
+        $user = Auth::user();
+
+        // 1. Booking AKTIF (Pending, Approved, On Progress)
+        // Ini yang akan muncul di Stepper / Tracking
+        $activeBookings = Booking::with('service')
+            ->where('user_id', $user->id)
+            ->whereIn('status', ['pending', 'approved', 'on_progress'])
+            ->orderBy('booking_date', 'asc')
+            ->get();
+
+        // 2. RIWAYAT (Done, Cancelled)
+        // Ini yang akan muncul di tabel Riwayat
+        $historyBookings = Booking::with('service')
+            ->where('user_id', $user->id)
+            ->whereIn('status', ['done', 'cancelled'])
+            ->orderBy('booking_date', 'desc') // Yang terbaru (baru selesai) di atas
+            ->get();
+
+        // Hitung total servis sukses
+        $totalService = $historyBookings->where('status', 'done')->count();
+
+        return view('pelanggan.dashboard', compact('activeBookings', 'historyBookings', 'totalService'));
     }
 
 

@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ServiceAdvisorController;
 use FontLib\Table\Type\name;
@@ -31,8 +30,11 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 // -------------------------------------------------------- //
 // ---------------- Pelanggan/Customer -------------------- //
 // -------------------------------------------------------- //
-Route::get('/pelanggan', [CustomerController::class, 'index'])->name('pelanggan.dashboard');
-Route::get('/pelanggan/service', [CustomerController::class, 'ServisCustomer'])->name('pelanggan.service');
+Route::get('/pelanggan/dashboard', [BookingController::class, 'pelangganDashboard'])->name('pelanggan.dashboard');
+// Menu Service (Dulu booking.create)
+// Kita ubah URL-nya jadi /pelanggan/service, tapi controllernya tetap pakai method create & store yang lama
+Route::get('/pelanggan/service', [BookingController::class, 'create'])->name('pelanggan.service'); // Pengganti booking.create
+Route::post('/pelanggan/service', [BookingController::class, 'store'])->name('booking.store'); // Tetap pakai store yg sama
 
 // ----------------------------------------------- //
 // ----------------- Advisor --------------------- //
