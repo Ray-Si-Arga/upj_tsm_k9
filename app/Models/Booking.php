@@ -16,11 +16,13 @@ class Booking extends Model
         'complaint',
         'booking_date',
         'quota',
-        'service_id',
+        // 'service_id',
         'customer_name',
         'customer_whatsapp',
         'status',
+        'rejection_reason',
         'queue_number',
+        'estimation_duration',
     ];
 
     public function user()
@@ -28,14 +30,19 @@ class Booking extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-       public function service()
+       public function services()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsToMany(Service::class, 'booking_service');
     }
 
     public function serviceAdvisors()
     {
         return $this->hasMany(ServiceAdvisor::class);
+    }
+
+    public function getServiceAttribute()
+    {
+        return $this ->services->first();
     }
 }
 

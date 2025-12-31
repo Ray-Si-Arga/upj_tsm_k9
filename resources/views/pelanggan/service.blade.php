@@ -220,8 +220,12 @@
                                 <div class="row g-2 mb-3">
                                     <div class="col-6">
                                         <label class="form-label-custom">Jenis Motor</label>
-                                        <input type="text" name="vehicle_type" class="form-control"
-                                            placeholder="Vario 150" required>
+                                        <select class="form-control" name="vehicle_type">
+                                            <option value="">Pilihan</option>
+                                            <option value="bebek">Bebek</option>
+                                            <option value="sport">Sport</option>
+                                            <option value="matic">Matic</option>
+                                        </select>
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label-custom">Plat Nomor</label>

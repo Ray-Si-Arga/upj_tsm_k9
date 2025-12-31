@@ -217,7 +217,7 @@
                                         class="text-danger">*</span></label>
                                 <textarea name="rejection_reason" class="form-control" rows="3" required
                                     placeholder="Contoh: Slot penuh, Mekanik sakit, Sparepart tidak tersedia..."></textarea>
-                                <div class="form-text">Alasan ini akan muncul di dashboard pelanggan.</div>
+                                <div class="form-text">Alasan ini akan muncul di pelanggan.</div>
                             </div>
                         </div>
                         <div class="modal-footer">

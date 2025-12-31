@@ -232,7 +232,7 @@
                                 <th class="text-center w-24">No. Antrian</th>
                                 <th>Pelanggan</th>
                                 <th>Kendaraan</th>
-                                <th>Layanan</th>
+                                {{-- <th>Layanan</th> --}}
                                 <th class="text-center">Estimasi Selesai</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-center">Aksi</th>
@@ -261,11 +261,12 @@
                                             {{ $booking->plate_number }}
                                         </span>
                                     </td>
-                                    <td>
-                                        <span class="font-medium text-gray-700">{{ $booking->service->name }}</span>
-                                    </td>
+                                    {{-- <td>
+                                        @foreach ($booking->services as $service)
+                                            <span class="font-medium text-gray-700">{{ $service->name }}</span>
+                                        @endforeach
+                                    </td> --}}
 
-                                    {{-- Estimasi Selesai --}}
                                     {{-- Estimasi Selesai --}}
                                     <td class="text-center">
                                         @php
@@ -314,7 +315,7 @@
                                         <a href="{{ route('booking.show', $booking->id) }}"
                                             class="text-gray-400 hover:text-blue-600 transition-colors p-2"
                                             title="Lihat Detail">
-                                            <i class="fa-solid fa-eye text-lg"></i>
+                                            <i class="fas fa-circle-info"></i>
                                         </a>
                                     </td>
                                 </tr>

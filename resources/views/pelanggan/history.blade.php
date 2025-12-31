@@ -60,18 +60,49 @@
                                         <th class="py-3 px-4">Tanggal</th>
                                         <th class="py-3 px-4">Kendaraan</th>
                                         <th class="py-3 px-4">Layanan</th>
+                                        <th class="py-3 px-4">Keluhan</th>
                                         <th class="py-3 px-4 text-center">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($historyBookings as $history)
                                         <tr>
+                                            {{-- KOLOM 1: TANGGAL --}}
+                                            <td class="px-4">
+                                                <div class="fw-bold text-dark">
+                                                    {{ \Carbon\Carbon::parse($history->booking_date)->locale('id')->translatedFormat('d F Y') }}
+                                                </div>
+                                                <small class="text-muted">
+                                                    Jam {{ \Carbon\Carbon::parse($history->booking_date)->format('H:i') }}
+                                                    WIB
+                                                </small>
+                                            </td>
+
+                                            {{-- KOLOM 2: KENDARAAN --}}
+                                            <td class="px-4">
+                                                <div class="fw-semibold">{{ $history->vehicle_type }}</div>
+                                                <small class="text-muted">{{ strtoupper($history->plate_number) }}</small>
+                                            </td>
+
+                                            {{-- KOLOM 3: LAYANAN --}}
+                                            <td class="px-4">
+                                                @foreach ($history->services as $svc)
+                                                    <span class="badge bg-secondary mb-1">{{ $svc->name }}</span><br>
+                                                @endforeach
+                                            </td>
+
+                                            {{-- KOLOM 4: KOMPLAIN --}}
+                                            <td class="px-4">
+                                                <div class="text-danger fw-semibold">{{ $history->complaint }}</div>
+                                            </td>
+
+                                            {{-- KOLOM 5: STATUS (Tombol) --}}
                                             <td class="px-4 text-center">
                                                 @if ($history->status == 'done')
                                                     <span class="status-badge-done"><i class="fas fa-check-circle me-1"></i>
                                                         Selesai</span>
                                                 @elseif($history->status == 'cancelled')
-                                                    {{-- Tombol Merah yang memicu Modal Alasan --}}
+                                                    {{-- Tombol Merah --}}
                                                     <button type="button"
                                                         class="btn btn-sm btn-danger rounded-pill px-3 fw-bold"
                                                         data-bs-toggle="modal"
@@ -79,11 +110,11 @@
                                                         <i class="fas fa-times-circle me-1"></i> Dibatalkan
                                                     </button>
 
-                                                    {{-- MODAL ALASAN (Khusus Booking Ini) --}}
+                                                    {{-- MODAL ALASAN --}}
                                                     <div class="modal fade" id="reasonModal{{ $history->id }}"
                                                         tabindex="-1" aria-hidden="true">
                                                         <div class="modal-dialog modal-dialog-centered">
-                                                            <div class="modal-content text-start"> {{-- text-start agar teks rata kiri --}}
+                                                            <div class="modal-content text-start">
                                                                 <div class="modal-header bg-danger text-white">
                                                                     <h6 class="modal-title fw-bold">Alasan Pembatalan</h6>
                                                                     <button type="button" class="btn-close btn-close-white"

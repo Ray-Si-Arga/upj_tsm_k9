@@ -25,6 +25,26 @@
                 class="fw-bold">{{ strtoupper($booking->plate_number) }}</span></div>
         <small class="text-muted"><i class="fab fa-whatsapp text-success me-1"></i>
             {{ $booking->customer_whatsapp }}</small>
+
+        <div class="mt-2">
+            @if ($booking->services->count() > 0)
+                {{-- Tampilkan layanan pertama --}}
+                <span class="badge bg-info text-dark mb-1">
+                    {{ $booking->services->first()->name }}
+                </span>
+
+                {{-- Jika ada lebih dari 1 layanan, tampilkan badge "+X lainnya" --}}
+                @if ($booking->services->count() > 1)
+                    <span class="badge bg-secondary mb-1" title="Lihat detail untuk info lengkap">
+                        +{{ $booking->services->count() - 1 }} lainnya
+                    </span>
+                @endif
+            @else
+                <span class="text-muted small">-</span>
+            @endif
+        </div>
+        {{-- [AKHIR BARU] --}}
+    </td>
     </td>
 
     {{-- Kolom 3: Waktu --}}
@@ -80,7 +100,7 @@
     <td class="px-4 text-center">
         <div class="d-flex justify-content-center gap-2">
             <a href="{{ route('booking.show', $booking->id) }}" class="btn btn-outline-primary btn-icon btn-sm"
-                title="Lihat Detail"><i class="fas fa-eye"></i></a>
+                title="Lihat Detail"><i class="fas fa-circle-info"></i></a>
             <form action="{{ route('booking.destroy', $booking->id) }}" method="POST" class="d-inline">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-outline-danger btn-icon btn-sm"
