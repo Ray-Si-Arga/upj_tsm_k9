@@ -389,23 +389,19 @@
                     </a>
                 </li>
 
-                {{-- ///////////////// --}}
-                {{-- - Jangan Dihapus --}}
-                {{-- //////////////// --}}
-
                 {{-- SECTION: INVENTORY --}}
-                {{-- <li class="sidebar-divider"></li>
+                <li class="sidebar-divider"></li>
                 <li class="sidebar-label">Gudang</li>
 
                 <li class="sidebar-menu-item">
                     <a href="{{ route('inventory.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
                         <div class="sidebar-menu-icon">
-                            <i class="fa-solid fa-boxes-stacked"></i>
+                            <i class="fa-solid fa-box"></i>
                         </div>
                         <span>Inventory</span>
                     </a>
-                </li> --}}
+                </li>
 
                 {{-- SECTION: ADVISOR --}}
                 <li class="sidebar-label">Layanan</li>

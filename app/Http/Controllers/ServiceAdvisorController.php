@@ -62,6 +62,11 @@ class ServiceAdvisorController extends Controller
 
             'parts_id' => 'nullable|array',
             'parts_qty' => 'nullable|array',
+            'fuel_level' => 'required|string',
+
+            // Validasi Telepon dulu?
+            'pkb_approval' => 'required',
+            'part_bekas_dibawa' => 'required',
         ]);
 
         DB::beginTransaction();
@@ -141,6 +146,9 @@ class ServiceAdvisorController extends Controller
                 'chassis_number'    => $request->chassis_number,
                 'customer_email'    => $request->customer_email,
                 'customer_social'   => $request->customer_social,
+                'fuel_level'        => $request->fuel_level,
+                'pkb_approval'      => $request->pkb_approval,
+                'part_bekas_dibawa' => $request->part_bekas_dibawa,
             ]);
 
             // Update status booking jadi done
@@ -163,10 +171,10 @@ class ServiceAdvisorController extends Controller
      */
     public function print($id)
     {
-        // PERBAIKAN: Ubah 'booking.service' menjadi 'booking.services'
+        // PENTING: Gunakan with('booking.services') (JAMAK) jika relasi di model Booking adalah services()
         $advisor = ServiceAdvisor::with('booking.services')->findOrFail($id);
 
-        // Decode JSON jika tersimpan sebagai string (untuk jaga-jaga)
+        // Pastikan sparepart di-decode
         if (is_string($advisor->spareparts)) {
             $advisor->spareparts = json_decode($advisor->spareparts, true);
         }
@@ -174,6 +182,6 @@ class ServiceAdvisorController extends Controller
         $pdf = FacadePdf::loadView('advisor.print', compact('advisor'))
             ->setPaper('A4', 'portrait');
 
-        return $pdf->download('invoice_service_' . $advisor->id . '.pdf');
+        return $pdf->download('service_advisor_' . $advisor->id . '.pdf');
     }
 }

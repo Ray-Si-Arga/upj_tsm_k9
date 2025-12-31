@@ -3,859 +3,545 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AHASS Service Form - Pure CSS</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Semi+Condensed:wght@400;600;700;900&display=swap"
-        rel="stylesheet">
+    <title>Invoice Service</title>
 
     <style>
-        /* =========================================
-           RESET & BASIC SETUP
-           ========================================= */
-        * {
-            box-sizing: border-box;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+        /* SETUP HALAMAN AGAR TIDAK TERPOTONG */
+        @page {
+            margin: 10mm;
+            /* Margin keliling 1cm, otomatis membuat konten di tengah */
+            size: A4 portrait;
         }
 
+        /* RESET & FONT */
         body {
-            background: #ccc;
-            font-family: 'Sofia Sans Semi Condensed', sans-serif;
+            font-family: sans-serif;
             font-size: 10px;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
 
-        /* GRID SYSTEM */
-        .row {
-            display: flex;
-            flex-wrap: wrap;
+        /* SOLUSI TANDA TANYA: GUNAKAN FONT DEJAVU SANS UNTUK SIMBOL */
+        .symbol {
+            font-family: 'DejaVu Sans', sans-serif;
+        }
+
+        /* STRUKTUR TABEL (PENGGANTI GRID/FLEXBOX) */
+        table {
             width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
         }
 
-        .g-0 {
-            margin: 0;
+        td,
+        th {
+            padding: 3px;
+            vertical-align: top;
         }
 
-        .col-1 {
-            width: 8.33%;
+        /* BORDERS & STYLING MIRIP OUTPUT_PRINT.HTML */
+        .b-all {
+            border: 1px solid black;
         }
 
-        .col-2 {
-            width: 16.66%;
+        .b-top {
+            border-top: 1px solid black;
         }
 
-        .col-3 {
-            width: 25%;
+        .b-bottom {
+            border-bottom: 1px solid black;
         }
 
-        .col-4 {
-            width: 33.33%;
+        .b-left {
+            border-left: 1px solid black;
         }
 
-        .col-5 {
-            width: 41.66%;
+        .b-right {
+            border-right: 1px solid black;
         }
 
-        .col-6 {
-            width: 50%;
+        .b-thick-top {
+            border-top: 2px solid black;
         }
 
-        .col-7 {
-            width: 58.33%;
+        .b-thick-bottom {
+            border-bottom: 2px solid black;
         }
 
-        .col-8 {
-            width: 66.66%;
+        .bg-gray {
+            background-color: #e0e0e0;
         }
 
-        .col-9 {
-            width: 75%;
-        }
-
-        .col-10 {
-            width: 83.33%;
-        }
-
-        .col-11 {
-            width: 91.66%;
-        }
-
-        .col-12 {
-            width: 100%;
-        }
-
-        /* UTILITIES */
-        .d-flex {
-            display: flex;
-        }
-
-        .flex-column {
-            flex-direction: column;
-        }
-
-        .justify-content-between {
-            justify-content: space-between;
-        }
-
-        .justify-content-center {
-            justify-content: center;
-        }
-
-        .justify-content-end {
-            justify-content: flex-end;
-        }
-
-        .align-items-center {
-            align-items: center;
-        }
-
-        .align-items-end {
-            align-items: flex-end;
-        }
-
-        .flex-grow-1 {
-            flex-grow: 1;
-        }
-
-        .m-0 {
-            margin: 0;
-        }
-
-        .mb-1 {
-            margin-bottom: 4px;
-        }
-
-        .mb-2 {
-            margin-bottom: 8px;
-        }
-
-        .mt-1 {
-            margin-top: 4px;
-        }
-
-        .mt-2 {
-            margin-top: 8px;
-        }
-
-        .mt-3 {
-            margin-top: 12px;
-        }
-
-        .ms-1 {
-            margin-left: 4px;
-        }
-
-        .ms-2 {
-            margin-left: 8px;
-        }
-
-        .ms-3 {
-            margin-left: 12px;
-        }
-
-        .me-1 {
-            margin-right: 4px;
-        }
-
-        .me-2 {
-            margin-right: 8px;
-        }
-
-        .p-1 {
-            padding: 4px;
-        }
-
-        .p-2 {
-            padding: 8px;
-        }
-
-        .px-2 {
-            padding-left: 8px;
-            padding-right: 8px;
-        }
-
-        .py-1 {
-            padding-top: 4px;
-            padding-bottom: 4px;
-        }
-
-        .pb-1 {
-            padding-bottom: 4px;
-        }
-
-        .h-100 {
-            height: 100%;
+        .fw-bold {
+            font-weight: bold;
         }
 
         .text-center {
             text-align: center;
         }
 
-        .text-end {
+        .text-right {
             text-align: right;
         }
 
-        .text-start {
-            text-align: left;
-        }
-
-        .fw-bold {
-            font-weight: 700;
-        }
-
-        .text-red {
-            color: #d60000;
-        }
-
-        .text-dark {
-            color: #000;
-        }
-
-        .bg-light {
-            background-color: #f2f2f2;
-        }
-
-        .border {
-            border: 1px solid #000;
-        }
-
-        .border-top {
-            border-top: 1px solid #000;
-        }
-
-        .border-bottom {
-            border-bottom: 1px solid #000;
-        }
-
-        .border-start {
-            border-left: 1px solid #000;
-        }
-
-        .border-end {
-            border-right: 1px solid #000;
-        }
-
-        .border-2 {
-            border-width: 2px !important;
-        }
-
-        .b-all {
-            border: 1px solid #000;
-        }
-
-        .b-right {
-            border-right: 1px solid #000;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background-color: #0d6efd;
-            color: white;
-        }
-
-        .page {
-            background: white;
-            width: 210mm;
-            min-height: 297mm;
-            padding: 10mm 15mm;
-            margin: 0 auto;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        .header-title {
-            font-size: 18px;
-            font-weight: 900;
-            text-align: center;
-            margin: 5px 0;
-            text-transform: uppercase;
-        }
-
-        .section-header {
-            background-color: #e0e0e0;
-            font-weight: bold;
-            text-align: center;
-            border-bottom: 2px solid #000;
-            font-size: 10px;
-        }
-
-        .row-compact {
-            display: flex;
-            align-items: flex-end;
-            margin-bottom: 2px;
-        }
-
-        .label-col {
-            width: 80px;
-            flex-shrink: 0;
-        }
-
-        .dotted-fill {
-            border-bottom: 1px dotted #000;
-            flex-grow: 1;
-            margin-left: 5px;
-            min-height: 12px;
-        }
-
+        /* DOTTED LINES & BOXES */
         .dotted {
             border-bottom: 1px dotted #000;
             display: inline-block;
-        }
-
-        .cb {
-            font-size: 14px;
-            line-height: 10px;
-            vertical-align: middle;
-            margin-right: 2px;
-            display: inline-block;
-        }
-
-        table.custom-table {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 9px;
+            min-height: 12px;
         }
 
-        table.custom-table th,
-        table.custom-table td {
-            border: 1px solid #000;
-            padding: 2px 4px;
+        .dotted-text {
+            border-bottom: 1px dotted #000;
+            display: inline-block;
+            min-width: 10px;
+            font-weight: bold;
         }
 
-        .custom-table tr:first-child th {
-            border-top: none;
-        }
-
-        .custom-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .custom-table th:first-child,
-        .custom-table td:first-child {
-            border-left: none;
-        }
-
-        .custom-table th:last-child,
-        .custom-table td:last-child {
-            border-right: none;
-        }
-
-        /* =========================================
-           PRINT STYLES
-           ========================================= */
-        @media print {
-
-            /* Menghilangkan header/footer default browser */
-            @page {
-                margin: 0 !important;
-                padding: 0 !important;
-                size: auto;
-                marks: none;
-            }
-
-            /* Chrome/Edge/Opera: hapus margin @page dan tambahkan margin body */
-            @page :first {
-                margin: 0 !important;
-            }
-
-            @page :left {
-                margin: 0 !important;
-            }
-
-            @page :right {
-                margin: 0 !important;
-            }
-
-            /* Reset body untuk print */
-            body {
-                background: none !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            /* Hapus elemen yang tidak perlu dicetak */
-            .no-print,
-            .no-print * {
-                display: none !important;
-                visibility: hidden !important;
-                height: 0 !important;
-                width: 0 !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-            /* Styling untuk halaman cetak */
-            .page {
-                margin: 0 !important;
-                padding: 5mm !important;
-                box-shadow: none !important;
-                width: 100% !important;
-                min-height: 100% !important;
-                border: none !important;
-                page-break-inside: avoid;
-                page-break-after: avoid;
-                page-break-before: avoid;
-            }
-
-            /* Pastikan semua border dan warna tercetak */
-            * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            /* Optimalkan teks untuk cetak */
-            .page * {
-                text-shadow: none !important;
-                color: #000 !important;
-            }
-
-            /* Hilangkan tautan URL pada link */
-            a {
-                text-decoration: none !important;
-                color: #000 !important;
-            }
-
-            /* Print button styling */
-            .print-btn-container {
-                display: none !important;
-            }
-
-            /* Pastikan tabel tidak terpotong di halaman */
-            table {
-                page-break-inside: auto !important;
-            }
-
-            tr {
-                page-break-inside: avoid !important;
-                page-break-after: auto !important;
-            }
-
-            /* Pastikan tidak ada elemen floating saat print */
-            .d-flex {
-                display: flex !important;
-            }
-        }
-
-        /* Styling untuk tombol print di luar mode print */
-        .print-btn-container {
-            position: fixed;
-            bottom: 20px;
-            left: 0;
-            right: 0;
+        /* CHECKBOX STYLE */
+        .box {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 1px solid black;
             text-align: center;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px;
-            border-top: 1px solid #ccc;
+            line-height: 10px;
+            font-size: 10px;
+            /* Ukuran centang */
+            margin-right: 2px;
+        }
+
+        h2 {
+            margin: 5px 0;
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* MEMAKSA TABEL AGAR TIDAK MELEBAR */
+        .layout-table {
+            table-layout: fixed;
+            width: 100%;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="page">
-        <div style="border: 2px solid #000;">
+    {{-- LOGIKA PHP --}}
+    @php
+        $services = $advisor->booking->services ?? collect();
+        $findPrice = function ($keywords) use ($services) {
+            foreach ($services as $s) {
+                foreach ((array) $keywords as $k) {
+                    if (stripos($s->name, $k) !== false) {
+                        return $s->price;
+                    }
+                }
+            }
+            return null;
+        };
 
-            <!-- HEADER -->
-            <div class="d-flex align-items-center justify-content-between mb-1"
-                style="border-bottom: 2px solid #000; padding: 5px 15px;">
-                <div>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Honda_Logo.svg/960px-Honda_Logo.svg.png"
-                        alt="Honda Logo" style="height: 60px;">
+        // Mapping Harga
+        $p_kpb = $findPrice(['KPB']);
+        $p_servis = $findPrice(['Lengkap', 'Ringan', 'Servis']);
+        $p_oli = $findPrice(['Oli', 'MPX', 'SPX']);
+        $p_part = $findPrice(['Part', 'Pasang', 'Ganti']);
+        $p_mesin = $findPrice(['Turun', 'Mesin']);
+        $p_lain = null;
+        $name_lain = '';
+
+        foreach ($services as $s) {
+            $n = $s->name;
+            if (
+                stripos($n, 'KPB') === false &&
+                stripos($n, 'Servis') === false &&
+                stripos($n, 'Lengkap') === false &&
+                stripos($n, 'Ringan') === false &&
+                stripos($n, 'Oli') === false &&
+                stripos($n, 'Part') === false &&
+                stripos($n, 'Pasang') === false &&
+                stripos($n, 'Turun') === false
+            ) {
+                $p_lain = $s->price;
+                $name_lain = $s->name;
+                break;
+            }
+        }
+
+        $parts = is_string($advisor->spareparts) ? json_decode($advisor->spareparts, true) : $advisor->spareparts;
+        $parts = collect($parts);
+        $hasPart = function ($name) use ($parts) {
+            foreach ($parts as $p) {
+                if (stripos($p['name'], $name) !== false) {
+                    return '✓';
+                }
+            } // Centang
+            return '';
+        };
+    @endphp
+
+    {{-- HEADER --}}
+    <table style="margin-bottom: 5px;">
+        <tr class="b-thick-bottom">
+            <td width="15%"><img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Honda_Logo.svg/960px-Honda_Logo.svg.png"
+                    height="50"></td>
+            <td width="70%" class="text-center">
+                <div style="font-size: 16px; font-weight: 900;">AHASS 00126 - CV. SINAR BARU</div>
+                <div>Jl. Stadion No. 132 Pamekasan Telp. (0324) 321119</div>
+                <div class="fw-bold">BOOKING SERVICE : 087701704, 08780330487</div>
+            </td>
+            <td width="15%" class="text-right"><img
+                    src="https://astramotorpurwokerto.wordpress.com/wp-content/uploads/2020/08/ahass-logo2-1.png"
+                    height="45"></td>
+        </tr>
+    </table>
+
+    <h2 class="text-center">FORM SERVICE ADVISOR</h2>
+
+    {{-- SECTION 1: DATA PELANGGAN --}}
+    <table class="b-thick-top b-thick-bottom layout-table">
+        <tr>
+            <td width="34%" class="b-right">
+                <div class="fw-bold mb-1">Data Motor</div>
+                <table width="100%">
+                    <tr>
+                        <td width="60">No. Urut</td>
+                        <td>: <span class="dotted-text">{{ $advisor->booking->queue_number }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>Tgl Servis</td>
+                        <td>: <span class="dotted-text">{{ $advisor->created_at->format('d-m-Y') }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>No. Mesin</td>
+                        <td>: <span class="dotted-text">{{ $advisor->engine_number }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>No. Rangka</td>
+                        <td>: <span class="dotted-text">{{ $advisor->chassis_number }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>No. Polisi</td>
+                        <td>: <span class="dotted-text">{{ strtoupper($advisor->booking->plate_number) }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>Type</td>
+                        <td>: <span class="dotted-text">{{ $advisor->booking->vehicle_type }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>Tahun</td>
+                        <td>: <span class="dotted-text">{{ $advisor->vehicle_year }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>KM</td>
+                        <td>: <span
+                                class="dotted-text">{{ number_format((float) $advisor->odometer, 0, ',', '.') }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>: <span class="dotted-text">{{ Str::limit($advisor->customer_email, 18) }}</span></td>
+                    </tr>
+                </table>
+            </td>
+            <td width="33%" class="b-right">
+                <div class="fw-bold mb-1">Data Pembawa</div>
+                <table width="100%">
+                    <tr>
+                        <td width="50">Nama</td>
+                        <td>: <span class="dotted-text">{{ $advisor->carrier_name }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>Alamat</td>
+                        <td>: <span class="dotted-text">{{ Str::limit($advisor->carrier_address, 20) }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>Kel/Kec</td>
+                        <td>: <span class="dotted-text">{{ $advisor->carrier_area }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>No. HP</td>
+                        <td>: <span class="dotted-text">{{ $advisor->carrier_phone }}</span></td>
+                    </tr>
+                </table>
+                <div style="border-top: 1px solid black; margin: 5px 0;"></div>
+                <div class="fw-bold mb-1">Data Pemilik</div>
+                <table width="100%">
+                    <tr>
+                        <td width="50">Nama</td>
+                        <td>: <span class="dotted-text">{{ $advisor->owner_name }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>Alamat</td>
+                        <td>: <span class="dotted-text">{{ Str::limit($advisor->owner_address, 20) }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>No. HP</td>
+                        <td>: <span class="dotted-text">{{ $advisor->owner_phone }}</span></td>
+                    </tr>
+                </table>
+            </td>
+            <td width="33%">
+                <div style="margin-bottom: 5px;">
+                    Dari Dealer Sendiri:
+                    <span class="box symbol">{{ $advisor->is_own_dealer ? '✓' : '' }}</span> Ya
+                    <span class="box symbol">{{ !$advisor->is_own_dealer ? '✓' : '' }}</span> Tidak
                 </div>
-                <div style="width: 60%; text-align: center;">
-                    <div style="font-size: 16px; font-weight: 900;">AHASS 00126 - CV. SINAR BARU</div>
-                    <div>Jl. Stadion No. 132 Pamekasan Telp. (0324) 321119</div>
-                    <div class="fw-bold">BOOKING SERVICE : 087701704, 08780330487</div>
-                </div>
-                <div>
-                    <img src="https://astramotorpurwokerto.wordpress.com/wp-content/uploads/2020/08/ahass-logo2-1.png"
-                        alt="AHASS Logo" style="height: 50px;">
-                </div>
-            </div>
+                <div style="margin-bottom: 5px;">Hubungan: <span
+                        class="dotted-text">{{ $advisor->relationship }}</span></div>
+                <div class="fw-bold">Alasan ke AHASS:</div>
+                <table width="100%">
+                    <tr>
+                        <td>a. Inisiatif Sendiri</td>
+                        <td class="text-right"><span
+                                class="box symbol">{{ $advisor->visit_reason == 'Inisiatif Sendiri' ? '✓' : '' }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>b. SMS Reminder</td>
+                        <td class="text-right"><span
+                                class="box symbol">{{ $advisor->visit_reason == 'SMS Reminder' ? '✓' : '' }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>c. Telp Reminder</td>
+                        <td class="text-right"><span
+                                class="box symbol">{{ $advisor->visit_reason == 'Telp Reminder' ? '✓' : '' }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>d. Lainnya</td>
+                        <td class="text-right"><span
+                                class="box symbol">{{ $advisor->visit_reason == 'Lainnya' ? '✓' : '' }}</span></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
-            <h2 class="header-title">FORM SERVICE ADVISOR</h2>
-
-            <!-- SECTION: DATA PELANGGAN -->
-            <div class="row g-0" style="border-top: 2px solid #000;">
-                <div class="col-4 p-1">
-                    <div class="fw-bold mb-1">Data Motor</div>
-                    <div class="row-compact"><span class="label-col">No. Urut</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col">Tanggal Servis</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col">No. Mesin</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col">No. Rangka</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col">No. Polisi</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col">Type</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col">Tahun</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col">KM</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col">* Email</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col">* Sosmed</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                </div>
-
-                <div class="col-4 p-1">
-                    <div class="fw-bold mb-1">Data Pembawa</div>
-                    <div class="row-compact"><span class="label-col" style="width:60px">Nama</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col" style="width:60px">Alamat</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col" style="width:60px">Kel/Kec</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col" style="width:60px">No. HP</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-
-                    <div class="my-2 border-top" style="margin: 8px 0;"></div>
-
-                    <div class="fw-bold mb-1">Data Pemilik</div>
-                    <div class="row-compact"><span class="label-col" style="width:60px">Nama</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col" style="width:60px">Alamat</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col" style="width:60px">Kel/Kec</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                    <div class="row-compact"><span class="label-col" style="width:60px">No. HP</span><span>:</span>
-                        <div class="dotted-fill"></div>
-                    </div>
-                </div>
-
-                <div class="col-4 p-1">
-                    <div class="d-flex align-items-center mb-1">
-                        <span class="me-2">Dari Dealer Sendiri</span>
-                        <span class="me-1">:</span>
-                        <span class="cb">&#9744;</span> Ya
-                        <span class="cb ms-2">&#9744;</span> Tidak
-                    </div>
-                    <div class="mb-2">
-                        <div class="d-flex row-compact">
-                            <span>Hubungan Pembawa & Pemilik :</span>
-                            <div class="dotted-fill"></div>
-                        </div>
-                    </div>
-
-                    <div class="fw-bold">Alasan ke AHASS</div>
-                    <div><span class="fw-bold">a.</span> Inisiatif Sendiri</div>
-                    <div><span class="fw-bold">b.</span> SMS Reminder</div>
-                    <div><span class="fw-bold">c.</span> Telp Reminder</div>
-                    <div><span class="fw-bold">d.</span> Sticker Reminder</div>
-                    <div class="row-compact">
-                        <span class="fw-bold me-1">e.</span> Lainnya <div class="dotted-fill"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION UTAMA (PEMBAGIAN BARU) -->
-            <div class="row g-0" style="border-top: 2px solid #000;">
-
-                <!-- GABUNGAN KOLOM KIRI & TENGAH (TOTAL LEBAR 8/12) -->
-                <div class="col-8 border-end border-2">
-
-                    <!-- Bagian Atas: Split antara Kondisi Awal dan Pekerjaan -->
-                    <div class="d-flex">
-                        <!-- Kondisi Awal (37.5% dari pembungkus = setara col-3 asli) -->
-                        <div style="width: 37.5%;" class="border-end border-2">
-                            <div class="section-header py-1">Kondisi Awal SMH</div>
-                            <div class="p-2 text-center">
-                                <div class="mb-2">
-                                    <img src="https://github.com/ubaid777/Gambar/blob/main/Bengkel/Group%201.png?raw=true"
-                                        alt="Fuel Icon" style="height: 80px;">
+    {{-- SECTION 2: UTAMA --}}
+    <table class="layout-table" style="margin-top: 2px;">
+        <tr>
+            <td width="66%" style="padding:0; vertical-align: top;" class="b-left b-bottom">
+                <table width="100%">
+                    <tr>
+                        <td width="35%" class="b-right"
+                            style="text-align: center; vertical-align: top; padding: 5px;">
+                            <div class="fw-bold bg-gray b-bottom" style="padding: 3px;">Kondisi Awal SMH</div>
+                            <div
+                                style="margin: 15px auto; width: 60px; height: 60px; border: 2px solid #555; border-radius: 50%; position: relative;">
+                                <div
+                                    style="position: absolute; bottom: 8px; left: 15px; font-weight: bold; font-size: 8px;">
+                                    E</div>
+                                <div
+                                    style="position: absolute; bottom: 8px; right: 15px; font-weight: bold; font-size: 8px;">
+                                    F</div>
+                                <div style="position: absolute; top: 15px; left: 0; right: 0; text-align: center; font-size: 16px;"
+                                    class="symbol">⛽</div>
+                                <div
+                                    style="position: absolute; bottom: 18px; left: 0; right: 0; text-align: center; font-weight: bold;">
+                                    {{ $advisor->fuel_level }}%
                                 </div>
-                                <div class="text-start fw-bold mt-3">Catatan Lain :</div>
-                                <div style="height: 120px; width: 100%;"></div>
                             </div>
-                        </div>
+                            <div class="text-left fw-bold" style="margin-top: 5px;">Catatan SA:</div>
+                            <div style="text-align: left; font-style: italic; font-size: 9px;">
+                                {{ $advisor->advisor_notes }}
+                            </div>
+                        </td>
 
-                        <!-- Pekerjaan & Suku Cadang (62.5% dari pembungkus = setara col-5 asli) -->
-                        <div style="width: 62.5%;">
-                            <!-- Header Pekerjaan -->
-                            <div class="row g-0 border-bottom border-dark border-2 text-center fw-bold bg-light">
-                                <div class="col-7 border-end border-dark py-1 border-2">Pekerjaan</div>
-                                <div class="col-5 py-1">Estimasi Biaya</div>
-                            </div>
-
-                            <!-- List Pekerjaan -->
-                            <div class="row g-0">
-                                <div class="col-7 border-end border-dark border-2 p-1">1. KPB 1 / 2 / 3 / 4</div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-                            <div class="row g-0">
-                                <div class="col-7 border-end border-dark border-2 p-1">2. Servis Lengkap / Ringan</div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-                            <div class="row g-0">
-                                <div class="col-7 border-end border-dark border-2 p-1">3. Ganti Oli MPX/SPX</div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-                            <div class="row g-0">
-                                <div class="col-7 border-end border-dark border-2 p-1">4. Ganti Part</div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-                            <div class="row g-0">
-                                <div class="col-7 border-end border-dark border-2 p-1">5. Turun Mesin</div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-                            <div class="row g-0 border-bottom border-dark border-2">
-                                <div class="col-7 border-end border-dark border-2 p-1 d-flex">6. <span
-                                        class="dotted-fill"></span></div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-
-                            <!-- Header Suku Cadang -->
-                            <div class="row g-0 border-bottom border-dark text-center fw-bold bg-light border-2">
-                                <div class="col-7 border-end border-dark py-1 border-2">Suku Cadang</div>
-                                <div class="col-5 py-1">Estimasi Harga</div>
-                            </div>
-
-                            <!-- List Suku Cadang -->
-                            <div class="row g-0">
-                                <div class="col-7 border-end border-dark p-1 d-flex border-2">1. <span
-                                        class="dotted-fill"></span></div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-                            <div class="row g-0">
-                                <div class="col-7 border-end border-dark p-1 d-flex border-2">2. <span
-                                        class="dotted-fill"></span></div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-                            <div class="row g-0">
-                                <div class="col-7 border-end border-dark p-1 d-flex border-2">3. <span
-                                        class="dotted-fill"></span></div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-                            <div class="row g-0">
-                                <div class="col-7 border-end border-dark p-1 d-flex border-2">4. <span
-                                        class="dotted-fill"></span></div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-                            <div class="row g-0 border-bottom border-dark border-2">
-                                <div class="col-7 border-end border-dark p-1 d-flex border-2">5. <span
-                                        class="dotted-fill"></span></div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-
-                            <!-- Total Harga -->
-                            <div class="row g-0 fw-bold">
-                                <div class="col-7 border-end border-dark p-1 text-start border-2">Total Harga</div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- KELUHAN & ANALISA (Sekarang Full Width di dalam col-8) -->
-                    <!-- Diberi border-top-2 agar terpisah tegas dari bagian atasnya -->
-                    <div class="section-header text-start px-2 border-top border-2">Keluhan Konsumen</div>
-                    <div style="height: 35px; border-bottom: 2px solid #000;"></div>
-
-                    <div class="section-header text-start px-2">Analisa Service Advisor</div>
-                    <div style="height: 40px;"></div>
-
-                </div>
-                <!-- END GABUNGAN KOLOM KIRI & TENGAH -->
-
-                <!-- KOLOM KANAN (SPAREPART) -->
-                <div class="col-4">
-                    <div class="section-header py-1">Saran Ganti Sparepart</div>
-                    {{-- TABEL PEKERJAAN --}}
-                    <table class="table-work mt-2">
-                        <thead>
-                            <tr>
-                                <th style="width: 5%;">No</th>
-                                <th style="width: 55%;">Uraian Pekerjaan / Keluhan Konsumen</th>
-                                <th style="width: 20%;">Pekerjaan</th>
-                                <th style="width: 20%;">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{-- Baris 1: Tampilkan Layanan Utama --}}
-                            <tr>
-                                <td class="text-center">1</td>
-                                <td class="fw-bold">{{ $booking->service->name }}</td>
-                                <td class="text-center"><span class="chk"></span> Periksa</td>
-                                <td class="text-center"><span class="chk"></span> OK</td>
-                            </tr>
-
-                            {{-- BARIS 2: TAMPILKAN KELUHAN (JIKA ADA) --}}
-                            @if ($booking->complaint)
-                                <tr>
-                                    <td class="text-center">2</td>
-                                    <td style="font-style: italic;">"{{ $booking->complaint }}"</td>
-                                    <td class="text-center"><span class="chk"></span> Cek</td>
-                                    <td class="text-center"></td>
+                        <td width="65%" style="padding: 0; vertical-align: top;">
+                            <table width="100%" class="b-bottom b-right">
+                                <tr class="bg-gray fw-bold text-center">
+                                    <td class="b-right b-bottom">Pekerjaan</td>
+                                    <td class="b-bottom">Biaya (Rp)</td>
                                 </tr>
-                            @else
-                                {{-- Jika tidak ada keluhan, tampilkan baris kosong biasa --}}
                                 <tr>
-                                    <td class="text-center">2</td>
-                                    <td></td>
-                                    <td class="text-center"><span class="chk"></span> Ganti</td>
-                                    <td class="text-center"><span class="chk"></span> Ganti</td>
+                                    <td class="b-right">1. KPB 1 / 2 / 3 / 4</td>
+                                    <td class="text-right">{{ $p_kpb ? number_format($p_kpb) : '' }}</td>
                                 </tr>
-                            @endif
-
-                            {{-- Sisa Baris (3-6) --}}
-                            @for ($i = 3; $i <= 6; $i++)
                                 <tr>
-                                    <td class="text-center">{{ $i }}</td>
-                                    <td></td>
-                                    <td class="text-center"><span class="chk"></span> Ganti</td>
-                                    <td class="text-center"><span class="chk"></span> Ganti</td>
+                                    <td class="b-right">2. Servis Lengkap / Ringan</td>
+                                    <td class="text-right">{{ $p_servis ? number_format($p_servis) : '' }}</td>
                                 </tr>
-                            @endfor
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                                <tr>
+                                    <td class="b-right">3. Ganti Oli MPX/SPX</td>
+                                    <td class="text-right">{{ $p_oli ? number_format($p_oli) : '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="b-right">4. Ganti Part</td>
+                                    <td class="text-right">{{ $p_part ? number_format($p_part) : '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="b-right">5. Turun Mesin</td>
+                                    <td class="text-right">{{ $p_mesin ? number_format($p_mesin) : '' }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="b-right">6. Lainnya: {{ Str::limit($name_lain, 15) }}</td>
+                                    <td class="text-right">{{ $p_lain ? number_format($p_lain) : '' }}</td>
+                                </tr>
 
-            <!-- Bagian Footer (Tetap) -->
-        </div>
+                                <tr class="bg-gray fw-bold text-center">
+                                    <td class="b-right b-bottom b-top">Suku Cadang</td>
+                                    <td class="b-bottom b-top">Harga (Rp)</td>
+                                </tr>
+                                @for ($i = 0; $i < 5; $i++)
+                                    <tr>
+                                        <td class="b-right" style="border-bottom: 1px dotted #ccc;">
+                                            {{ $i + 1 }}.
+                                            {{ isset($parts[$i]) ? $parts[$i]['name'] . ' (' . $parts[$i]['qty'] . ')' : '' }}
+                                        </td>
+                                        <td class="text-right" style="border-bottom: 1px dotted #ccc;">
+                                            {{ isset($parts[$i]) ? number_format($parts[$i]['subtotal']) : '' }}
+                                        </td>
+                                    </tr>
+                                @endfor
+                                <tr class="fw-bold bg-gray b-top">
+                                    <td class="b-right">Total Harga</td>
+                                    <td class="text-right">
+                                        {{ number_format($advisor->total_estimation, 0, ',', '.') }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
 
-        <div class="mt-1" style="font-size: 9px;">
-            <div>*Apabila ada tambahan <strong>PEKERJAAN / PERGANTIAN PART</strong> di luar daftar diatas maka :</div>
-            <div class="d-flex align-items-center mt-1">
-                <span class="cb">&#9744;</span> Konfirmasi dulu / telp ke <span class="dotted"
-                    style="width: 100px; margin: 0 10px;"></span>
-                <span class="cb ms-3">&#9744;</span> Langsung dikerjakan
-            </div>
-            <div class="mt-1">
-                Part Bekas dibawa Konsumen : <span class="cb ms-2">&#9744;</span> Ya <span
-                    class="cb ms-2">&#9744;</span> Tidak
-            </div>
-        </div>
+                    <tr>
+                        <td colspan="2" class="b-top b-right" style="padding: 0;">
+                            <div class="bg-gray fw-bold" style="padding: 3px; border-bottom: 1px solid black;">Keluhan
+                                Konsumen</div>
+                            <div style="padding: 5px; height: 35px; font-style: italic;">
+                                "{{ $advisor->customer_complaint }}"
+                            </div>
+                            <div class="bg-gray fw-bold"
+                                style="padding: 3px; border-top: 1px solid black; border-bottom: 1px solid black;">
+                                Analisa Service Advisor</div>
+                            <div style="height: 40px;"></div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
 
-        <!-- Perbaikan Bagian Footer Tanda Tangan -->
-        <div class="row g-0 border border-dark mt-2 text-center" style="height: 80px;">
+            <td width="34%" style="padding: 0; vertical-align: top;" class="b-right b-bottom b-top">
+                <div class="fw-bold text-center bg-gray" style="padding: 5px; border-bottom: 1px solid black;">Saran
+                    Ganti Sparepart</div>
+                <table width="100%">
+                    <tr class="bg-gray fw-bold text-center">
+                        <td class="b-right b-bottom">KM</td>
+                        <td class="b-right b-bottom">Part</td>
+                        <td class="b-bottom">Cek</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center b-right">8.000</td>
+                        <td class="b-right">Busi</td>
+                        <td class="text-center symbol box">{{ $hasPart('Busi') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center b-right">8.000</td>
+                        <td class="b-right">Oli Gear</td>
+                        <td class="text-center symbol box">{{ $hasPart('Oli') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center b-right">24.000</td>
+                        <td class="b-right">Ban Dpn</td>
+                        <td class="text-center symbol box">{{ $hasPart('Ban Depan') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center b-right">24.000</td>
+                        <td class="b-right">Ban Blkg</td>
+                        <td class="text-center symbol box">{{ $hasPart('Ban Belakang') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center b-right">24.000</td>
+                        <td class="b-right">Rantai/Belt</td>
+                        <td class="text-center symbol box">{{ $hasPart('Rantai') ?: $hasPart('Belt') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center b-right">12.000</td>
+                        <td class="b-right">Coolant</td>
+                        <td class="text-center symbol box">{{ $hasPart('Coolant') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center b-right">24.000</td>
+                        <td class="b-right">Kampas</td>
+                        <td class="text-center symbol box">{{ $hasPart('Kampas') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center b-right">16.000</td>
+                        <td class="b-right">Filter Udara</td>
+                        <td class="text-center symbol box">{{ $hasPart('Filter') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center b-right">24.000</td>
+                        <td class="b-right">Aki</td>
+                        <td class="text-center symbol box">{{ $hasPart('Aki') }}</td>
+                    </tr>
 
-            <!-- KOLOM 1: Persetujuan -->
-            <div class="col-4 border-end border-dark d-flex flex-column">
-                <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">Persetujuan Pekerjaan +
-                    Biaya + Waktu</div>
-                <!-- Gunakan flex-grow-1 agar mengisi sisa ruang, bukan h-100 -->
-                <div class="row g-0 flex-grow-1">
-                    <div class="col-6 border-end border-dark h-100 d-flex flex-column justify-content-end pb-1">
-                        <span style="font-size: 8px;">Konsumen Ttd</span>
-                    </div>
-                    <div class="col-6 h-100 d-flex flex-column justify-content-end pb-1">
-                        <span style="font-size: 8px;">Service Advisor Ttd</span>
-                    </div>
-                </div>
-            </div>
+                    <tr class="bg-gray">
+                        <td colspan="3" class="fw-bold text-center b-top b-bottom">Paket Tambahan</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center b-right">8.000</td>
+                        <td class="b-right">CVT Clean</td>
+                        <td class="text-center symbol box">{{ $findPrice(['CVT']) ? '✓' : '' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center b-right">10.000</td>
+                        <td class="b-right">Kuras Tangki</td>
+                        <td class="text-center symbol box">{{ $findPrice(['Tangki']) ? '✓' : '' }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
-            <!-- KOLOM 2: Tambahan Pekerjaan -->
-            <div class="col-2 border-end border-dark d-flex flex-column">
-                <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">Tambahan Pekerjaan</div>
-                <!-- Gunakan flex-grow-1 -->
-                <div class="flex-grow-1 d-flex flex-column justify-content-end pb-1">
-                    <span style="font-size: 8px;">Konsumen Ttd</span>
-                </div>
-            </div>
-
-            <!-- KOLOM 3: OK / Paraf -->
-            <div class="col-2 border-end border-dark d-flex flex-column">
-                <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">OK</div>
-                <!-- Gunakan flex-grow-1 -->
-                <div class="flex-grow-1 d-flex flex-column justify-content-end pb-1">
-                    <span style="font-size: 8px;">Paraf Final Ins</span>
-                </div>
-            </div>
-
-            <!-- KOLOM 4: Penyerahan Motor -->
-            <div class="col-4 d-flex flex-column">
-                <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">Penyerahan Motor Oleh SA
-                </div>
-                <!-- Gunakan flex-grow-1 -->
-                <div class="row g-0 flex-grow-1">
-                    <div class="col-4 border-end border-dark h-100 d-flex align-items-center justify-content-center">
-                        <h2 class="m-0">OK</h2>
-                    </div>
-                    <div class="col-8 h-100 d-flex flex-column justify-content-end pb-1">
-                        <span style="font-size: 8px;">Konsumen Ttd</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-0 b-all mt-1">
-            <div class="col-8 b-right">
-                <div class="section-header" style="border-bottom: solid 1px #000;">Saran Mekanik</div>
-                <div class="d-flex" style="height: 50px;">
-                    <div class="flex-grow-1 border-end border-dark p-1"></div>
-                    <div class="d-flex align-items-end p-1" style="width: 150px; font-size: 9px;">
-                        Nama Mekanik : <div class="dotted-fill"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="section-header" style="border-bottom: solid 1px #000;">Estimasi Waktu</div>
-                <div class="p-1">
-                    <div class="d-flex row-compact"><span style="width: 60px;">Pendaftaran</span> : <div
-                            class="dotted-fill"></div>
-                    </div>
-                    <div class="d-flex row-compact"><span style="width: 60px;">Dikerjakan</span> : <div
-                            class="dotted-fill"></div>
-                    </div>
-                    <div class="d-flex row-compact"><span style="width: 60px;">Selesai</span> : <div
-                            class="dotted-fill"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-2 align-items-end">
-            <div class="col-8" style="font-size: 9px;">
-                <strong>Garansi :</strong><br>
-                - 500 Km / 1 minggu untuk Servis Reguler<br>
-                - 1.000 Km / 1 Bulan untuk Bongkar Mesin Reguler<br>
-                - 1.000 Km / 1 Bulan untuk Servis CBR 250 dan PCX 150<br>
-                <br>
-            </div>
-        </div>
-
+    {{-- FOOTER INFO --}}
+    <div style="font-size: 9px; margin-top: 5px; margin-bottom: 5px;">
+        *Apabila ada tambahan PEKERJAAN di luar daftar:
+        <span class="box symbol">{{ $advisor->pkb_approval == 'hubungi' ? '✓' : '' }}</span> Telp Dulu
+        <span class="box symbol">{{ $advisor->pkb_approval == 'langsung' ? '✓' : '' }}</span> Langsung Kerja.
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        Part Bekas:
+        <span class="box symbol">{{ $advisor->part_bekas_dibawa == 1 ? '✓' : '' }}</span> Dibawa
+        <span class="box symbol">{{ $advisor->part_bekas_dibawa == 0 ? '✓' : '' }}</span> Ditinggal.
     </div>
 
-    <div class="print-btn-container no-print">
-        <button onclick="window.print()" class="btn btn-primary">Print Preview</button>
-        <div style="font-size: 12px; margin-top: 10px; color: #666;">
-            Tips: Untuk hasil terbaik, di pengaturan print browser, matikan "Header/Footer"
-        </div>
+    {{-- TANDA TANGAN --}}
+    <table class="b-all text-center">
+        <tr class="bg-gray fw-bold">
+            <td width="35%" class="b-right b-bottom">Persetujuan Konsumen</td>
+            <td width="25%" class="b-right b-bottom">Saran Mekanik</td>
+            <td width="40%" class="b-bottom">Penyerahan Motor</td>
+        </tr>
+        <tr>
+            <td class="b-right" height="60" style="vertical-align: bottom;">
+                <table width="100%">
+                    <tr>
+                        <td width="50%" style="border-right: 1px dotted black;">(
+                            {{ Str::limit($advisor->carrier_name, 10) }} )</td>
+                        <td width="50%">( SA )</td>
+                    </tr>
+                </table>
+            </td>
+            <td class="b-right text-left" style="vertical-align: top; padding: 5px;">
+                Mekanik:<br>
+                <b>{{ $advisor->nama_mekanik }}</b>
+            </td>
+            <td style="vertical-align: bottom;">
+                <table width="100%">
+                    <tr>
+                        <td width="30%" style="font-size: 24px; font-weight: 900;">OK</td>
+                        <td width="70%" style="border-left: 1px dotted black;">( Konsumen )</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div style="font-size: 8px; margin-top: 5px;">
+        Garansi: 500km/1 Minggu (Servis Reguler). 1000km/1 Bulan (Bongkar Mesin).
     </div>
 
 </body>
