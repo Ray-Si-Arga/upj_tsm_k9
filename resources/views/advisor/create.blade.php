@@ -61,7 +61,6 @@
             box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
         }
 
-        /* Styling Input Readonly */
         .input-readonly {
             background-color: #eef2f7 !important;
             color: #495057;
@@ -93,6 +92,32 @@
             background-color: #0b5ed7;
             transform: translateY(-2px);
         }
+
+        /* RESPONSIF KHUSUS */
+        @media (max-width: 768px) {
+            .form-header-title {
+                font-size: 1rem;
+                padding: 12px 15px;
+            }
+
+            .form-card {
+                margin-bottom: 15px;
+            }
+
+            /* Garis putus-putus di tengah dihilangkan saat mobile agar rapi */
+            .border-end-md {
+                border-right: none !important;
+                border-bottom: 1px dashed #dee2e6;
+                padding-bottom: 20px;
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .border-end-md {
+                border-right: 1px dashed #dee2e6;
+            }
+        }
     </style>
 
     <main class="py-4">
@@ -101,11 +126,11 @@
             {{-- HEADER HALAMAN --}}
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <div>
-                    <h4 class="fw-bold text-dark mb-1">Service Advisor Dashboard</h4>
-                    <p class="text-muted small mb-0">Formulir penerimaan unit dan pengecekan kendaraan.</p>
+                    <h4 class="fw-bold text-dark mb-1">Service Advisor</h4>
+                    <p class="text-muted small mb-0 d-none d-md-block">Formulir penerimaan unit dan pengecekan kendaraan.</p>
                 </div>
                 <div class="text-end text-muted small">
-                    <i class="far fa-calendar-alt me-1"></i> {{ date('d F Y') }}
+                    <i class="far fa-calendar-alt me-1"></i> {{ date('d M Y') }}
                 </div>
             </div>
 
@@ -120,12 +145,12 @@
 
                 {{-- PILIH BOOKING --}}
                 <div class="booking-selector-area">
-                    <label class="form-label fw-bold text-primary mb-2">Pilih Antrian / Booking Pelanggan</label>
+                    <label class="form-label fw-bold text-primary mb-2">Pilih Antrian / Booking</label>
                     <select name="booking_id" id="bookingSelect" class="form-select form-select-lg" required
                         onchange="handleBookingChange()">
                         <option value="" data-complaint="" data-queue="" data-date="" data-plate="" data-type=""
                             data-name="" data-phone="">
-                            -- Pilih Customer dari Antrian --
+                            -- Pilih Customer --
                         </option>
                         @foreach ($bookings as $data)
                             <option value="{{ $data->id }}" data-complaint="{{ $data->complaint }}"
@@ -133,8 +158,8 @@
                                 data-date="{{ \Carbon\Carbon::parse($data->booking_date)->format('d M Y') }}"
                                 data-plate="{{ strtoupper($data->plate_number) }}" data-type="{{ $data->vehicle_type }}"
                                 data-name="{{ $data->customer_name }}" data-phone="{{ $data->customer_whatsapp }}"
-                                {{-- [BARU] Data Service untuk Tabel --}} data-services="{{ json_encode($data->services) }}">
-                                No. {{ $data->queue_number }} - {{ $data->customer_name }} ({{ $data->vehicle_type }})
+                                data-services="{{ json_encode($data->services) }}">
+                                No. {{ $data->queue_number }} - {{ $data->customer_name }}
                             </option>
                         @endforeach
                     </select>
@@ -144,10 +169,8 @@
                         <div class="d-flex">
                             <i class="fas fa-comment-dots text-warning mt-1 me-3 fs-5"></i>
                             <div>
-                                <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem;">Keluhan
-                                    Konsumen</small>
-                                <p class="mb-0 text-dark fw-bold fst-italic" id="complaintText">Silakan pilih pelanggan
-                                    terlebih dahulu.</p>
+                                <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem;">Keluhan</small>
+                                <p class="mb-0 text-dark fw-bold fst-italic" id="complaintText">Silakan pilih pelanggan.</p>
                             </div>
                         </div>
                     </div>
@@ -156,38 +179,39 @@
                 {{-- CARD 1: DATA PELANGGAN --}}
                 <div class="form-card">
                     <div class="form-header-title">
-                        <i class="fas fa-user-friends me-2"></i> Data Pelanggan (Pembawa & Pemilik)
+                        <i class="fas fa-user-friends me-2"></i> Data Pelanggan
                     </div>
                     <div class="card-body p-4">
-                        <div class="row g-5">
+                        <div class="row g-4">
                             {{-- KIRI: Pembawa --}}
-                            <div class="col-md-6" style="border-right: 1px dashed #dee2e6;">
+                            {{-- Class col-12 col-md-6 artinya: HP full width, Laptop setengah --}}
+                            <div class="col-12 col-md-6 border-end-md">
                                 <div class="section-label text-primary">Data Pembawa (Saat Ini)</div>
 
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label-custom">Nama Pembawa</label>
                                         <input type="text" name="carrier_name" id="carrier_name" class="form-control"
-                                            required placeholder="Nama orang yang datang...">
+                                            required placeholder="Nama...">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-6">
                                         <label class="form-label-custom">No. HP</label>
                                         <input type="text" name="carrier_phone" id="carrier_phone" class="form-control"
                                             required placeholder="08xxx">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-6">
                                         <label class="form-label-custom">Hubungan</label>
                                         <select name="relationship" class="form-select">
-                                            <option value="Pemilik Sendiri">Pemilik Sendiri</option>
+                                            <option value="Pemilik Sendiri">Pemilik</option>
                                             <option value="Keluarga">Keluarga</option>
                                             <option value="Karyawan">Karyawan</option>
                                             <option value="Lainnya">Lainnya</option>
                                         </select>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label-custom">Alamat Domisili</label>
+                                        <label class="form-label-custom">Alamat</label>
                                         <input type="text" name="carrier_address" id="carrier_address"
-                                            class="form-control" placeholder="Alamat saat ini">
+                                            class="form-control" placeholder="Domisili">
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label-custom">Kel/Kec</label>
@@ -197,14 +221,13 @@
                             </div>
 
                             {{-- KANAN: Pemilik --}}
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-6">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div class="section-label text-success mb-0">Data Pemilik</div>
+                                    <div class="section-label text-success mb-0">Data Pemilik (STNK)</div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="copyDataCheck"
                                             onchange="copyCarrierToOwner()">
-                                        <label class="form-check-label small" for="copyDataCheck">Sama dengan
-                                            Pembawa</label>
+                                        <label class="form-check-label small" for="copyDataCheck">Sama Dengan Pembawa</label>
                                     </div>
                                 </div>
 
@@ -214,13 +237,13 @@
                                         <input type="text" name="owner_name" id="owner_name" class="form-control"
                                             required>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-6">
                                         <label class="form-label-custom">No. HP</label>
                                         <input type="text" name="owner_phone" id="owner_phone" class="form-control">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-6">
                                         <label class="form-label-custom">Sumber Unit</label>
-                                        <div class="d-flex gap-3 mt-2">
+                                        <div class="d-flex gap-2 mt-2">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="is_own_dealer"
                                                     id="dYes" value="1">
@@ -234,7 +257,7 @@
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label-custom">Alamat Domisili</label>
+                                        <label class="form-label-custom">Alamat</label>
                                         <input type="text" name="owner_address" id="owner_address"
                                             class="form-control">
                                     </div>
@@ -257,22 +280,22 @@
                         {{-- Baris 1: Readonly Data --}}
                         <div class="p-3 mb-4 rounded-3" style="background-color: #f8f9fa;">
                             <div class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="form-label-custom">No. Antrian</label>
+                                <div class="col-6 col-md-3">
+                                    <label class="form-label-custom">Antrian</label>
                                     <input type="text" id="displayQueue" class="form-control input-readonly" readonly
                                         placeholder="-">
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-6 col-md-3">
                                     <label class="form-label-custom">Tgl Booking</label>
                                     <input type="text" id="displayDate" class="form-control input-readonly" readonly
                                         placeholder="-">
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-6 col-md-3">
                                     <label class="form-label-custom">No. Polisi</label>
                                     <input type="text" id="displayPlate" class="form-control input-readonly" readonly
                                         placeholder="-">
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-6 col-md-3">
                                     <label class="form-label-custom">Tipe Motor</label>
                                     <input type="text" id="displayType" class="form-control input-readonly" readonly
                                         placeholder="-">
@@ -283,77 +306,70 @@
                         {{-- Baris 2: Input Manual --}}
                         <div class="section-label">Pengecekan Fisik</div>
                         <div class="row g-3">
-                            <div class="col-md-3">
-                                <label class="form-label-custom text-danger">Kilometer (KM) *</label>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label-custom text-danger">KM (Saat ini)*</label>
                                 <input type="text" id="odometer_display" class="form-control fw-bold"
                                     placeholder="Cth: 15.000" required style="border-color: #dee2e6;">
                                 <input type="hidden" name="odometer" id="odometer_real">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-6 col-md-3">
                                 <label class="form-label-custom">Tahun</label>
                                 <input type="number" name="vehicle_year" class="form-control" placeholder="20xx">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-6 col-md-3">
                                 <label class="form-label-custom">No. Mesin</label>
                                 <input type="text" name="engine_number" class="form-control" placeholder="Opsional">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-6 col-md-3">
                                 <label class="form-label-custom">No. Rangka</label>
                                 <input type="text" name="chassis_number" class="form-control" placeholder="Opsional">
                             </div>
 
-                            {{-- [BARU] INDIKATOR BENSIN --}}
+                            {{-- INDIKATOR BENSIN (RESPONSIVE FLEX WRAP) --}}
                             <div class="col-12 mt-3">
-                                <label class="form-label-custom mb-2">Indikator Bensin (Fuel Level)</label>
-                                <div class="d-flex gap-2 align-items-center p-3 rounded-3 bg-light border">
-                                    <span class="fw-bold small me-2">E (Empty)</span>
+                                <label class="form-label-custom mb-2">Indikator Bensin</label>
+                                {{-- flex-wrap agar tombol turun ke bawah di HP kecil --}}
+                                <div class="d-flex flex-wrap gap-2 align-items-center p-2 rounded-3 bg-light border">
+                                    <span class="fw-bold small me-2">E</span>
 
-                                    {{-- 0% --}}
+                                    {{-- flex-grow-1 agar tombol mengisi ruang --}}
                                     <input type="radio" class="btn-check" name="fuel_level" id="fuel0"
                                         value="0" required>
                                     <label class="btn btn-outline-danger btn-sm flex-grow-1" for="fuel0"
                                         style="height: 10px;"></label>
 
-                                    {{-- 25% --}}
                                     <input type="radio" class="btn-check" name="fuel_level" id="fuel25"
                                         value="25">
                                     <label class="btn btn-outline-warning btn-sm flex-grow-1" for="fuel25"
                                         style="height: 15px;"></label>
 
-                                    {{-- 50% --}}
                                     <input type="radio" class="btn-check" name="fuel_level" id="fuel50"
                                         value="50">
                                     <label class="btn btn-outline-warning btn-sm flex-grow-1" for="fuel50"
                                         style="height: 20px;"></label>
 
-                                    {{-- 75% --}}
                                     <input type="radio" class="btn-check" name="fuel_level" id="fuel75"
                                         value="75">
                                     <label class="btn btn-outline-success btn-sm flex-grow-1" for="fuel75"
                                         style="height: 25px;"></label>
 
-                                    {{-- 100% --}}
                                     <input type="radio" class="btn-check" name="fuel_level" id="fuel100"
                                         value="100">
                                     <label class="btn btn-outline-success btn-sm flex-grow-1" for="fuel100"
                                         style="height: 30px;"></label>
 
-                                    <span class="fw-bold small ms-2">F (Full)</span>
+                                    <span class="fw-bold small ms-2">F</span>
                                 </div>
-                                <div class="text-center small text-muted mt-1 fw-bold" id="fuel_label">Pilih Level Bensin
-                                </div>
+                                <div class="text-center small text-muted mt-1 fw-bold" id="fuel_label">Pilih Level</div>
                             </div>
                         </div>
 
-                        <div class="section-label mt-4">Data Pribadi</div>
+                        <div class="section-label mt-4">Data Tambahan</div>
                         <div class="row g-3">
-
-                            {{-- Alasan Ke ahass --}}
-                            <div class="col-md-4">
+                            <div class="col-12 col-md-4">
                                 <label class="form-label-custom">Alasan Ke Ahass</label>
                                 <select name="visit_reason" class="form-control">
-                                    <option value="">Silahkan Pilih</option>
-                                    {{-- Sesuaikan value dengan format yang diharapkan Print (Human Readable) --}}
+                                    <option value="">Pilih...</option>
                                     <option value="Inisiatif Sendiri">Inisiatif Sendiri</option>
                                     <option value="SMS Reminder">SMS Reminder</option>
                                     <option value="Telp Reminder">Telp Reminder</option>
@@ -361,88 +377,72 @@
                                     <option value="Lainnya">Lainnya</option>
                                 </select>
                             </div>
-
-                            {{-- Email --}}
-                            <div class="col-md-4">
+                            <div class="col-12 col-md-4">
                                 <label class="form-label-custom">Email</label>
                                 <input type="email" name="customer_email" class="form-control">
                             </div>
-
-                            {{-- Sosmed --}}
-                            <div class="col-md-4">
+                            <div class="col-12 col-md-4">
                                 <label class="form-label-custom">Sosmed</label>
-                                <input type="text" name="customer_social" class="form-control"
-                                    placeholder="@instagram">
+                                <input type="text" name="customer_social" class="form-control" placeholder="@ig">
                             </div>
 
-                            {{-- Tambahan advisor --}}
-                            <div class="section-label mt-4 text-danger">Tambahan Advisor</div>
-                            <div class="col-md-4 border-danger">
-                                <label class="form-label-custom">Nama Mekanik</label>
-                                <input type="text" name="nama_mekanik" class="form-control" required
-                                    placeholder="Nama mekanik yang menangani">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label-custom text-danger fw-bold">Nama Mekanik*</label>
+                                <input type="text" name="nama_mekanik" class="form-control border-danger" required
+                                    placeholder="Wajib diisi">
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label-custom">Catatan Advisor</label>
-                                <textarea name="advisor_notes" class="form-control" rows="2" placeholder="Catatan tambahan untuk mekanik..."></textarea>
+                                <label class="form-label-custom">Catatan SA</label>
+                                <textarea name="advisor_notes" class="form-control" rows="2" placeholder="Catatan fisik motor..."></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- CARD TAMBAHAN: PERSETUJUAN KONSUMEN --}}
-                <div class="form-card mt-4">
+                {{-- CARD 3: PERSETUJUAN --}}
+                <div class="form-card">
                     <div class="form-header-title bg-warning text-dark">
-                        <i class="fas fa-handshake me-2"></i> Persetujuan Tindakan
+                        <i class="fas fa-handshake me-2"></i> Persetujuan
                     </div>
                     <div class="card-body p-4">
-                        <div class="row">
-                            {{-- Pertanyaan 1: Konfirmasi Pekerjaan Tambahan --}}
-                            <div class="col-md-6 border-end">
-                                <label class="form-label-custom fw-bold">Jika ada PEKERJAAN TAMBAHAN di luar
-                                    daftar:</label>
-                                <div class="d-flex flex-column gap-2 mt-2">
-                                    {{-- PERBAIKAN: Tambahkan class 'position-relative' di div pembungkus --}}
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6 border-end-md">
+                                <label class="form-label-custom fw-bold">Pekerjaan Tambahan:</label>
+                                <div class="d-flex flex-column gap-2 mt-1">
                                     <div class="form-check p-3 border rounded bg-light position-relative">
                                         <input class="form-check-input" type="radio" name="pkb_approval"
                                             id="approval_call" value="hubungi" checked>
                                         <label class="form-check-label w-100 stretched-link" for="approval_call">
-                                            <i class="fas fa-phone-alt me-2 text-primary"></i> Konfirmasi dulu / Telpon
+                                            <i class="fas fa-phone-alt me-2 text-primary"></i> Konfirmasi / Telp
                                         </label>
                                     </div>
-
-                                    {{-- PERBAIKAN: Tambahkan class 'position-relative' di div pembungkus --}}
                                     <div class="form-check p-3 border rounded bg-light position-relative">
                                         <input class="form-check-input" type="radio" name="pkb_approval"
                                             id="approval_direct" value="langsung">
                                         <label class="form-check-label w-100 stretched-link" for="approval_direct">
-                                            <i class="fas fa-tools me-2 text-success"></i> Langsung dikerjakan
+                                            <i class="fas fa-tools me-2 text-success"></i> Langsung Kerja
                                         </label>
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- Pertanyaan 2: Part Bekas --}}
-                            <div class="col-md-6">
-                                <label class="form-label-custom fw-bold">Part Bekas dibawa Konsumen?</label>
-                                <div class="d-flex gap-3 mt-2">
-                                    {{-- PERBAIKAN: Tambahkan class 'position-relative' --}}
+                            <div class="col-12 col-md-6">
+                                <label class="form-label-custom fw-bold">Part Bekas:</label>
+                                <div class="d-flex gap-2 mt-1">
                                     <div
                                         class="form-check flex-fill p-3 border rounded bg-light text-center position-relative">
-                                        <input class="form-check-input float-none me-2" type="radio"
+                                        <input class="form-check-input float-none me-1" type="radio"
                                             name="part_bekas_dibawa" id="part_yes" value="1">
-                                        <label class="form-check-label fw-bold stretched-link" for="part_yes">YA
-                                            (Dibawa)</label>
+                                        <label class="form-check-label fw-bold stretched-link"
+                                            for="part_yes">DIBAWA</label>
                                     </div>
-
-                                    {{-- PERBAIKAN: Tambahkan class 'position-relative' --}}
                                     <div
                                         class="form-check flex-fill p-3 border rounded bg-light text-center position-relative">
-                                        <input class="form-check-input float-none me-2" type="radio"
+                                        <input class="form-check-input float-none me-1" type="radio"
                                             name="part_bekas_dibawa" id="part_no" value="0" checked>
-                                        <label class="form-check-label fw-bold stretched-link" for="part_no">TIDAK
-                                            (Ditinggal)</label>
+                                        <label class="form-check-label fw-bold stretched-link"
+                                            for="part_no">DITINGGAL</label>
                                     </div>
                                 </div>
                             </div>
@@ -450,80 +450,31 @@
                     </div>
                 </div>
 
-                {{-- CARD 3: PILIH SUKU dCADANG / SPAREPART --}}
-                <div class="form-card mt-4">
-                    <div class="form-header-title" style="background-color: #198754;">
-                        <i class="fas fa-boxes me-2"></i> Pemakaian Suku Cadang
-                    </div>
-                    <div class="card-body p-4">
-
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover align-middle mb-0" id="sparepartTable">
-                                <thead class="table-light text-center">
-                                    <tr>
-                                        <th style="width: 40%">Nama Barang</th>
-                                        <th style="width: 15%">Qty</th>
-                                        <th style="width: 20%">Harga</th>
-                                        <th style="width: 20%">Subtotal</th>
-                                        <th style="width: 5%">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="sparepartTableBody">
-                                    {{-- Baris sparepart akan muncul di sini --}}
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="5" class="p-2">
-                                            <button type="button"
-                                                class="btn btn-outline-success btn-sm fw-bold w-100 border-dashed"
-                                                onclick="addSparepartRow()">
-                                                <i class="fas fa-plus-circle me-1"></i> Tambah Barang
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr class="fw-bold bg-light">
-                                        <td colspan="3" class="text-end">Total Harga Sparepart</td>
-                                        <td colspan="2" class="text-success text-end px-3" id="totalPartDisplay">Rp 0
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-
-                        {{-- State Kosong --}}
-                        <div id="emptyPartState" class="text-center py-4 text-muted border rounded mt-0 bg-light"
-                            style="border-top: none !important;">
-                            <i class="fas fa-box-open fa-2x mb-2 opacity-25"></i>
-                            <p class="small mb-0">Belum ada sparepart yang dipilih.</p>
-                        </div>
-
-                    </div>
-                </div>
-
-                {{-- CARD 4: DAFTAR PEKERJAAN & ESTIMASI --}}
+                {{-- CARD 4: DAFTAR PEKERJAAN --}}
                 <div class="form-card">
                     <div class="form-header-title">
-                        <i class="fas fa-tools me-2"></i> Daftar Pekerjaan & Estimasi
+                        <i class="fas fa-tools me-2"></i> Daftar Pekerjaan
                     </div>
                     <div class="card-body p-4">
+                        {{-- Tambahkan table-responsive agar tabel bisa di-scroll di HP --}}
                         <div class="table-responsive border rounded-3 bg-light p-3">
-                            <table class="table table-borderless table-sm mb-0 small">
+                            <table class="table table-borderless table-sm mb-0 small" style="min-width: 300px;">
                                 <thead class="border-bottom">
                                     <tr>
                                         <th width="5%">No</th>
                                         <th>Jenis Pekerjaan</th>
-                                        <th class="text-end">Estimasi (Rp)</th>
+                                        <th class="text-end">Estimasi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="jobListBody">
                                     <tr>
-                                        <td colspan="3" class="text-center text-muted py-3">Silakan pilih pelanggan
-                                            untuk melihat daftar...</td>
+                                        <td colspan="3" class="text-center text-muted py-3">Pilih pelanggan dulu...
+                                        </td>
                                     </tr>
                                 </tbody>
                                 <tfoot class="border-top fw-bold">
                                     <tr>
-                                        <td colspan="2" class="text-end">TOTAL ESTIMASI</td>
+                                        <td colspan="2" class="text-end">TOTAL</td>
                                         <td class="text-end" id="totalJobCost">Rp 0</td>
                                     </tr>
                                 </tfoot>
@@ -532,9 +483,53 @@
                     </div>
                 </div>
 
+                {{-- CARD 5: SPAREPART --}}
+                <div class="form-card mt-4">
+                    <div class="form-header-title" style="background-color: #198754;">
+                        <i class="fas fa-boxes me-2"></i> Sparepart
+                    </div>
+                    <div class="card-body p-4">
+                        {{-- Tambahkan table-responsive --}}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover align-middle mb-0" id="sparepartTable"
+                                style="min-width: 500px;">
+                                <thead class="table-light text-center">
+                                    <tr>
+                                        <th style="width: 40%">Barang</th>
+                                        <th style="width: 15%">Qty</th>
+                                        <th style="width: 20%">Harga</th>
+                                        <th style="width: 20%">Subtotal</th>
+                                        <th style="width: 5%">x</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sparepartTableBody"></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="5" class="p-2">
+                                            <button type="button" class="btn btn-outline-success btn-sm fw-bold w-100"
+                                                onclick="addSparepartRow()">
+                                                <i class="fas fa-plus me-1"></i> Tambah Barang
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="fw-bold bg-light">
+                                        <td colspan="3" class="text-end">Total Part</td>
+                                        <td colspan="2" class="text-success text-end px-3" id="totalPartDisplay">Rp 0
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div id="emptyPartState" class="text-center py-4 text-muted border rounded mt-0 bg-light"
+                            style="border-top: none !important;">
+                            <p class="small mb-0">Belum ada sparepart.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="d-grid mt-5 mb-5">
-                    <button type="submit" class="btn btn-primary-custom btn-lg">
-                        <i class="fas fa-save me-2"></i> Simpan Data & Cetak Invoice
+                    <button type="submit" class="btn btn-primary-custom btn-lg shadow">
+                        <i class="fas fa-save me-2"></i> SIMPAN & CETAK
                     </button>
                 </div>
 
@@ -569,7 +564,7 @@
             @endif
         });
 
-        // Format Ribuan Odometer
+        // Odometer Logic
         const display = document.getElementById('odometer_display');
         const real = document.getElementById('odometer_real');
         display.addEventListener('input', function() {
@@ -578,7 +573,7 @@
             real.value = angka;
         });
 
-        // Copy Data Pembawa -> Pemilik
+        // Copy Pembawa -> Pemilik
         function copyCarrierToOwner() {
             if (document.getElementById('copyDataCheck').checked) {
                 document.getElementById('owner_name').value = document.getElementById('carrier_name').value;
@@ -591,7 +586,7 @@
             }
         }
 
-        // Logic Visual Indikator Bensin
+        // Indikator Bensin Label
         document.querySelectorAll('input[name="fuel_level"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 var label = document.getElementById('fuel_label');
@@ -608,29 +603,27 @@
             var select = document.getElementById('bookingSelect');
             var selectedOption = select.options[select.selectedIndex];
 
-            // 1. Keluhan
+            // Keluhan & Info Kendaraan
             var complaint = selectedOption.getAttribute('data-complaint');
             var text = document.getElementById('complaintText');
-            if (select.value === "") text.innerText = "Silakan pilih pelanggan terlebih dahulu.";
+            if (select.value === "") text.innerText = "Silakan pilih pelanggan.";
             else if (complaint && complaint.trim() !== "") text.innerText = '"' + complaint + '"';
-            else text.innerText = "Tidak ada complaint dari pelanggan.";
+            else text.innerText = "Tidak ada complaint.";
 
-            // 2. Info Kendaraan (Readonly)
             document.getElementById('displayQueue').value = selectedOption.getAttribute('data-queue') || '-';
             document.getElementById('displayDate').value = selectedOption.getAttribute('data-date') || '-';
             document.getElementById('displayPlate').value = selectedOption.getAttribute('data-plate') || '-';
             document.getElementById('displayType').value = selectedOption.getAttribute('data-type') || '-';
 
-            // 3. Info Pembawa (Auto-fill)
             document.getElementById('carrier_name').value = selectedOption.getAttribute('data-name') || '';
             document.getElementById('carrier_phone').value = selectedOption.getAttribute('data-phone') || '';
 
-            // 4. [BARU] Populate Daftar Pekerjaan
+            // Populate Daftar Pekerjaan
             var servicesData = selectedOption.getAttribute('data-services');
             var tbody = document.getElementById('jobListBody');
             var totalEl = document.getElementById('totalJobCost');
 
-            tbody.innerHTML = ''; // Reset tabel
+            tbody.innerHTML = '';
             var total = 0;
 
             if (servicesData) {
@@ -639,14 +632,8 @@
                     services.forEach((svc, index) => {
                         total += parseInt(svc.price);
                         var priceFormatted = new Intl.NumberFormat('id-ID').format(svc.price);
-
-                        var row = `
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td class="fw-bold text-dark">${svc.name}</td>
-                                <td class="text-end">Rp ${priceFormatted}</td>
-                            </tr>
-                        `;
+                        var row =
+                            `<tr><td>${index + 1}</td><td class="fw-bold text-dark">${svc.name}</td><td class="text-end">Rp ${priceFormatted}</td></tr>`;
                         tbody.insertAdjacentHTML('beforeend', row);
                     });
                 } else {
@@ -656,110 +643,78 @@
             } else {
                 tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Silakan pilih pelanggan.</td></tr>';
             }
-
-            // Update Total
             totalEl.innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
         }
 
-        // --- LOGIKA SPAREPART (INVENTORY) ---
-
-        // Ambil data inventory dari Controller
+        // SPAREPART LOGIC
         const inventoryData = @json($spareparts);
         let rowIdx = 0;
 
         function addSparepartRow() {
-            // Sembunyikan pesan kosong
             document.getElementById('emptyPartState').style.display = 'none';
-
             const tableBody = document.getElementById('sparepartTableBody');
             const rowId = `row-${rowIdx}`;
 
-            // Buat opsi dropdown dari data database
-            let optionsHtml = '<option value="">-- Pilih Barang --</option>';
+            let optionsHtml = '<option value="">Pilih...</option>';
             inventoryData.forEach(item => {
-                // Tampilkan stok agar SA tahu
-                optionsHtml += `<option value="${item.id}" data-price="${item.harga_barang}">
-                                ${item.nama_barang} (Stok: ${item.jumlah_barang})
-                            </option>`;
+                optionsHtml +=
+                    `<option value="${item.id}" data-price="${item.harga_barang}">${item.nama_barang} (Stok: ${item.jumlah_barang})</option>`;
             });
 
             const rowHtml = `
-            <tr id="${rowId}">
-                <td>
-                    <select name="parts_id[]" class="form-select form-select-sm" onchange="updatePartPrice(this, '${rowId}')" required>
-                        ${optionsHtml}
-                    </select>
-                </td>
-                <td>
-                    <input type="number" name="parts_qty[]" class="form-control form-control-sm text-center" value="1" min="1" onchange="calculateSubtotal('${rowId}')" onkeyup="calculateSubtotal('${rowId}')" required>
-                </td>
-                <td>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-light border-end-0">Rp</span>
-                        <input type="text" class="form-control bg-light border-start-0 text-end part-price-display" readonly value="0">
+                <tr id="${rowId}">
+                    <td style="min-width: 150px;">
+                        <select name="parts_id[]" class="form-select form-select-sm" onchange="updatePartPrice(this, '${rowId}')" required>${optionsHtml}</select>
+                    </td>
+                    <td style="min-width: 70px;">
+                        <input type="number" name="parts_qty[]" class="form-control form-control-sm text-center" value="1" min="1" onchange="calcSub('${rowId}')" onkeyup="calcSub('${rowId}')" required>
+                    </td>
+                    <td style="min-width: 100px;">
+                        <input type="text" class="form-control form-control-sm bg-light text-end part-price-display" readonly value="0">
                         <input type="hidden" name="parts_price[]" class="part-price-raw" value="0">
-                    </div>
-                </td>
-                <td>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-light border-end-0">Rp</span>
-                        <input type="text" class="form-control bg-light border-start-0 text-end fw-bold part-subtotal-display" readonly value="0">
-                    </div>
-                </td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-link text-danger btn-sm p-0" onclick="removeSparepartRow('${rowId}')">
-                        <i class="fas fa-times-circle fs-5"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
-
+                    </td>
+                    <td style="min-width: 100px;">
+                        <input type="text" class="form-control form-control-sm bg-light text-end fw-bold part-subtotal-display" readonly value="0">
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-link text-danger btn-sm p-0" onclick="removePart('${rowId}')"><i class="fas fa-times"></i></button>
+                    </td>
+                </tr>`;
             tableBody.insertAdjacentHTML('beforeend', rowHtml);
             rowIdx++;
         }
 
-        function updatePartPrice(selectEl, rowId) {
-            // Ambil harga dari atribut data-price
-            const price = selectEl.options[selectEl.selectedIndex].getAttribute('data-price') || 0;
+        function updatePartPrice(select, rowId) {
+            const price = select.options[select.selectedIndex].getAttribute('data-price') || 0;
             const row = document.getElementById(rowId);
-
-            // Update input hidden & tampilan
             row.querySelector('.part-price-raw').value = price;
             row.querySelector('.part-price-display').value = new Intl.NumberFormat('id-ID').format(price);
-
-            calculateSubtotal(rowId);
+            calcSub(rowId);
         }
 
-        function calculateSubtotal(rowId) {
+        function calcSub(rowId) {
             const row = document.getElementById(rowId);
             const qty = row.querySelector('input[name="parts_qty[]"]').value || 0;
             const price = row.querySelector('.part-price-raw').value || 0;
-
-            const subtotal = qty * price;
-
-            row.querySelector('.part-subtotal-display').value = new Intl.NumberFormat('id-ID').format(subtotal);
-            calculateGrandTotal();
+            row.querySelector('.part-subtotal-display').value = new Intl.NumberFormat('id-ID').format(qty * price);
+            calcTotal();
         }
 
-        function removeSparepartRow(rowId) {
+        function removePart(rowId) {
             document.getElementById(rowId).remove();
-            calculateGrandTotal();
-
-            // Munculkan lagi pesan kosong jika tidak ada baris
-            const tableBody = document.getElementById('sparepartTableBody');
-            if (tableBody.children.length === 0) {
+            calcTotal();
+            if (document.getElementById('sparepartTableBody').children.length === 0) {
                 document.getElementById('emptyPartState').style.display = 'block';
             }
         }
 
-        function calculateGrandTotal() {
+        function calcTotal() {
             let total = 0;
             document.querySelectorAll('.part-price-raw').forEach((priceInput) => {
                 const row = priceInput.closest('tr');
                 const qty = row.querySelector('input[name="parts_qty[]"]').value || 0;
                 total += (priceInput.value * qty);
             });
-
             document.getElementById('totalPartDisplay').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
         }
     </script>

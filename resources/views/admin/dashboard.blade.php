@@ -158,10 +158,10 @@
                 <p class="text-gray-500 mt-1">Overview sistem dan monitoring antrian booking</p>
             </div>
 
-            <a href="{{ route('booking.walkin') }}" class="btn-modern bg-green-600 text-white hover:bg-green-700">
+            {{-- <a href="{{ route('booking.walkin') }}" class="btn-modern bg-green-600 text-white hover:bg-green-700">
                 <i class="fa-solid fa-user-plus"></i>
                 <span>Booking Manual</span>
-            </a>
+            </a> --}}
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">

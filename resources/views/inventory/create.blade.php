@@ -1,79 +1,138 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">{{ __('Tambah Barang Baru') }}</div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-                    <div class="card-body">
+    <style>
+        /* Custom CSS untuk mempercantik UI */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card-modern {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .form-label-custom {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .input-group-text {
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .form-control-custom {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+            padding: 12px;
+        }
+
+        .form-control-custom:focus {
+            box-shadow: none;
+            border-color: #ced4da;
+        }
+
+        .input-group:focus-within .input-group-text,
+        .input-group:focus-within .form-control-custom {
+            border-color: #0d6efd;
+            /* Warna Primary Bootstrap */
+        }
+
+        .input-group:focus-within .input-group-text i {
+            color: #0d6efd;
+        }
+
+        .btn-modern {
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+    </style>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card card-modern bg-white">
+                    <div class="card-body p-5">
+
+                        <div class="text-center mb-4">
+                            <h3 class="fw-bold text-dark">{{ __('Tambah Barang') }}</h3>
+                            <p class="text-muted small">Isi formulir di bawah untuk menambah inventory.</p>
+                        </div>
+
                         <form method="POST" action="{{ route('inventory.store') }}">
                             @csrf
 
                             {{-- Nama barang --}}
-                            <div class="form-group row mb-3">
-                                <label for="nama_barang"
-                                    class="col-md-4 col-form-label text-md-right">{{ __('Nama Barang') }}</label>
-
-                                <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="nama_barang" class="form-label-custom">{{ __('Nama Barang') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-box text-muted"></i></span>
                                     <input id="nama_barang" type="text"
-                                        class="form-control @error('nama_barang') is-invalid @enderror" name="nama_barang"
-                                        value="{{ old('nama_barang') }}" required autocomplete="nama_barang" autofocus>
-
-                                    @error('nama_barang')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                        class="form-control form-control-custom @error('nama_barang') is-invalid @enderror"
+                                        name="nama_barang" value="{{ old('nama_barang') }}"
+                                        placeholder="Contoh: Laptop Asus" required autofocus>
                                 </div>
+                                @error('nama_barang')
+                                    <small class="text-danger mt-1 d-block">
+                                        <strong>{{ $message }}</strong>
+                                    </small>
+                                @enderror
                             </div>
 
                             {{-- Jumlah barang --}}
-                            <div class="form-group row mb-3">
-                                <label for="jumlah_barang" class="col-md-4 col-form-label text-md-right">Jumlah
-                                    Barang</label>
-
-                                <div class="col-md-6">
-                                    <input id="jumlah_barang" type="number" class="form-control" name="jumlah_barang"
-                                        required autocomplete="jumlah_barang" min="0">
-
-                                    @error('jumlah_barang')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                            <div class="mb-4">
+                                <label for="jumlah_barang" class="form-label-custom">{{ __('Stok Awal') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-layer-group text-muted"></i></span>
+                                    <input id="jumlah_barang" type="number"
+                                        class="form-control form-control-custom @error('jumlah_barang') is-invalid @enderror"
+                                        name="jumlah_barang" placeholder="0" min="0" required>
                                 </div>
+                                @error('jumlah_barang')
+                                    <small class="text-danger mt-1 d-block">
+                                        <strong>{{ $message }}</strong>
+                                    </small>
+                                @enderror
                             </div>
 
                             {{-- Harga barang --}}
-                            <div class="form-group row mb-3">
-                                <label for="harga_barang_view" class="col-md-4 col-form-label text-md-right">
-                                    Harga Barang
-                                </label>
+                            <div class="mb-4">
+                                <label for="harga_barang_view" class="form-label-custom">{{ __('Harga Satuan') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text fw-bold text-muted" style="font-size: 0.9rem;">Rp</span>
 
-                                <div class="col-md-6">
-                                    <!-- Input tampilan -->
-                                    <input id="harga_barang_view" type="text" class="form-control"
-                                        placeholder="contoh: 23.000" autocomplete="off" required>
+                                    <input id="harga_barang_view" type="text"
+                                        class="form-control form-control-custom @error('harga_barang') is-invalid @enderror"
+                                        placeholder="0" autocomplete="off" required>
 
-                                    <!-- Input asli untuk database -->
                                     <input id="harga_barang" type="hidden" name="harga_barang">
+                                </div>
+                                @error('harga_barang')
+                                    <small class="text-danger mt-1 d-block">
+                                        <strong>{{ $message }}</strong>
+                                    </small>
+                                @enderror
+                            </div>
 
-                                    @error('harga_barang')
-                                        <span class="invalid-feedback d-block">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+                            <div class="d-grid gap-2 mt-5">
+                                <button type="submit" class="btn btn-primary btn-modern shadow-sm">
+                                    <i class="fas fa-save me-2"></i> {{ __('Simpan Data') }}
+                                </button>
+                                <a href="{{ url()->previous() }}" class="btn btn-light btn-modern text-muted">
+                                    {{ __('Batal') }}
+                                </a>
                             </div>
-                            <div class="form-group row mb-0">
-                                <div class="col-md-6 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        Simpan Data
-                                    </button>
-                                </div>
-                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -86,9 +145,19 @@
             const viewInput = document.getElementById('harga_barang_view');
             const realInput = document.getElementById('harga_barang');
 
+            // Format awal jika ada old value (saat validasi gagal)
+            if (realInput.value) {
+                viewInput.value = new Intl.NumberFormat('id-ID').format(realInput.value);
+            }
+
             viewInput.addEventListener('input', function() {
+                // Hapus karakter selain angka
                 let angka = this.value.replace(/[^0-9]/g, '');
+
+                // Set value ke hidden input
                 realInput.value = angka;
+
+                // Format tampilan ke Ribuan Indonesia
                 this.value = angka ? new Intl.NumberFormat('id-ID').format(angka) : '';
             });
         });

@@ -97,7 +97,7 @@
             margin-right: 10px;
             transform: scale(1.2);
             cursor: pointer;
-            accent-color: #fff;
+            accent-color: #00f2ff;
             /* Warna checkbox saat dicentang */
         }
 

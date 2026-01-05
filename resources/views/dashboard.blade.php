@@ -7,8 +7,7 @@
     <title>Honda Service - Dashboard</title>
 
     {{-- Favicon --}}
-    <link
-        href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAARQrEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREAEREREBEREAABEREAAREAAAAREAABEQAAABEQAAERERERERAAAREREREREAABEREREREQAAERAAAAERAAAREAAAAREAARERAAARERAREREQAREREQAAAAAAAAAAAAAAAAAAAAD//wAA//8AAP//AAABgAAAg8EAAMfjAADH4wAAwAMAAMADAADAAwAAx+MAAMfjAACDwQAAAYAAAP//AAD//wAA"
+    <link href="{{ asset('images/honda.ico') }}"
         rel="icon" type="image/x-icon">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.css">
@@ -97,25 +96,10 @@
                             </a>
                         @endauth
                     @endif
-
-                    {{-- Mobile menu button --}}
-                    <button id="mobile-menu-button" class="md:hidden ml-4 text-gray-700 hover:text-blue-600">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
                 </div>
             </div>
         </div>
 
-        {{-- Mobile Menu --}}
-        <div id="mobile-menu" class="md:hidden hidden glass border-t border-gray-200">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="#home" class="block px-3 py-2 text-gray-700 hover:text-rose-700 font-medium">Home</a>
-                <a href="#about" class="block px-3 py-2 text-gray-700 hover:text-rose-700 font-medium">Tentang</a>
-                <a href="#services" class="block px-3 py-2 text-gray-700 hover:text-rose-700 font-medium">Layanan</a>
-                {{-- Tautan Testimoni Dihapus --}}
-                <a href="#contact" class="block px-3 py-2 text-gray-700 hover:text-rose-700 font-medium">Kontak</a>
-            </div>
-        </div>
     </nav>
 
     {{-- Main Content --}}
@@ -281,22 +265,6 @@
             </div>
         </div>
     </footer>
-
-    {{-- Scripts --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Logika JavaScript untuk Testimoni dan Slider TELAH DIHAPUS SEPENUHNYA.
-            // Hanya menyisakan logika umum seperti Mobile Menu (jika ada)
-
-            // Logika untuk Mobile Menu
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-        });
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">

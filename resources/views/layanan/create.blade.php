@@ -98,18 +98,5 @@
             // 5. Kembalikan tampilan yang sudah diformat ke input text
             element.value = rupiah;
         }
-
-        // [OPSIONAL] Jika ini halaman EDIT, kita perlu format angka dari database saat loading
-        document.addEventListener("DOMContentLoaded", function() {
-            // Ambil nilai lama (misal dari old('price') atau $service->price)
-            // Ganti '0' di bawah dengan value dari backend
-            let existingValue = "{{ old('price', $service->price ?? '') }}";
-
-            if (existingValue) {
-                let displayElement = document.getElementById('price_display');
-                displayElement.value = existingValue;
-                formatRupiah(displayElement); // Jalankan format sekali saat load
-            }
-        });
     </script>
 @endsection

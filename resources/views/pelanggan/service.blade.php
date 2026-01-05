@@ -168,6 +168,29 @@
             background: var(--brand-secondary-dark);
             transform: translateY(-2px);
         }
+
+        .btn-check:checked+.service-card-label .desc-short {
+            display: none;
+        }
+
+        .btn-check:checked+.service-card-label .desc-full {
+            display: block !important;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .btn-check:checked+.service-card-label .check-icon {
+            display: block !important;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
     </style>
 
     <main class="py-4">
@@ -230,7 +253,7 @@
                                     <div class="col-6">
                                         <label class="form-label-custom">Plat Nomor</label>
                                         <input type="text" name="plate_number" class="form-control text-uppercase"
-                                            placeholder="B 1234 XYZ" required>
+                                            placeholder="* **** **" required>
                                     </div>
                                 </div>
 
@@ -293,29 +316,36 @@
 
                                 {{-- 1. PAKET SPESIAL --}}
                                 <h6 class="fw-bold text-dark mb-3 ps-2 border-start border-4 border-danger">
-                                    &nbsp; Paket Spesial (Hemat)
+                                    &nbsp; Paket Spesial
                                 </h6>
-                                <div class="row g-3 mb-5">
+                                <div class="row g-3 mb-5 align-items-start">
                                     @foreach ($services->where('type', 'paket') as $paket)
                                         <div class="col-md-6">
-                                            {{-- Ubah RADIO menjadi CHECKBOX agar bisa pilih banyak --}}
-                                            {{-- name="service_ids[]" mengirim array ke controller --}}
                                             <input type="checkbox" class="btn-check service-checkbox" name="service_ids[]"
                                                 id="service_{{ $paket->id }}" value="{{ $paket->id }}"
                                                 data-name="{{ $paket->name }}" data-price="{{ $paket->price }}">
 
-                                            <label class="service-card-label p-3 h-100 position-relative"
+                                            <label class="service-card-label p-3 position-relative"
                                                 for="service_{{ $paket->id }}">
                                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                                     <h6 class="fw-bold text-dark mb-0">{{ $paket->name }}</h6>
                                                     <span class="badge bg-danger">Rp
-                                                        {{ number_format($paket->price, 0, ',', '.') }}</span>
+                                                        {{ number_format($paket->price, '0', '.', '.') }} </span>
                                                 </div>
-                                                <p class="small text-muted mb-0">{{ $paket->description }}</p>
 
-                                                {{-- Icon Centang (Hidden by default) --}}
+                                                {{-- Deskripsi --}}
+                                                <div class="description-wrapper small text-muted mb-0">
+                                                    <span class="desc-short">
+                                                        {{ Str::limit($paket->description, 50, '...') }}
+                                                    </span>
+
+                                                    <span class="desc-full" style="display:none">
+                                                        {{ $paket->description }}
+                                                    </span>
+                                                </div>
+
                                                 <div class="check-icon position-absolute bottom-0 end-0 p-3"
-                                                    style="display: none;">
+                                                    style="display:none">
                                                     <i class="fas fa-check-circle fa-lg"></i>
                                                 </div>
                                             </label>
@@ -380,6 +410,16 @@
             const summaryList = document.getElementById('summary-list');
             const totalPriceDisplay = document.getElementById('total-price-display');
             const emptyState = document.getElementById('empty-state');
+
+            const resetCard = () => {
+                document.querySelectorAll('.service-card-label').forEach(label => {
+                    const fullDesc = label.querySelector('.desc-full');
+                    const shortDesc = label.querySelector('.desc-short');
+
+                    if(fullDesc) fullDesc.style.display = 'none';
+                    if(shortDesc) shortDesc.style.display = 'block';
+                })
+            }
 
             // Fungsi Format Rupiah
             const formatRupiah = (number) => {

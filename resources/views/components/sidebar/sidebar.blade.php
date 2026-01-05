@@ -6,72 +6,57 @@
         --honda-red-dark: #8B0000;
         --honda-red-soft: rgba(177, 0, 0, 0.08);
         --sidebar-width: 280px;
-        --sidebar-bg: rgba(255, 255, 255, 0.92);
+        --sidebar-bg: rgba(255, 255, 255, 0.95);
         --bg-color: #f3f4f6;
     }
 
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--bg-color);
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        /* Mencegah scroll horizontal */
-    }
-
-    .main-content-with-sidebar {
-        min-height: 100vh;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* --- Sidebar Container --- */
+    /* --- Sidebar Container (FIXED LAYOUT) --- */
     .sidebar-container {
         width: var(--sidebar-width);
         background: var(--sidebar-bg);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        box-shadow: 4px 0 25px rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+
+        /* Tinggi standar */
         height: 100vh;
+        /* Fallback canggih untuk HP (menghindari ketutup address bar) */
+        height: 100dvh;
+
         position: fixed;
         left: 0;
         top: 0;
         z-index: 1000;
+
         display: flex;
         flex-direction: column;
-        border-right: 1px solid rgba(255, 255, 255, 0.4);
+
+        border-right: 1px solid rgba(0, 0, 0, 0.05);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* --- Header Section --- */
+    /* --- Header Section (Diam di Atas) --- */
     .sidebar-header {
-        padding: 25px 20px;
+        flex-shrink: 0;
+        padding: 20px 22px;
         display: flex;
         align-items: center;
         gap: 15px;
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
     }
 
     .sidebar-logo {
-        width: 48px;
-        height: 48px;
+        width: 42px;
+        height: 42px;
         background: white;
-        border-radius: 12px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(0, 0, 0, 0.02);
-        transition: transform 0.3s ease;
-    }
-
-    .sidebar-logo:hover {
-        transform: scale(1.05) rotate(-5deg);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .sidebar-logo img {
-        width: 32px;
+        width: 28px;
         height: auto;
     }
 
@@ -81,145 +66,28 @@
     }
 
     .brand-title {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 800;
         color: var(--honda-red);
-        letter-spacing: -0.5px;
         line-height: 1.2;
+        white-space: nowrap;
     }
 
     .user-name {
-        font-size: 0.8rem;
+        font-size: 13px;
         color: #64748b;
         font-weight: 500;
     }
 
-    /* --- Menu Section --- */
+    /* --- Menu Section (Bisa Scroll) --- */
     .sidebar-content {
         flex: 1;
         overflow-y: auto;
-        padding: 10px 15px;
+        padding: 15px;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
     }
 
-    .sidebar-menu {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .sidebar-label {
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 1.2px;
-        color: #94a3b8;
-        font-weight: 700;
-        margin: 20px 10px 10px;
-    }
-
-    .sidebar-menu-item {
-        margin-bottom: 5px;
-    }
-
-    .sidebar-menu-link {
-        display: flex;
-        align-items: center;
-        padding: 12px 16px;
-        color: #475569;
-        text-decoration: none;
-        border-radius: 12px;
-        transition: all 0.2s ease;
-        position: relative;
-        font-weight: 500;
-    }
-
-    /* Hover Effect */
-    .sidebar-menu-link:hover {
-        background-color: var(--honda-red-soft);
-        color: var(--honda-red);
-        transform: translateX(3px);
-    }
-
-    /* Active State */
-    .sidebar-menu-link.active {
-        background: linear-gradient(135deg, var(--honda-red) 0%, var(--honda-red-dark) 100%);
-        color: white;
-        box-shadow: 0 4px 12px rgba(177, 0, 0, 0.25);
-    }
-
-    .sidebar-menu-icon {
-        width: 24px;
-        margin-right: 12px;
-        font-size: 1.1rem;
-        display: flex;
-        justify-content: center;
-        transition: transform 0.2s;
-    }
-
-    .sidebar-menu-link:hover .sidebar-menu-icon {
-        transform: scale(1.1);
-    }
-
-    /* Badge Styling */
-    .sidebar-badge {
-        font-size: 0.7rem;
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-weight: 700;
-        margin-left: auto;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .sidebar-menu-link.active .sidebar-badge {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-    }
-
-    .sidebar-menu-link:not(.active) .sidebar-badge {
-        background: #fff1f2;
-        color: var(--honda-red);
-        border: 1px solid rgba(177, 0, 0, 0.1);
-    }
-
-    /* Divider */
-    .sidebar-divider {
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.06), transparent);
-        margin: 15px 0;
-    }
-
-    /* --- Logout Section --- */
-    .sidebar-logout {
-        padding: 20px;
-        background: rgba(248, 250, 252, 0.5);
-        border-top: 1px solid rgba(0, 0, 0, 0.03);
-    }
-
-    .logout-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #fee2e2;
-        background: white;
-        color: #ef4444;
-        border-radius: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-decoration: none;
-        gap: 8px;
-    }
-
-    .logout-btn:hover {
-        background: #ef4444;
-        color: white;
-        border-color: #ef4444;
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
-        transform: translateY(-2px);
-    }
-
-    /* --- Scrollbar Customization --- */
     .sidebar-content::-webkit-scrollbar {
         width: 4px;
     }
@@ -233,89 +101,141 @@
         border-radius: 4px;
     }
 
-    .sidebar-content::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
+    /* Menu Styling */
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
 
-    /* --- Mobile Responsive --- */
-    .sidebar-toggle-btn {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 1100;
-        width: 45px;
-        height: 45px;
+    .sidebar-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #94a3b8;
+        font-weight: 700;
+        margin: 20px 10px 8px;
+    }
+
+    .sidebar-menu-link {
+        display: flex;
+        align-items: center;
+        padding: 10px 14px;
+        color: #475569;
+        text-decoration: none;
+        border-radius: 10px;
+        transition: all 0.2s;
+        font-weight: 500;
+        margin-bottom: 4px;
+        font-size: 16px;
+    }
+
+    .sidebar-menu-link:hover {
+        background-color: var(--honda-red-soft);
+        color: var(--honda-red);
+        transform: translateX(2px);
+    }
+
+    .sidebar-menu-link.active {
+        background: linear-gradient(135deg, var(--honda-red) 0%, var(--honda-red-dark) 100%);
+        color: white;
+        box-shadow: 0 4px 10px rgba(177, 0, 0, 0.2);
+    }
+
+    .sidebar-menu-icon {
+        width: 24px;
+        margin-right: 10px;
+        text-align: center;
+    }
+
+    .sidebar-badge {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: 700;
+        margin-left: auto;
+    }
+
+    .sidebar-menu-link.active .sidebar-badge {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .sidebar-menu-link:not(.active) .sidebar-badge {
+        background: #fff1f2;
+        color: var(--honda-red);
+    }
+
+    .sidebar-divider {
+        height: 1px;
+        background: #f1f5f9;
+        margin: 10px 0;
+    }
+
+    /* --- Logout Section --- */
+    .sidebar-logout {
+        flex-shrink: 0;
+        padding: 15px 20px;
         background: white;
-        border-radius: 50%;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        border: none;
-        display: none;
-        /* Hidden by default on desktop */
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+
+        /* Default untuk Laptop */
+        padding-bottom: 20px;
+    }
+
+    .logout-btn {
+        display: flex;
         align-items: center;
         justify-content: center;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #fee2e2;
+        background: #fffafa;
+        color: #ef4444;
+        border-radius: 10px;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: all 0.2s;
+        text-decoration: none;
+        gap: 8px;
+        font-size: 0.9rem;
     }
 
-    .sidebar-toggle-btn i {
-        font-size: 1.2rem;
-        color: #333;
+    .logout-btn:hover {
+        background: #ef4444;
+        color: white;
     }
 
-    /* Tampilan Desktop (Layar Besar) */
-    @media (min-width: 769px) {
-        .main-content-with-sidebar {
-            margin-left: var(--sidebar-width);
-            /* Geser konten agar tidak tertutup sidebar */
-            width: calc(100% - var(--sidebar-width));
-        }
-    }
+    /* --- KHUSUS HP (Mobile Fix) --- */
+    @media (max-width: 991px) {
 
-    /* Tampilan Mobile (HP/Tablet) */
-    @media (max-width: 768px) {
-        .main-content-with-sidebar {
-            margin-left: 0;
-            width: 100%;
-            padding-top: 60px;
-            /* Beri jarak atas untuk tombol toggle sidebar */
+        .sidebar-header{
+            justify-content: flex-end;
+            padding: 25px 55px;
         }
 
-        .sidebar-container {
-            transform: translateX(-100%);
-        }
-
-        .sidebar-container.active {
-            transform: translateX(0);
-            box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
-            /* Backdrop dim effect */
-        }
-
-        .sidebar-toggle-btn {
-            display: flex;
-        }
-
-        /* Adjust main content margin when sidebar is present */
-        body.sidebar-open {
-            overflow: hidden;
-            /* Prevent scrolling when sidebar is open on mobile */
+        .sidebar-logout {
+            /* SOLUSI: Tambahkan padding bawah yang SANGAT BESAR khusus di HP.
+               Ini akan memaksa tombol logout naik ke atas sejauh 100px dari bawah layar.
+               Jadi walaupun ada address bar Google, tombol tetap terlihat. */
+            padding-bottom: 70px !important;
         }
     }
 </style>
 
-<button class="sidebar-toggle-btn" id="sidebar-toggle">
-    <i class="fa-solid fa-bars"></i>
-</button>
+<button id="sidebar-toggle" style="display: none;"><i class="fa-solid fa-bars"></i></button>
 
 <aside class="sidebar-container" id="sidebar">
+
     <div class="sidebar-header">
-        <div class="sidebar-logo">
+        {{-- <div class="sidebar-logo">
             <a href="{{ route('admin.dashboard') }}">
                 <img src="{{ asset('/images/honda.png') }}" alt="Honda">
             </a>
-        </div>
+        </div> --}}
         <div class="sidebar-brand">
             <span class="brand-title">Honda Service</span>
-            <span class="user-name">Hai, {{ Str::limit(Auth::user()->name, 15) }}</span>
+            <span class="user-name">Hai, {{ Str::limit(Auth::user()->name ?? 'Guest', 15) }}</span>
         </div>
     </div>
 
@@ -324,94 +244,68 @@
 
             {{-- Khusus Admin --}}
             @if (auth()->check() && auth()->user()->role === 'admin')
-                {{-- Dashboard --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('admin.dashboard') }}"
                         class="sidebar-menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon">
-                            <i class="fa-solid fa-house"></i>
-                        </div>
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-house"></i></div>
                         <span>Dashboard</span>
                     </a>
                 </li>
             @else
-                {{-- Pelanggan Dashboard --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('pelanggan.dashboard') }}"
                         class="sidebar-menu-link {{ request()->routeIs('pelanggan.dashboard') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon">
-                            <i class="fa-solid fa-house"></i>
-                        </div>
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-house"></i></div>
                         <span>Dashboard</span>
                     </a>
                 </li>
-
-                {{-- Pelanggan Service --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('pelanggan.service') }}"
                         class="sidebar-menu-link {{ request()->routeIs('pelanggan.service') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon">
-                            <i class="fa-solid fa-screwdriver-wrench"></i>
-                        </div>
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
                         <span>Service</span>
                     </a>
                 </li>
             @endif
 
             @if (auth()->check() && auth()->user()->role === 'admin')
-                {{-- Booking --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('booking.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('booking.*') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon">
-                            <i class="fa-solid fa-calendar-check"></i>
-                        </div>
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-calendar-check"></i></div>
                         <span>Booking</span>
-
-                        @php
-                            $pendingCount = \App\Models\Booking::where('status', 'pending')->count();
-                        @endphp
+                        @php $pendingCount = \App\Models\Booking::where('status', 'pending')->count(); @endphp
                         @if ($pendingCount > 0)
                             <span class="sidebar-badge">{{ $pendingCount }}</span>
                         @endif
                     </a>
                 </li>
 
-                {{-- Customers --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('customers.index') }}"
-                        class="sidebar-menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}"
-                        id="customers-menu-link">
-                        <div class="sidebar-menu-icon">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
+                        class="sidebar-menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-users"></i></div>
                         <span>Akun Customers</span>
                     </a>
                 </li>
 
-                {{-- SECTION: INVENTORY --}}
                 <li class="sidebar-divider"></li>
                 <li class="sidebar-label">Gudang</li>
 
                 <li class="sidebar-menu-item">
                     <a href="{{ route('inventory.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon">
-                            <i class="fa-solid fa-box"></i>
-                        </div>
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-box"></i></div>
                         <span>Inventory</span>
                     </a>
                 </li>
 
-                {{-- SECTION: ADVISOR --}}
                 <li class="sidebar-label">Layanan</li>
 
                 <li class="sidebar-menu-item">
                     <a href="{{ route('layanan.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('layanan.*') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon">
-                            <i class="fa-solid fa-boxes-stacked"></i>
-                        </div>
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
                         <span>Paket & Layanan</span>
                     </a>
                 </li>
@@ -419,37 +313,21 @@
                 <li class="sidebar-menu-item">
                     <a href="{{ route('advisor.create') }}"
                         class="sidebar-menu-link {{ request()->routeIs('advisor.*') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon">
-                            <i class="fa-solid fa-screwdriver-wrench"></i>
-                        </div>
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-file-signature"></i></div>
                         <span>Form Keluhan</span>
                     </a>
                 </li>
 
-                {{-- SECTION: ADMIN --}}
                 <li class="sidebar-divider"></li>
                 <li class="sidebar-label">Administrator</li>
 
                 <li class="sidebar-menu-item">
                     <a href="{{ route('admin.register') }}"
                         class="sidebar-menu-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon">
-                            <i class="fa-solid fa-user-plus"></i>
-                        </div>
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-user-plus"></i></div>
                         <span>Registrasi</span>
                     </a>
                 </li>
-
-                {{-- Mekanik --}}
-                {{-- <li class="sidebar-menu-item">
-                <a href="{{ route('admin.register') }}"
-                    class="sidebar-menu-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">
-                    <div class="sidebar-menu-icon">
-                        <i class="fa-solid fa-user-plus"></i>
-                    </div>
-                    <span>Registrasi</span>
-                </a>
-            </li> --}}
             @endif
         </ul>
     </div>
