@@ -37,7 +37,7 @@
     /* --- Header Section (Diam di Atas) --- */
     .sidebar-header {
         flex-shrink: 0;
-        padding: 20px 22px;
+        padding: 20px 32px;
         display: flex;
         align-items: center;
         gap: 15px;

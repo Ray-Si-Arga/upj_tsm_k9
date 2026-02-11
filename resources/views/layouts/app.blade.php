@@ -93,8 +93,8 @@
             #main-content {
                 margin-left: 0 !important;
                 width: 100% !important;
-                padding: 20px;
-                padding-top: 80px;
+                /* padding: 20px; */
+                padding-top: 30px;
                 /* Jarak agar tidak ketutup tombol */
             }
 

@@ -2,72 +2,74 @@
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
     <style>
         :root {
             --brand-primary: #2A6E7F;
             --brand-primary-dark: #1D4F5D;
             --brand-secondary: #FF7A45;
-            --brand-secondary-dark: #E55A25;
-            --brand-light: #F0F8FA;
-            --brand-soft: #E8F4F8;
-            --border-soft: #D1E3E8;
-            --text-primary: #2C3E50;
-            --text-secondary: #546E7A;
-            --text-light: #78909C;
-            --background-light: #F9FDFE;
-            --success: #4CAF50;
-            --warning: #FF9800;
-            --danger: #F44336;
+            --brand-secondary-hover: #e6602e;
+            --bg-body: #f4f7f9;
+            --bg-card: #ffffff;
+            --text-main: #2d3748;
+            --border-color: #e2e8f0;
         }
 
         body {
-            background-color: var(--background-light);
-            color: var(--text-primary);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Inter', system-ui, sans-serif;
         }
 
         /* Card Modern */
         .card-modern {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(42, 110, 127, 0.08);
-            background: white;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
             overflow: hidden;
             height: 100%;
+            transition: transform 0.2s ease;
         }
 
-        /* Header Style */
         .section-header {
-            background: var(--brand-soft);
-            color: var(--brand-primary);
-            padding: 20px 25px;
-            font-weight: 700;
-            border-bottom: 1px solid var(--border-soft);
+            background: linear-gradient(to right, rgba(42, 110, 127, 0.05), transparent);
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            color: var(--brand-primary);
+            font-size: 1.1rem;
         }
 
         .section-header i {
-            margin-right: 12px;
-            font-size: 1.2rem;
             color: var(--brand-secondary);
+            font-size: 1.25rem;
         }
 
-        /* Input Styling */
         .form-label-custom {
             font-weight: 600;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group-text {
+            background: #f8fafc;
+            border-color: var(--border-color);
+            color: #718096;
         }
 
         .form-control,
         .form-select {
-            border-radius: 10px;
-            border: 2px solid var(--border-soft);
-            padding: 10px 15px;
+            border-color: var(--border-color);
+            padding: 0.75rem 1rem;
             font-size: 0.95rem;
-            transition: all 0.2s;
         }
 
         .form-control:focus {
@@ -75,131 +77,177 @@
             box-shadow: 0 0 0 3px rgba(42, 110, 127, 0.1);
         }
 
-        .input-group-text {
-            background-color: white;
-            border: 2px solid var(--border-soft);
-            border-right: none;
-            color: var(--brand-secondary);
-            border-radius: 10px 0 0 10px;
-        }
-
-        .form-control {
-            border-left: none;
-            border-radius: 0 10px 10px 0;
-        }
-
-        /* Service Cards (Selectable) */
+        /* Service Cards */
         .service-card-label {
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid var(--border-soft);
-            border-radius: 15px;
-            overflow: hidden;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             height: 100%;
-            background: white;
+            padding: 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            background: #fff;
+            transition: all 0.2s;
+            position: relative;
         }
 
         .service-card-label:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border-color: var(--brand-primary);
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
         }
 
-        /* CHECKBOX LOGIC (Multi Select) */
         .btn-check:checked+.service-card-label {
             border-color: var(--brand-secondary);
-            background-color: #fff9f5;
-            /* Orange muda */
-            box-shadow: 0 5px 20px rgba(255, 122, 69, 0.2);
+            background-color: #fffaf7;
+            box-shadow: 0 8px 20px rgba(255, 122, 69, 0.15);
+        }
+
+        .check-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: var(--brand-secondary);
+            font-size: 1.2rem;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s;
         }
 
         .btn-check:checked+.service-card-label .check-icon {
-            display: inline-block !important;
-            color: var(--brand-secondary);
+            opacity: 1;
+            transform: scale(1);
         }
 
-        /* Summary Box (Sticky) */
+        /* 1. Style Default Deskripsi (Saat Belum Dipilih) */
+        .desc-full {
+            display: none;
+            /* Sembunyikan deskripsi panjang */
+            color: var(--text-main);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .desc-short {
+            display: block;
+            /* Tampilkan deskripsi pendek */
+        }
+
+        /* 2. Logika Saat Dipilih (Checked) */
+
+        /* Sembunyikan deskripsi pendek */
+        .btn-check:checked+.service-card-label .desc-short {
+            display: none;
+        }
+
+        /* Tampilkan deskripsi panjang dengan animasi */
+        .btn-check:checked+.service-card-label .desc-full {
+            display: block !important;
+            animation: fadeInDown 0.4s ease forwards;
+        }
+
+        /* Animasi Turun Halus */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Summary Box */
         .summary-box {
-            background: var(--brand-primary-dark);
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
             color: white;
-            border-radius: 20px;
-            padding: 25px;
-            position: sticky;
-            top: 20px;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 15px 30px rgba(42, 110, 127, 0.25);
         }
 
         .summary-list {
             list-style: none;
             padding: 0;
-            margin: 15px 0;
-            max-height: 200px;
+            margin: 1.5rem 0;
+            max-height: 300px;
             overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         .summary-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .total-price {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--brand-secondary);
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 0.95rem;
         }
 
         .btn-submit {
             background: var(--brand-secondary);
             color: white;
-            border: none;
             width: 100%;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 1rem;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 1.1rem;
-            transition: all 0.3s;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 122, 69, 0.3);
         }
 
         .btn-submit:hover {
-            background: var(--brand-secondary-dark);
+            background: var(--brand-secondary-hover);
             transform: translateY(-2px);
         }
 
-        .btn-check:checked+.service-card-label .desc-short {
-            display: none;
+        .badge-price {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
         }
 
-        .btn-check:checked+.service-card-label .desc-full {
-            display: block !important;
-            animation: fadeIn 0.3s ease-in;
+        .category-divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0 1.5rem;
+            font-weight: 700;
+            color: var(--brand-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
         }
 
-        .btn-check:checked+.service-card-label .check-icon {
-            display: block !important;
+        .category-divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: #e2e8f0;
+            margin-left: 1rem;
+            border-radius: 2px;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
+        /* Helper untuk sticky di desktop */
+        @media (min-width: 992px) {
+            .sticky-desktop {
+                position: sticky;
+                top: 20px;
             }
         }
     </style>
 
-    <main class="py-4">
-        <div class="container-fluid px-4"> {{-- Gunakan fluid agar landscape/lebar --}}
+    <main class="py-5">
+        <div class="container-xl">
 
-            {{-- Error Alerts --}}
             @if ($errors->any())
-                <div class="alert alert-danger border-0 rounded-3 mb-4">
-                    <ul class="mb-0">
+                <div class="alert alert-danger shadow-sm border-0 rounded-3 mb-4 animate__animated animate__fadeIn">
+                    <ul class="mb-0 ps-3">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -212,157 +260,159 @@
 
                 <div class="row g-4">
 
-                    {{-- KOLOM KIRI: DATA DIRI & RINGKASAN HARGA --}}
+                    {{-- 1. KOLOM KIRI (Data Pelanggan) --}}
                     <div class="col-lg-4">
-                        <div class="card-modern h-auto mb-4">
-                            <div class="section-header">
-                                <i class="fas fa-user-circle"></i> Data Pelanggan & Kendaraan
-                            </div>
-                            <div class="card-body p-4">
-                                {{-- Nama --}}
-                                <div class="mb-3">
-                                    <label class="form-label-custom">Nama Pemilik</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                        <input type="text" name="customer_name" class="form-control bg-light"
-                                            value="{{ $user->name }}" readonly>
+                        <div class="sticky-desktop">
+                            <div class="card-modern mb-4">
+                                <div class="section-header">
+                                    <i class="fas fa-id-card"></i> <span>Informasi Pelanggan</span>
+                                </div>
+                                <div class="card-body p-4">
+                                    {{-- Nama --}}
+                                    <div class="mb-3">
+                                        <label class="form-label-custom text-muted">Nama Pemilik</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                            <input type="text" name="customer_name"
+                                                class="form-control bg-light fw-bold text-dark" value="{{ $user->name }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+
+                                    {{-- WA --}}
+                                    <div class="mb-3">
+                                        <label class="form-label-custom">WhatsApp</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i
+                                                    class="fab fa-whatsapp text-success"></i></span>
+                                            <input type="text" name="customer_whatsapp" class="form-control"
+                                                value="{{ $user->phone }}" placeholder="08xxx" required>
+                                        </div>
+                                    </div>
+
+                                    {{-- Motor & Plat --}}
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-6">
+                                            <label class="form-label-custom">Jenis Motor</label>
+                                            <select class="form-select" name="vehicle_type">
+                                                <option value="" selected disabled>Pilih...</option>
+                                                <option value="bebek">Bebek</option>
+                                                <option value="sport">Sport</option>
+                                                <option value="matic">Matic</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label-custom">Plat Nomor</label>
+                                            <input type="text" name="plate_number"
+                                                class="form-control text-uppercase fw-medium" placeholder="* **** **"
+                                                required>
+                                        </div>
+                                    </div>
+
+                                    {{-- Tanggal --}}
+                                    <div class="mb-3">
+                                        <label class="form-label-custom">Rencana Booking</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i
+                                                    class="fas fa-calendar-day text-primary"></i></span>
+                                            <input type="datetime-local" name="booking_date" class="form-control" required>
+                                        </div>
+                                        <div class="form-text small text-danger mt-1">
+                                            <i class="fas fa-info-circle me-1"></i> Slot terbatas.
+                                        </div>
+                                    </div>
+
+                                    {{-- Keluhan --}}
+                                    <div>
+                                        <label class="form-label-custom">Keluhan / Catatan</label>
+                                        <textarea name="complaint" class="form-control" rows="0" placeholder="Contoh: Rem bunyi, Bocor alus, Rantai soak...."></textarea>
                                     </div>
                                 </div>
-
-                                {{-- WA --}}
-                                <div class="mb-3">
-                                    <label class="form-label-custom">WhatsApp</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fab fa-whatsapp"></i></span>
-                                        <input type="text" name="customer_whatsapp" class="form-control"
-                                            value="{{ $user->phone }}" placeholder="08xxx" required>
-                                    </div>
-                                </div>
-
-                                {{-- Motor --}}
-                                <div class="row g-2 mb-3">
-                                    <div class="col-6">
-                                        <label class="form-label-custom">Jenis Motor</label>
-                                        <select class="form-control" name="vehicle_type">
-                                            <option value="">Pilihan</option>
-                                            <option value="bebek">Bebek</option>
-                                            <option value="sport">Sport</option>
-                                            <option value="matic">Matic</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label-custom">Plat Nomor</label>
-                                        <input type="text" name="plate_number" class="form-control text-uppercase"
-                                            placeholder="* **** **" required>
-                                    </div>
-                                </div>
-
-                                {{-- Keluhan --}}
-                                <div class="mb-3">
-                                    <label class="form-label-custom">Keluhan / Catatan</label>
-                                    <textarea name="complaint" class="form-control" rows="3"
-                                        placeholder="Contoh: Rem depan bunyi, tarikan berat, lampu sen mati..."></textarea>
-                                    <div class="form-text small text-muted">
-                                        <i class="fas fa-info-circle me-1"></i> Ceritakan kondisi motor Anda agar mekanik
-                                        lebih paham.
-                                    </div>
-                                </div>
-
-                                {{-- Tanggal --}}
-                                <div class="mb-3">
-                                    <label class="form-label-custom">Rencana Booking</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                        <input type="datetime-local" name="booking_date" class="form-control" required>
-                                    </div>
-                                    <div class="form-text small text-danger"><i class="fas fa-exclamation-circle"></i> Slot
-                                        terbatas.</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- RINGKASAN & TOTAL (STICKY) --}}
-                        <div class="summary-box shadow">
-                            <h5 class="fw-bold mb-3"><i class="fas fa-receipt me-2"></i>Ringkasan Pesanan</h5>
-                            <div id="empty-state" class="text-white-50 small fst-italic">Belum ada layanan yang dipilih.
                             </div>
 
-                            {{-- Daftar Item yang Dipilih (Generated by JS) --}}
-                            <ul class="summary-list" id="summary-list"></ul>
+                            {{-- 
+                                [DESKTOP ONLY] RINGKASAN PESANAN
+                                Muncul di kiri bawah hanya saat layar besar (Laptop/PC) 
+                            --}}
+                            <div class="d-none d-lg-block">
+                                <div class="summary-box">
+                                    <h5 class="fw-bold mb-4 d-flex align-items-center">
+                                        <i class="fas fa-receipt me-3"></i> Ringkasan Pesanan
+                                    </h5>
 
-                            <hr class="border-white opacity-25">
+                                    <div
+                                        class="empty-state text-center py-4 border border-dashed border-light rounded-3 bg-white bg-opacity-10">
+                                        <i class="fas fa-shopping-basket fs-3 mb-2 opacity-50"></i>
+                                        <p class="small mb-0 opacity-75">Belum ada layanan dipilih.</p>
+                                    </div>
 
-                            <div class="d-flex justify-content-between align-items-end mb-3">
-                                <span class="small opacity-75">Total Estimasi</span>
-                                <div class="total-price">Rp <span id="total-price-display">0</span></div>
+                                    <ul class="summary-list" style="display: none;"></ul>
+
+                                    <div class="mt-4 pt-3 border-top border-white border-opacity-25">
+                                        <div class="d-flex justify-content-between align-items-end mb-4">
+                                            <span class="small text-uppercase opacity-75 ls-1">Total Estimasi</span>
+                                            <div class="fs-2 fw-bold lh-1">Rp <span class="total-price-display">0</span>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-submit">
+                                            <i class="fas fa-paper-plane me-2"></i> Konfirmasi Booking
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-
-                            <button type="submit" class="btn btn-submit shadow-lg">
-                                <i class="fas fa-paper-plane me-2"></i> Booking Sekarang
-                            </button>
                         </div>
                     </div>
 
-                    {{-- KOLOM KANAN: PILIHAN LAYANAN (GRID) --}}
+                    {{-- 2. KOLOM KANAN (Pilih Layanan) --}}
                     <div class="col-lg-8">
-                        <div class="card-modern">
+                        <div class="card-modern mb-4">
                             <div class="section-header justify-content-between">
-                                <div><i class="fas fa-th-large"></i> Pilih Layanan</div>
-                                <small class="fw-normal text-muted"><i class="fas fa-info-circle"></i> Anda bisa memilih
-                                    lebih dari satu.</small>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fas fa-tools"></i> <span>Pilih Layanan Servis</span>
+                                </div>
+                                <span class="badge bg-light text-dark fw-normal border">
+                                    <i class="fas fa-check-double me-1"></i> Multi-select
+                                </span>
                             </div>
 
-                            <div class="card-body p-4">
-
-                                {{-- 1. PAKET SPESIAL --}}
-                                <h6 class="fw-bold text-dark mb-3 ps-2 border-start border-4 border-danger">
-                                    &nbsp; Paket Spesial
-                                </h6>
-                                <div class="row g-3 mb-5 align-items-start">
+                            <div class="card-body p-4 p-md-5">
+                                {{-- Paket Spesial --}}
+                                <div class="category-divider">
+                                    <span class="text-danger"><i class="fas fa-star me-2"></i>Paket Spesial</span>
+                                </div>
+                                <div class="row g-4 mb-5 align-items-start">
                                     @foreach ($services->where('type', 'paket') as $paket)
                                         <div class="col-md-6">
                                             <input type="checkbox" class="btn-check service-checkbox" name="service_ids[]"
                                                 id="service_{{ $paket->id }}" value="{{ $paket->id }}"
                                                 data-name="{{ $paket->name }}" data-price="{{ $paket->price }}">
 
-                                            <label class="service-card-label p-3 position-relative"
-                                                for="service_{{ $paket->id }}">
-                                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                                    <h6 class="fw-bold text-dark mb-0">{{ $paket->name }}</h6>
-                                                    <span class="badge bg-danger">Rp
-                                                        {{ number_format($paket->price, '0', '.', '.') }} </span>
+                                            <label class="service-card-label h-100" for="service_{{ $paket->id }}">
+                                                <div class="d-flex justify-content-between align-items-start w-100 mb-2">
+                                                    <h6 class="fw-bold text-dark mb-0 fs-5">{{ $paket->name }}</h6>
+                                                    <i class="fas fa-check-circle check-icon"></i>
                                                 </div>
-
-                                                {{-- Deskripsi --}}
-                                                <div class="description-wrapper small text-muted mb-0">
-                                                    <span class="desc-short">
-                                                        {{ Str::limit($paket->description, 50, '...') }}
-                                                    </span>
-
-                                                    <span class="desc-full" style="display:none">
-                                                        {{ $paket->description }}
+                                                <div class="mb-3">
+                                                    <span
+                                                        class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2">
+                                                        Rp {{ number_format($paket->price, 0, ',', '.') }}
                                                     </span>
                                                 </div>
-
-                                                <div class="check-icon position-absolute bottom-0 end-0 p-3"
-                                                    style="display:none">
-                                                    <i class="fas fa-check-circle fa-lg"></i>
+                                                <div class="text-muted small border-top pt-3 mt-auto">
+                                                    <span
+                                                        class="desc-short">{{ Str::limit($paket->description, 60, '...') }}</span>
+                                                    <span class="desc-full">{{ $paket->description }}</span>
                                                 </div>
                                             </label>
                                         </div>
                                     @endforeach
-                                    @if ($services->where('type', 'paket')->isEmpty())
-                                        <div class="col-12">
-                                            <div class="alert alert-light">Tidak ada paket tersedia.</div>
-                                        </div>
-                                    @endif
                                 </div>
 
-
-                                {{-- 2. LAYANAN SATUAN --}}
-                                <h6 class="fw-bold text-dark mb-3 ps-2 border-start border-4 border-secondary">
-                                    &nbsp; Layanan Satuan / Regular
-                                </h6>
+                                {{-- Layanan Satuan --}}
+                                <div class="category-divider">
+                                    <span class="text-primary"><i class="fas fa-wrench me-2"></i>Layanan Regular</span>
+                                </div>
                                 <div class="row g-3">
                                     @foreach ($services->where('type', 'non_paket') as $layanan)
                                         <div class="col-md-4 col-sm-6">
@@ -371,33 +421,58 @@
                                                 value="{{ $layanan->id }}" data-name="{{ $layanan->name }}"
                                                 data-price="{{ $layanan->price }}">
 
-                                            <label
-                                                class="service-card-label p-3 d-flex flex-column justify-content-between h-100 position-relative"
-                                                for="service_{{ $layanan->id }}">
-                                                <div class="fw-bold text-dark mb-1">{{ $layanan->name }}</div>
-                                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                                    <span class="fw-bold text-secondary">Rp
-                                                        {{ number_format($layanan->price, 0, ',', '.') }}</span>
+                                            <label class="service-card-label" for="service_{{ $layanan->id }}">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div class="fw-bold text-dark">{{ $layanan->name }}</div>
+                                                    <i class="fas fa-check-circle check-icon"></i>
                                                 </div>
-
-                                                <div class="check-icon position-absolute bottom-0 end-0 p-2"
-                                                    style="display: none;">
-                                                    <i class="fas fa-check-circle"></i>
+                                                <div class="mt-auto pt-2">
+                                                    <span class="fw-bold text-secondary fs-5">
+                                                        Rp {{ number_format($layanan->price, 0, ',', '.') }}
+                                                    </span>
                                                 </div>
                                             </label>
                                         </div>
                                     @endforeach
-                                    @if ($services->where('type', 'non_paket')->isEmpty())
-                                        <div class="col-12">
-                                            <div class="alert alert-light">Layanan satuan kosong.</div>
-                                        </div>
-                                    @endif
                                 </div>
-
                             </div>
                         </div>
-                    </div>
 
+                        {{-- 
+                            [MOBILE ONLY] RINGKASAN PESANAN
+                            Muncul di sini (Paling Bawah) hanya saat di HP.
+                            Ini menjawab keinginan layout Anda: Data -> Layanan -> Ringkasan.
+                        --}}
+                        <div class="d-block d-lg-none">
+                            <div class="summary-box">
+                                <h5 class="fw-bold mb-4 d-flex align-items-center">
+                                    <i class="fas fa-receipt me-3"></i> Ringkasan Pesanan
+                                </h5>
+
+                                <div
+                                    class="empty-state text-center py-4 border border-dashed border-light rounded-3 bg-white bg-opacity-10">
+                                    <i class="fas fa-shopping-basket fs-3 mb-2 opacity-50"></i>
+                                    <p class="small mb-0 opacity-75">Belum ada layanan dipilih.</p>
+                                </div>
+
+                                <ul class="summary-list" style="display: none;"></ul>
+
+                                <div class="mt-4 pt-3 border-top border-white border-opacity-25">
+                                    <div class="d-flex justify-content-between align-items-end mb-4">
+                                        <span class="small text-uppercase opacity-75 ls-1">Total Estimasi</span>
+                                        <div class="fs-2 fw-bold lh-1">Rp <span class="total-price-display">0</span></div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-submit">
+                                        <i class="fas fa-paper-plane me-2"></i> Konfirmasi Booking
+                                    </button>
+                                </div>
+                            </div>
+
+                            <br>
+                        </div>
+
+                    </div>
                 </div>
             </form>
         </div>
@@ -407,26 +482,16 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const checkboxes = document.querySelectorAll('.service-checkbox');
-            const summaryList = document.getElementById('summary-list');
-            const totalPriceDisplay = document.getElementById('total-price-display');
-            const emptyState = document.getElementById('empty-state');
 
-            const resetCard = () => {
-                document.querySelectorAll('.service-card-label').forEach(label => {
-                    const fullDesc = label.querySelector('.desc-full');
-                    const shortDesc = label.querySelector('.desc-short');
+            // Selector Class (untuk menangkap element di Desktop & Mobile sekaligus)
+            const summaryLists = document.querySelectorAll('.summary-list');
+            const totalPriceDisplays = document.querySelectorAll('.total-price-display');
+            const emptyStates = document.querySelectorAll('.empty-state');
 
-                    if(fullDesc) fullDesc.style.display = 'none';
-                    if(shortDesc) shortDesc.style.display = 'block';
-                })
-            }
-
-            // Fungsi Format Rupiah
             const formatRupiah = (number) => {
                 return new Intl.NumberFormat('id-ID').format(number);
             };
 
-            // Fungsi Update Ringkasan
             const updateSummary = () => {
                 let total = 0;
                 let html = '';
@@ -440,27 +505,29 @@
                         total += price;
 
                         html += `
-                            <li class="summary-item animate__animated animate__fadeInRight">
-                                <span>${name}</span>
-                                <span class="fw-bold">Rp ${formatRupiah(price)}</span>
+                            <li class="summary-item animate__animated animate__fadeInRight animate__faster">
+                                <div><i class="fas fa-check text-white-50 me-2 small"></i><span>${name}</span></div>
+                                <span class="badge-price">Rp ${formatRupiah(price)}</span>
                             </li>
                         `;
                     }
                 });
 
-                // Update DOM
-                summaryList.innerHTML = html;
-                totalPriceDisplay.innerText = formatRupiah(total);
+                // Update konten ke SEMUA Ringkasan (Desktop & Mobile)
+                summaryLists.forEach(list => {
+                    list.innerHTML = html;
+                    list.style.display = count > 0 ? 'block' : 'none';
+                });
 
-                // Toggle Empty State
-                if (count > 0) {
-                    emptyState.style.display = 'none';
-                } else {
-                    emptyState.style.display = 'block';
-                }
+                totalPriceDisplays.forEach(display => {
+                    display.innerText = formatRupiah(total);
+                });
+
+                emptyStates.forEach(state => {
+                    state.style.display = count > 0 ? 'none' : 'block';
+                });
             };
 
-            // Event Listener tiap checkbox
             checkboxes.forEach(chk => {
                 chk.addEventListener('change', updateSummary);
             });
