@@ -319,6 +319,17 @@
                 </li>
 
                 <li class="sidebar-divider"></li>
+                <li class="sidebar-label">Keuangan</li>
+                
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('keuangan.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('keuangan.*') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-wallet"></i></div>
+                        <span>Keuangan</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-divider"></li>
                 <li class="sidebar-label">Administrator</li>
 
                 <li class="sidebar-menu-item">
