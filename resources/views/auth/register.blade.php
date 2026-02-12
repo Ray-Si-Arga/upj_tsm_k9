@@ -247,8 +247,8 @@
                         icon.classList.add('fa-eye-slash');
                     } else {
                         input.classList.remove('password-shown');
-                        icon.classList.remove('fa-eye-slash');
-                        icon.classList.add('fa-eye');
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
                     }
                 });
             }
