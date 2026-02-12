@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 // --- Rute Dashboard ---
 Route::get('/', function () {
-    return view('dashboard');
+    return view('welcome');
 });
 
 // ------------------------------------------------------------- //
