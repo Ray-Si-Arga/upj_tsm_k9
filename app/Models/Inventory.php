@@ -9,5 +9,5 @@ class Inventory extends Model
 {
     use HasFactory;
     protected $table = 'inventory';
-    protected $fillable = ['nama_barang', 'jumlah_barang', 'harga_barang'];
+    protected $fillable = ['nama_barang', 'jumlah_barang', 'harga_beli', 'harga_jual'];
 }

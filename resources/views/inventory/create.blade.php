@@ -105,23 +105,24 @@
                                 @enderror
                             </div>
 
-                            {{-- Harga barang --}}
+                            {{-- Harga Beli --}}
                             <div class="mb-4">
-                                <label for="harga_barang_view" class="form-label-custom">{{ __('Harga Satuan') }}</label>
+                                <label for="harga_beli_view" class="form-label-custom">{{ __('Harga Beli') }}</label>
                                 <div class="input-group">
-                                    <span class="input-group-text fw-bold text-muted" style="font-size: 0.9rem;">Rp</span>
-
-                                    <input id="harga_barang_view" type="text"
-                                        class="form-control form-control-custom @error('harga_barang') is-invalid @enderror"
-                                        placeholder="0" autocomplete="off" required>
-
-                                    <input id="harga_barang" type="hidden" name="harga_barang">
+                                    <span class="input-group-text fw-bold text-muted">Rp</span>
+                                    <input id="harga_beli_view" type="text" class="form-control form-control-custom" placeholder="0" autocomplete="off" required>
+                                    <input id="harga_beli" type="hidden" name="harga_beli">
                                 </div>
-                                @error('harga_barang')
-                                    <small class="text-danger mt-1 d-block">
-                                        <strong>{{ $message }}</strong>
-                                    </small>
-                                @enderror
+                            </div>
+
+                            {{-- Harga Jual --}}
+                            <div class="mb-4">
+                                <label for="harga_jual_view" class="form-label-custom">{{ __('Harga Jual') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text fw-bold text-muted">Rp</span>
+                                    <input id="harga_jual_view" type="text" class="form-control form-control-custom" placeholder="0" autocomplete="off" required>
+                                    <input id="harga_jual" type="hidden" name="harga_jual">
+                                </div>
                             </div>
 
                             <div class="d-grid gap-2 mt-5">
@@ -142,24 +143,19 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const viewInput = document.getElementById('harga_barang_view');
-            const realInput = document.getElementById('harga_barang');
+            function setupMask(viewId, hiddenId) {
+                const viewInput = document.getElementById(viewId);
+                const realInput = document.getElementById(hiddenId);
 
-            // Format awal jika ada old value (saat validasi gagal)
-            if (realInput.value) {
-                viewInput.value = new Intl.NumberFormat('id-ID').format(realInput.value);
+                viewInput.addEventListener('input', function() {
+                    let angka = this.value.replace(/[^0-9]/g, '');
+                    realInput.value = angka;
+                    this.value = angka ? new Intl.NumberFormat('id-ID').format(angka) : '';
+                });
             }
 
-            viewInput.addEventListener('input', function() {
-                // Hapus karakter selain angka
-                let angka = this.value.replace(/[^0-9]/g, '');
-
-                // Set value ke hidden input
-                realInput.value = angka;
-
-                // Format tampilan ke Ribuan Indonesia
-                this.value = angka ? new Intl.NumberFormat('id-ID').format(angka) : '';
-            });
+            setupMask('harga_beli_view', 'harga_beli');
+            setupMask('harga_jual_view', 'harga_jual');
         });
     </script>
 @endsection

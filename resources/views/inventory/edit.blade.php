@@ -106,25 +106,26 @@
                                 @enderror
                             </div>
 
-                            {{-- Harga Barang --}}
+                            {{-- Harga Beli --}}
                             <div class="mb-4">
-                                <label for="harga_barang_view" class="form-label-custom">{{ __('Harga Satuan') }}</label>
+                                <label for="harga_beli_view" class="form-label-custom">{{ __('Harga Beli') }}</label>
                                 <div class="input-group">
-                                    <span class="input-group-text fw-bold text-muted" style="font-size: 0.9rem;">Rp</span>
-
-                                    <input id="harga_barang_view" type="text"
-                                        class="form-control form-control-custom @error('harga_barang') is-invalid @enderror"
-                                        value="{{ number_format($inventory->harga_barang, 0, ',', '.') }}"
-                                        autocomplete="off" required>
-
-                                    <input type="hidden" id="harga_barang" name="harga_barang"
-                                        value="{{ $inventory->harga_barang }}">
+                                    <span class="input-group-text fw-bold text-muted">Rp</span>
+                                    <input id="harga_beli_view" type="text" class="form-control form-control-custom" 
+                                        value="{{ number_format($inventory->harga_beli, 0, ',', '.') }}" required>
+                                    <input type="hidden" id="harga_beli" name="harga_beli" value="{{ $inventory->harga_beli }}">
                                 </div>
-                                @error('harga_barang')
-                                    <small class="text-danger mt-1 d-block">
-                                        <strong>{{ $message }}</strong>
-                                    </small>
-                                @enderror
+                            </div>
+
+                            {{-- Harga Jual --}}
+                            <div class="mb-4">
+                                <label for="harga_jual_view" class="form-label-custom">{{ __('Harga Jual') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text fw-bold text-muted">Rp</span>
+                                    <input id="harga_jual_view" type="text" class="form-control form-control-custom" 
+                                        value="{{ number_format($inventory->harga_jual, 0, ',', '.') }}" required>
+                                    <input type="hidden" id="harga_jual" name="harga_jual" value="{{ $inventory->harga_jual }}">
+                                </div>
                             </div>
 
                             <div class="d-grid gap-2 mt-5">

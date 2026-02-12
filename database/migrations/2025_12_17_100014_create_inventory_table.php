@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nama_barang');
             $table->integer('jumlah_barang');
-            $table->decimal('harga_barang', 12 , 0);
+            $table->decimal('harga_beli', 12, 0); // Pengganti harga_barang
+            $table->decimal('harga_jual', 12, 0); // Kolom baru
             $table->timestamps();
         });
     }

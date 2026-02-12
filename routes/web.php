@@ -5,6 +5,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\ServiceAdvisorController;
+use App\Http\Controllers\KeuanganController;
 use FontLib\Table\Type\name;
 use Illuminate\Support\Facades\Route;
 
@@ -122,7 +123,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/history', [BookingController::class, 'historyDetail'])->name('history.detail');
 
         Route::delete('/destroy/{id}', [BookingController::class, 'destroy'])->name('destroy');
+
+    
+        
     });
+    
+    // --------------------------------------------- //
+    // ---------------- Keuangan -------------------- //
+    // --------------------------------------------- //
+    Route::get('/keuangan', [KeuanganController::class, 'index'])->name('keuangan.index');
+
 
     // ----------------------------------------------- //
     // ---------------- Customers -------------------- //
