@@ -268,7 +268,31 @@
                 </li>
             @endif
 
-            @if (auth()->check() && auth()->user()->role === 'admin')
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('inventory.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-box"></i></div>
+                        <span>Inventory</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('keuangan.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('keuangan.*') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-wallet"></i></div>
+                        <span>Keuangan</span>
+                    </a>
+                </li>
+
+                
+
+                <li class="sidebar-divider"></li>
+                <!-- <li class="sidebar-label">Gudang</li> !-->
+
+                
+                <li class="sidebar-label">Layanan</li>
+
+                @if (auth()->check() && auth()->user()->role === 'admin')
                 <li class="sidebar-menu-item">
                     <a href="{{ route('booking.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('booking.*') ? 'active' : '' }}">
@@ -282,25 +306,12 @@
                 </li>
 
                 <li class="sidebar-menu-item">
-                    <a href="{{ route('customers.index') }}"
-                        class="sidebar-menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon"><i class="fa-solid fa-users"></i></div>
-                        <span>Akun Customers</span>
+                    <a href="{{ route('advisor.create') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('advisor.*') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-file-signature"></i></div>
+                        <span>Form Keluhan</span>
                     </a>
                 </li>
-
-                <li class="sidebar-divider"></li>
-                <li class="sidebar-label">Gudang</li>
-
-                <li class="sidebar-menu-item">
-                    <a href="{{ route('inventory.index') }}"
-                        class="sidebar-menu-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon"><i class="fa-solid fa-box"></i></div>
-                        <span>Inventory</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-label">Layanan</li>
 
                 <li class="sidebar-menu-item">
                     <a href="{{ route('layanan.index') }}"
@@ -310,24 +321,12 @@
                     </a>
                 </li>
 
-                <li class="sidebar-menu-item">
-                    <a href="{{ route('advisor.create') }}"
-                        class="sidebar-menu-link {{ request()->routeIs('advisor.*') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon"><i class="fa-solid fa-file-signature"></i></div>
-                        <span>Form Keluhan</span>
-                    </a>
-                </li>
-
-                <li class="sidebar-divider"></li>
-                <li class="sidebar-label">Keuangan</li>
                 
-                <li class="sidebar-menu-item">
-                    <a href="{{ route('keuangan.index') }}"
-                        class="sidebar-menu-link {{ request()->routeIs('keuangan.*') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon"><i class="fa-solid fa-wallet"></i></div>
-                        <span>Keuangan</span>
-                    </a>
-                </li>
+
+                <!-- <li class="sidebar-divider"></li> 
+                <li class="sidebar-label">Keuangan</li> !-->
+                
+                
 
                 <li class="sidebar-divider"></li>
                 <li class="sidebar-label">Administrator</li>
@@ -337,6 +336,14 @@
                         class="sidebar-menu-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">
                         <div class="sidebar-menu-icon"><i class="fa-solid fa-user-plus"></i></div>
                         <span>Registrasi</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('customers.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-users"></i></div>
+                        <span>Akun Customers</span>
                     </a>
                 </li>
             @endif
