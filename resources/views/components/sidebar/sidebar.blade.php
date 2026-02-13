@@ -202,23 +202,21 @@
     }
 
     .logout-btn:hover {
-        background: #ef4444;
+        background: linear-gradient(135deg, var(--honda-red) 0%, var(--honda-red-dark) 100%);
         color: white;
     }
 
     /* --- KHUSUS HP (Mobile Fix) --- */
     @media (max-width: 991px) {
 
-        .sidebar-header{
+        .sidebar-header {
             justify-content: flex-end;
             padding: 25px 55px;
         }
 
         .sidebar-logout {
-            /* SOLUSI: Tambahkan padding bawah yang SANGAT BESAR khusus di HP.
-               Ini akan memaksa tombol logout naik ke atas sejauh 100px dari bawah layar.
-               Jadi walaupun ada address bar Google, tombol tetap terlihat. */
             padding-bottom: 70px !important;
+            color: #b30000;
         }
     }
 </style>
@@ -244,6 +242,8 @@
 
             {{-- Khusus Admin --}}
             @if (auth()->check() && auth()->user()->role === 'admin')
+
+                {{-- Dashboard admin --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('admin.dashboard') }}"
                         class="sidebar-menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -251,23 +251,11 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-            @else
-                <li class="sidebar-menu-item">
-                    <a href="{{ route('pelanggan.dashboard') }}"
-                        class="sidebar-menu-link {{ request()->routeIs('pelanggan.dashboard') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon"><i class="fa-solid fa-house"></i></div>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="sidebar-menu-item">
-                    <a href="{{ route('pelanggan.service') }}"
-                        class="sidebar-menu-link {{ request()->routeIs('pelanggan.service') ? 'active' : '' }}">
-                        <div class="sidebar-menu-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-                        <span>Service</span>
-                    </a>
-                </li>
-            @endif
 
+
+                <li class="sidebar-divider"></li>
+                <li class="sidebar-label">Operasional</li>
+                {{-- Inventory Admin --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('inventory.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
@@ -276,6 +264,7 @@
                     </a>
                 </li>
 
+                {{-- Keuangan Admin --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('keuangan.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('keuangan.*') ? 'active' : '' }}">
@@ -284,15 +273,12 @@
                     </a>
                 </li>
 
-                
 
                 <li class="sidebar-divider"></li>
                 <!-- <li class="sidebar-label">Gudang</li> !-->
-
-                
                 <li class="sidebar-label">Layanan</li>
 
-                @if (auth()->check() && auth()->user()->role === 'admin')
+                {{-- Daftar Booking Admin --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('booking.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('booking.*') ? 'active' : '' }}">
@@ -305,6 +291,7 @@
                     </a>
                 </li>
 
+                {{-- Form Keluhan Admin --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('advisor.create') }}"
                         class="sidebar-menu-link {{ request()->routeIs('advisor.*') ? 'active' : '' }}">
@@ -313,6 +300,7 @@
                     </a>
                 </li>
 
+                {{-- Paket Dan Layanan Admin --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('layanan.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('layanan.*') ? 'active' : '' }}">
@@ -321,16 +309,10 @@
                     </a>
                 </li>
 
-                
-
-                <!-- <li class="sidebar-divider"></li> 
-                <li class="sidebar-label">Keuangan</li> !-->
-                
-                
-
                 <li class="sidebar-divider"></li>
                 <li class="sidebar-label">Administrator</li>
 
+                {{-- Registrasi Khusus Admin --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('admin.register') }}"
                         class="sidebar-menu-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">
@@ -339,11 +321,33 @@
                     </a>
                 </li>
 
+                {{-- Akun Customer Admin --}}
                 <li class="sidebar-menu-item">
                     <a href="{{ route('customers.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
                         <div class="sidebar-menu-icon"><i class="fa-solid fa-users"></i></div>
                         <span>Akun Customers</span>
+                    </a>
+                </li>
+
+
+                {{-- KHUSUS PELANGGAN --}}
+            @else
+                {{-- Dashboard Pelanggan --}}
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('pelanggan.dashboard') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('pelanggan.dashboard') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-house"></i></div>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                {{-- Service Pelanggan --}}
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('pelanggan.service') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('pelanggan.service') ? 'active' : '' }}">
+                        <div class="sidebar-menu-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                        <span>Service</span>
                     </a>
                 </li>
             @endif
@@ -363,7 +367,7 @@
 </aside>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.getElementById('sidebar-toggle');
         const toggleIcon = toggleBtn.querySelector('i');
@@ -386,14 +390,14 @@
         }
 
         if (toggleBtn) {
-            toggleBtn.addEventListener('click', function(e) {
+            toggleBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 toggleSidebar();
             });
         }
 
         // Tutup sidebar jika klik di luar sidebar (pada mobile)
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
                 if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
                     toggleSidebar();

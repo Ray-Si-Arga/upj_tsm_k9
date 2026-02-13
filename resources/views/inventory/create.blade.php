@@ -80,7 +80,7 @@
                                     <input id="nama_barang" type="text"
                                         class="form-control form-control-custom @error('nama_barang') is-invalid @enderror"
                                         name="nama_barang" value="{{ old('nama_barang') }}"
-                                        placeholder="Contoh: Laptop Asus" required autofocus>
+                                        placeholder="Contoh: Ban, Busi, Spion" required autofocus>
                                 </div>
                                 @error('nama_barang')
                                     <small class="text-danger mt-1 d-block">
