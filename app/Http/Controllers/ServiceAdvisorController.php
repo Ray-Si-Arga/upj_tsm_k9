@@ -99,7 +99,7 @@ class ServiceAdvisorController extends Controller
                     // Kurangi Stok
                     $inventoryItem->decrement('jumlah_barang', $qty);
 
-                    $price = $inventoryItem->harga_barang;
+                    $price = $inventoryItem->harga_jual;
                     $subtotal = $price * $qty;
 
                     $processedParts[] = [
