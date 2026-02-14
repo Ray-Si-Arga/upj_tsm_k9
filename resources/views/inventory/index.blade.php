@@ -59,6 +59,18 @@
         .stock-badge {
             min-width: 60px;
         }
+
+        /* Responsive Button: Full width mobile, Auto desktop */
+        .btn-create-inventory {
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .btn-create-inventory {
+                width: auto;
+                min-width: 160px; /* Opsional: memberi lebar minimal agar tetap terlihat proporsional */
+            }
+        }
     </style>
 
 <main class="py-4">
@@ -69,7 +81,7 @@
                     <h2 class="fw-bold text-dark mb-1">Daftar Spare-Part</h2>
                     <p class="text-muted mb-0">Kelola stok, harga beli, dan margin keuntungan.</p>
                 </div>
-                <a href="{{ route('inventory.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm w-100 w-md-auto">
+                <a href="{{ route('inventory.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm btn-create-inventory">
                     <i class="fas fa-plus me-2"></i> Tambah Barang
                 </a>
             </div>
