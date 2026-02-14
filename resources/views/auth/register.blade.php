@@ -3,7 +3,7 @@
 @section('title', 'Registrasi Pengguna Baru')
 
 @section('content')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
     <style>
         .form-card {
@@ -132,8 +132,8 @@
                                 <label class="form-label-custom">Nama Lengkap</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" name="name" class="form-control"
-                                        placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required>
+                                    <input type="text" name="name" class="form-control" placeholder="Masukkan nama lengkap"
+                                        value="{{ old('name') }}" required>
                                 </div>
                             </div>
 
@@ -166,7 +166,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text bg-success text-white"><i
                                             class="fab fa-whatsapp"></i></span>
-                                    <input type="text" name="phone" class="form-control" placeholder="08xxxxxxxxxx"
+                                    <input type="number" name="phone" class="form-control" placeholder="08xxxxxxxxxx"
                                         value="{{ old('phone') }}">
                                 </div>
                                 <small class="text-muted">*Wajib diisi untuk Customer</small>
@@ -185,7 +185,7 @@
                             </div> --}}
 
                             {{-- 4. Role --}}
-                           
+
 
                             <hr class="text-muted my-2 opacity-25">
 
@@ -197,7 +197,7 @@
                                     <input type="password" name="password" id="password" class="form-control"
                                         placeholder="Minimal 8 karakter" required>
                                     <button class="btn btn-toggle-password" type="button" id="togglePassword">
-                                        <i class="fas fa-eye"></i>
+                                        <i class="ri-eye-off-fill"></i>
                                     </button>
                                 </div>
                             </div>
@@ -209,15 +209,14 @@
                                     <input type="password" name="password_confirmation" id="password_confirmation"
                                         class="form-control" placeholder="Ulangi password" required>
                                     <button class="btn btn-toggle-password" type="button" id="togglePasswordConfirm">
-                                        <i class="fas fa-eye"></i>
+                                        <i class="ri-eye-off-fill"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-end gap-3 mt-5">
-                            <a href="{{ route('admin.dashboard') }}"
-                                class="btn btn-light btn-modern text-secondary border">
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-light btn-modern text-secondary border">
                                 <i class="fas fa-arrow-left me-2"></i> Kembali
                             </a>
                             <button type="submit" class="btn btn-success btn-modern px-5 shadow">
@@ -231,32 +230,42 @@
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             function setupToggle(buttonId, inputId) {
                 const button = document.getElementById(buttonId);
                 const input = document.getElementById(inputId);
-                const icon = button.querySelector('i');
 
-                button.addEventListener('click', function() {
+                // Sesuaikan jika button itu sendiri adalah icon, atau icon ada di dalamnya
+                const icon = button.tagName === 'I' ? button : button.querySelector('i');
+
+                button.addEventListener('click', function () {
                     const isPassword = input.type === 'password';
-                    input.type = isPassword ? 'text' : 'password';
 
                     if (isPassword) {
+                        // Saat diklik berubah jadi TEXT (Password terlihat)
+                        input.type = 'text';
                         input.classList.add('password-shown');
-                        icon.classList.remove('fa-eye');
-                        icon.classList.add('fa-eye-slash');
+
+                        // Gunakan ri-eye-fill untuk mata terbuka (Remix Icon)
+                        icon.classList.remove('ri-eye-off-fill');
+                        icon.classList.add('ri-eye-fill');
                     } else {
+                        // Saat diklik kembali jadi PASSWORD (Password tersembunyi)
+                        input.type = 'password';
                         input.classList.remove('password-shown');
-                        icon.classList.remove('fa-eye');
-                        icon.classList.add('fa-eye-slash');
+
+                        // Gunakan ri-eye-off-fill untuk mata dicoret
+                        icon.classList.remove('ri-eye-fill');
+                        icon.classList.add('ri-eye-off-fill');
                     }
                 });
             }
+
+            // Pastikan ID ini sesuai dengan yang ada di HTML Anda
             setupToggle('togglePassword', 'password');
             setupToggle('togglePasswordConfirm', 'password_confirmation');
         });
-    </script>
-    <script>
+
         // Fungsi untuk menampilkan/menyembunyikan input WhatsApp
         function toggleWhatsapp() {
             const roleSelect = document.getElementById('roleSelect');
@@ -272,7 +281,7 @@
         }
 
         // Jalankan saat halaman dimuat (untuk handle old input jika validasi gagal)
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             toggleWhatsapp();
         });
     </script>
