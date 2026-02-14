@@ -548,7 +548,7 @@
 
                     <div class="remember-box">
                         <input type="checkbox" name="remember" id="remember">
-                        <label for="remember">Ingatkan Saya</label>
+                        <label for="remember">Ingat Saya</label>
                     </div>
 
                     <button type="submit" class="btnn">Masuk</button>

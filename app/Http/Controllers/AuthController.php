@@ -38,6 +38,14 @@ class AuthController extends Controller
      */
     public function login()
     {
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+            return redirect()->route('pelanggan.dashboard');
+        }
+
         return view('auth.login');
     }
 
@@ -67,11 +75,11 @@ class AuthController extends Controller
             $user = Auth::user();
 
             if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard')->with('success', 'Selamat Datang Admin ' .  Auth::user()->name);
+                return redirect()->route('admin.dashboard')->with('success', 'Selamat Datang Admin ' . Auth::user()->name);
             }
 
             // Ganti route ini sesuai route dashboard pelanggan kamu
-            return redirect()->route('pelanggan.dashboard')->with('success', 'Selamat Datang ' .  Auth::user()->name);
+            return redirect()->route('pelanggan.dashboard')->with('success', 'Selamat Datang ' . Auth::user()->name);
         }
 
         throw ValidationException::withMessages([

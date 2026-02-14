@@ -1,17 +1,22 @@
 <?php
-
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\ServiceAdvisorController;
 use App\Http\Controllers\KeuanganController;
-use FontLib\Table\Type\name;
-use Illuminate\Support\Facades\Route;
 
 
 // --- Rute Dashboard ---
 Route::get('/', function () {
+    if (Auth::check()) {
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('pelanggan.dashboard');
+    }
     return view('welcome');
 });
 
@@ -57,12 +62,12 @@ Route::middleware(['auth'])->group(function () {
     // ------------------------------------------------------ //
     // ---------------- Service Layanan  -------------------- //
     // ------------------------------------------------------ //
-    Route::get('/layanan', [LayananController::class, 'index']) -> name('layanan.index');
-    Route::get('/layanan/create', [LayananController::class, 'create']) -> name('layanan.create');
-    Route::post('/layanan/store', [LayananController::class, 'store']) -> name('layanan.store');
-    Route::get('/layanan/edit/{id}', [LayananController::class, 'edit']) -> name('layanan.edit');
-    Route::put('/layanan/update/{id}', [LayananController::class, 'update']) -> name('layanan.update');
-    Route::delete('/layanan/delete/{id}', [LayananController::class, 'destroy']) -> name('layanan.destroy');
+    Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
+    Route::get('/layanan/create', [LayananController::class, 'create'])->name('layanan.create');
+    Route::post('/layanan/store', [LayananController::class, 'store'])->name('layanan.store');
+    Route::get('/layanan/edit/{id}', [LayananController::class, 'edit'])->name('layanan.edit');
+    Route::put('/layanan/update/{id}', [LayananController::class, 'update'])->name('layanan.update');
+    Route::delete('/layanan/delete/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy');
 
 
     // ----------------------------------------------------- //
@@ -124,10 +129,10 @@ Route::middleware(['auth'])->group(function () {
 
         Route::delete('/destroy/{id}', [BookingController::class, 'destroy'])->name('destroy');
 
-    
-        
+
+
     });
-    
+
     // --------------------------------------------- //
     // ---------------- Keuangan -------------------- //
     // --------------------------------------------- //

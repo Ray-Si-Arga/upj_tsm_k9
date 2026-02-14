@@ -174,17 +174,10 @@
                     </div>
 
                     <div class="flex items-center">
-                        @if (Route::has('login'))
-                            @auth
-                                <a href="{{ url('/dashboard') }}"
-                                    class="bg-red-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-md">Dashboard</a>
-                            @else
-                                <a href="{{ route('login') }}"
-                                    class="bg-red-600 hover:bg-red-700 text-white text-[14px] md:text-sm px-4 py-2 md:px-5 md:py-2 rounded-lg font-medium transition-colors duration-200 shadow-md flex items-center">
-                                    <i class="fas fa-sign-in-alt mr-2"></i> Masuk
-                                </a>
-                            @endauth
-                        @endif
+                        <a href="{{ route('login') }}"
+                            class="bg-red-600 hover:bg-red-700 text-white text-[14px] md:text-sm px-4 py-2 md:px-5 md:py-2 rounded-lg font-medium transition-colors duration-200 shadow-md flex items-center">
+                            <i class="fas fa-sign-in-alt mr-2"></i> Masuk
+                        </a>
                     </div>
                 </div>
             </div>
