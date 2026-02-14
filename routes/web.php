@@ -48,7 +48,7 @@ Route::get('/pelanggan/history', [BookingController::class, 'pelangganHistory'])
 // ----------------- Advisor --------------------- //
 // ----------------------------------------------- //
 Route::prefix('advisor')->name('advisor.')->group(function () {
-    Route::get('/history', [ServiceAdvisorController::class, 'index'])->name('index');
+    Route::get('/index', [ServiceAdvisorController::class, 'index'])->name('index');
     Route::get('/create', [ServiceAdvisorController::class, 'create'])->name('create');
     Route::post('/store', [ServiceAdvisorController::class, 'store'])->name('store');
     Route::get('/{advisor}/print', [ServiceAdvisorController::class, 'print'])->name('print');

@@ -658,7 +658,7 @@
             let optionsHtml = '<option value="">Pilih...</option>';
             inventoryData.forEach(item => {
                 optionsHtml +=
-                    `<option value="${item.id}" data-price="${item.harga_barang}">${item.nama_barang} (Stok: ${item.jumlah_barang})</option>`;
+                    `<option value="${item.id}" data-price="${item.harga_jual}">${item.nama_barang} (Stok: ${item.jumlah_barang})</option>`;
             });
 
             const rowHtml = `
