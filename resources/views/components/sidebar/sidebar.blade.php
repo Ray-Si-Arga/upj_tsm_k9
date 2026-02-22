@@ -293,10 +293,10 @@
 
                 {{-- Form Keluhan Admin --}}
                 <li class="sidebar-menu-item">
-                    <a href="{{ route('advisor.create') }}"
+                    <a href="{{ route('advisor.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('advisor.*') ? 'active' : '' }}">
                         <div class="sidebar-menu-icon"><i class="fa-solid fa-file-signature"></i></div>
-                        <span>Form Keluhan</span>
+                        <span>Advisor</span>
                     </a>
                 </li>
 

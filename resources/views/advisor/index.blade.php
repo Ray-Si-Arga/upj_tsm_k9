@@ -273,7 +273,7 @@
                             <tr>
                                 <td class="text-center text-muted small">{{ $index + $histories->firstItem() }}</td>
                                 <td>
-                                    <div class="fw-semibold text-dark">{{ $data->created_at->format('d/m/Y') }}</div>
+                                    <div class="fw-semibold text-dark">{{ $data->created_at->format('d M Y') }}</div>
                                     <div class="text-muted x-small" style="font-size: 0.75rem;">
                                         <i class="far fa-clock me-1"></i>{{ $data->created_at->format('H:i') }}
                                     </div>
