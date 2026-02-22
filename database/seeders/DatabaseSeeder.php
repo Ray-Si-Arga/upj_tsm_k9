@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ServiceSeeder::class,
             BookingSeeder::class,
+            InventorySeeder::class,
         ]);
         // User::factory(10)->create();
 
