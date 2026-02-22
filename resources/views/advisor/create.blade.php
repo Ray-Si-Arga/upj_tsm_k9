@@ -527,11 +527,11 @@
                     </div>
                 </div>
 
-                <div class="d-grid mt-5 mb-5">
-                    <button type="submit" class="btn btn-primary-custom btn-lg shadow">
-                        <i class="fas fa-save me-2"></i> SIMPAN & CETAK
-                    </button>
-                </div>
+               <div class="d-grid mt-5 mb-5">
+    <button type="submit" class="btn btn-primary-custom btn-lg shadow">
+        <i class="fas fa-save me-2"></i> SIMPAN DATA
+    </button>
+</div>
 
             </form>
         </div>

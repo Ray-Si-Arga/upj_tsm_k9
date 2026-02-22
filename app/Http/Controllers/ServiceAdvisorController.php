@@ -157,7 +157,7 @@ class ServiceAdvisorController extends Controller
 
             DB::commit();
 
-            return redirect()->route('advisor.create')
+            return redirect()->route('advisor.index')
                 ->with('success', 'Servis Selesai! Data Tersimpan.')
                 ->with('print_invoice_id', $advisor->id);
         } catch (\Exception $e) {
