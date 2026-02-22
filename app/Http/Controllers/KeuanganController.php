@@ -134,16 +134,24 @@ class KeuanganController extends Controller
         $labels    = [];
         $pemasukan = [];
 
+        // Buat closure/fungsi pembantu untuk memfilter pemasukan yang sah
+        $getPemasukanQuery = function () {
+            return ServiceAdvisor::whereHas('booking', function($q) {
+                $q->whereIn('status', ['done', 'completed', 'selesai', 'paid']); 
+            });
+        };
+
         switch ($periode) {
             case 'harian':
                 // Per jam (6 jam terakhir)
                 for ($i = 5; $i >= 0; $i--) {
                     $jam = $now->copy()->subHours($i);
-                    $labels[]    = $jam->format('H:00');
-                    $pemasukan[] = ServiceAdvisor::whereBetween('created_at', [
-                        $jam->copy()->startOfHour(),
-                        $jam->copy()->endOfHour()
-                    ])->sum('total_estimation');
+                    $labels[] = $jam->format('H:00');
+                    $pemasukan[] = $getPemasukanQuery()
+                        ->whereBetween('created_at', [
+                            $jam->copy()->startOfHour(),
+                            $jam->copy()->endOfHour()
+                        ])->sum('total_estimation');
                 }
                 break;
 
@@ -152,8 +160,9 @@ class KeuanganController extends Controller
                 $startWeek = $now->copy()->startOfWeek(Carbon::MONDAY);
                 for ($i = 0; $i < 7; $i++) {
                     $hari = $startWeek->copy()->addDays($i);
-                    $labels[]    = $hari->translatedFormat('D');
-                    $pemasukan[] = ServiceAdvisor::whereDate('created_at', $hari->toDateString())
+                    $labels[] = $hari->translatedFormat('D');
+                    $pemasukan[] = $getPemasukanQuery()
+                        ->whereDate('created_at', $hari->toDateString())
                         ->sum('total_estimation');
                 }
                 break;
@@ -162,8 +171,9 @@ class KeuanganController extends Controller
                 // Per bulan (12 bulan)
                 for ($i = 1; $i <= 12; $i++) {
                     $bulan = Carbon::create($now->year, $i, 1);
-                    $labels[]    = $bulan->translatedFormat('M');
-                    $pemasukan[] = ServiceAdvisor::whereYear('created_at', $now->year)
+                    $labels[] = $bulan->translatedFormat('M');
+                    $pemasukan[] = $getPemasukanQuery()
+                        ->whereYear('created_at', $now->year)
                         ->whereMonth('created_at', $i)
                         ->sum('total_estimation');
                 }
@@ -177,14 +187,17 @@ class KeuanganController extends Controller
                 $current    = $startMonth->copy();
                 $week       = 1;
                 while ($current->lte($endMonth)) {
-                    $weekEnd     = $current->copy()->endOfWeek(Carbon::SUNDAY);
+                    $weekEnd = $current->copy()->endOfWeek(Carbon::SUNDAY);
                     if ($weekEnd->gt($endMonth)) $weekEnd = $endMonth->copy();
-                    $labels[]    = 'W' . $week;
-                    $pemasukan[] = ServiceAdvisor::whereBetween('created_at', [
-                        $current->copy()->startOfDay(),
-                        $weekEnd->copy()->endOfDay()
-                    ])->sum('total_estimation');
-                    $current     = $weekEnd->copy()->addDay();
+                    
+                    $labels[] = 'W' . $week;
+                    $pemasukan[] = $getPemasukanQuery()
+                        ->whereBetween('created_at', [
+                            $current->copy()->startOfDay(),
+                            $weekEnd->copy()->endOfDay()
+                        ])->sum('total_estimation');
+                        
+                    $current = $weekEnd->copy()->addDay();
                     $week++;
                 }
                 break;
