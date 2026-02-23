@@ -510,10 +510,10 @@
                         <div class="value-fill">{{ $advisor->created_at->format('d-m-Y') }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col">No. Mesin</span><span>:</span>
-                        <div class="dotted-fill"></div>
+                        <div class="value-fill">{{ $advisor->engine_number ?? '-' }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col">No. Rangka</span><span>:</span>
-                        <div class="dotted-fill"></div>
+                        <div class="value-fill">{{ $advisor->chassis_number ?? '-' }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col">No. Polisi</span><span>:</span>
                         <div class="value-fill">{{ $advisor->booking->plate_number ?? '-' }}</div>
@@ -522,32 +522,33 @@
                         <div class="value-fill">{{ $advisor->booking->vehicle_type ?? '-' }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col">Tahun</span><span>:</span>
-                        <div class="dotted-fill"></div>
+                        <div class="value-fill">{{ $advisor->vehicle_year ?? '-' }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col">KM</span><span>:</span>
-                        <div class="dotted-fill"></div>
+                        <div class="value-fill">
+                            {{ $advisor->odometer ? number_format($advisor->odometer, 0, ',', '.') : '-' }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col">* Email</span><span>:</span>
                         <div class="value-fill">{{ $advisor->booking->user->email ?? '-' }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col">* Sosmed</span><span>:</span>
-                        <div class="dotted-fill"></div>
+                        <div class="value-fill">{{ $advisor->customer_social ?? '-' }}</div>
                     </div>
                 </div>
 
                 <div class="col-4 p-1">
                     <div class="fw-bold mb-1">Data Pembawa</div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Nama</span><span>:</span>
-                        <div class="dotted-fill"></div>
+                        <div class="value-fill">{{ $advisor->carrier_name ?? '-' }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Alamat</span><span>:</span>
-                        <div class="dotted-fill"></div>
+                        <div class="value-fill">{{ $advisor->carrier_address ?? '-' }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Kel/Kec</span><span>:</span>
-                        <div class="dotted-fill"></div>
+                        <div class="value-fill">{{ $advisor->carrier_area ?? '-' }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">No. HP</span><span>:</span>
-                        <div class="dotted-fill"></div>
+                        <div class="value-fill">{{ $advisor->carrier_phone ?? '-' }}</div>
                     </div>
 
                     <div class="my-2 border-top" style="margin: 8px 0;"></div>
@@ -560,7 +561,7 @@
                         <div class="value-fill">{{ $advisor->booking->customer_address }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Kel/Kec</span><span>:</span>
-                        <div class="dotted-fill"></div>
+                        <div class="value-fill">{{ $advisor->owner_area ?? '-' }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">No. HP</span><span>:</span>
                         <div class="value-fill">{{ $advisor->booking->customer_whatsapp ?? '-' }}</div>
@@ -577,7 +578,7 @@
                     <div class="mb-2">
                         <div class="d-flex row-compact">
                             <span>Hubungan Pembawa & Pemilik :</span>
-                            <div class="dotted-fill"></div>
+                            <div class="value-fill">{{ $advisor->relationship ?? '-' }}</div>
                         </div>
                     </div>
 
@@ -621,243 +622,247 @@
                                 <div class="col-5 py-1">Estimasi Biaya</div>
                             </div>
                             <!-- List Pekerjaan -->
-                            <!-- List Pekerjaan -->
-                            <div class="row g-0">
-                                <div class="col-7 border-end border-dark p-1 d-flex border-2">1.<span class="value-fill">{{ $advisor->jobs }}</span></div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="value-fill text-end">{{ number_format($advisor->estimation_cost, 0, ',', '.') }}</span></div>
-                            </div>
-                            <!-- Filler Rows for Jobs (Total 6 rows) -->
-                            @for($j = 2; $j <= 6; $j++)
+                            @php
+                                $jobsArray = array_filter(array_map('trim', explode(',', $advisor->jobs ?? '')));
+                                $totalJobRows = max(6, count($jobsArray));
+                            @endphp
+
+                            @for ($j = 0; $j < $totalJobRows; $j++)
                                 <div class="row g-0">
-                                <div class="col-7 border-end border-dark p-1 d-flex border-2">{{ $j }}. <span class="dotted-fill"></span></div>
-                                <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
+                                    <div class="col-7 border-end border-dark p-1 d-flex border-2">{{ $j + 1 }}. <span
+                                            class="{{ isset($jobsArray[$j]) ? 'value-fill' : 'dotted-fill' }}">{{ $jobsArray[$j] ?? '' }}</span></div>
+                                    <div class="col-5 p-1 d-flex">Rp <span
+                                            class="{{ $j === 0 ? 'value-fill' : 'dotted-fill' }} text-end">{{ $j === 0 ? number_format($advisor->estimation_cost ?? 0, 0, ',', '.') : '' }}</span>
+                                    </div>
+                                </div>
+                            @endfor
+
+                            <!-- Header Suku Cadang -->
+                            <div
+                                class="row g-0 border-bottom border-top border-dark text-center fw-bold bg-light border-2">
+                                <div class="col-7 border-end border-dark py-1 border-2">Suku Cadang</div>
+                                <div class="col-5 py-1">Estimasi Harga</div>
+                            </div>
+
+                            <!-- List Suku Cadang -->
+                            @php
+                                $parts = $advisor->spareparts ?? [];
+                                if (!is_array($parts) && !is_object($parts))
+                                    $parts = [];
+                                $totalPartRows = max(5, count($parts));
+                            @endphp
+
+                            @for ($k = 0; $k < $totalPartRows; $k++)
+                                @php $part = isset($parts[$k]) ? $parts[$k] : null; @endphp
+                                <div class="row g-0">
+                                    <div class="col-7 border-end border-dark p-1 d-flex border-2">{{ $k + 1 }}. <span
+                                            class="{{ $part ? 'value-fill' : 'dotted-fill' }}">{{ $part ? data_get($part, 'name', '-') : '' }}</span></div>
+                                    <div class="col-5 p-1 d-flex">Rp <span
+                                            class="{{ $part ? 'value-fill' : 'dotted-fill' }} text-end">{{ $part ? number_format(is_numeric(data_get($part, 'price')) ? data_get($part, 'price') : 0, 0, ',', '.') : '' }}</span>
+                                    </div>
+                                </div>
+                            @endfor
+
+                            <!-- Total Harga -->
+                            <div class="row g-0 fw-bold border-top border-dark border-2">
+                                <div class="col-7 border-end border-dark p-1 text-start border-2">Total Harga</div>
+                                <div class="col-5 p-1 d-flex">Rp <span
+                                        class="value-fill text-end">{{ number_format($advisor->total_estimation ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
                         </div>
-                        @endfor
-
-                        <!-- Header Suku Cadang -->
-                        <div class="row g-0 border-bottom border-top border-dark text-center fw-bold bg-light border-2">
-                            <div class="col-7 border-end border-dark py-1 border-2">Suku Cadang</div>
-                            <div class="col-5 py-1">Estimasi Harga</div>
-                        </div>
-
-                        <!-- List Suku Cadang (Total 5 rows) -->
-                        @php
-                        $parts = $advisor->spareparts ?? [];
-                        if (!is_array($parts) && !is_object($parts)) $parts = [];
-                        $totalPartRows = 5;
-                        @endphp
-
-                        @foreach ($parts as $index => $part)
-                        @if($index < $totalPartRows)
-                            <div class="row g-0">
-                            <div class="col-7 border-end border-dark p-1 d-flex border-2">{{ $index + 1 }}. <span
-                                    class="value-fill">{{ $part['name'] ?? $part->name ?? '-' }}</span></div>
-                            <div class="col-5 p-1 d-flex">Rp <span class="value-fill text-end">{{ number_format($part['price'] ?? $part->price ?? 0, 0, ',', '.') }}</span></div>
                     </div>
-                    @endif
-                    @endforeach
 
-                    @for($k = count($parts) + 1; $k <= $totalPartRows; $k++)
-                        <div class="row g-0">
-                        <div class="col-7 border-end border-dark p-1 d-flex border-2">{{ $k }}. <span class="dotted-fill"></span></div>
-                        <div class="col-5 p-1 d-flex">Rp <span class="dotted-fill"></span></div>
-                </div>
-                @endfor
+                    <div class="section-header text-start px-2 border-top border-2">Keluhan Konsumen</div>
+                    <div style="height: 35px; border-bottom: 2px solid #000; padding: 5px;">
+                        {{ $advisor->customer_complaint }}
+                    </div>
 
-                <!-- Total Harga -->
-                <div class="row g-0 fw-bold border-top border-dark border-2">
-                    <div class="col-7 border-end border-dark p-1 text-start border-2">Total Harga</div>
-                    <div class="col-5 p-1 d-flex">Rp <span class="value-fill text-end">{{ number_format($advisor->total_estimation, 0, ',', '.') }}</span></div>
+                    <div class="section-header text-start px-2">Analisa Service Advisor</div>
+                    <div style="height: 40px; padding: 5px;">{{ $advisor->advisor_notes }}</div>
+
                 </div>
+                <div class="col-4">
+                    <div class="section-header py-1">Saran Ganti Sparepart</div>
+                    <table class="custom-table">
+                        <thead>
+                            <tr class="text-center bg-light">
+                                <th>Periode<br>Ganti (KM)</th>
+                                <th>Sparepart</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td align="center">8.000</td>
+                                <td>Busi</td>
+                            </tr>
+                            <tr>
+                                <td align="center">8.000</td>
+                                <td>Oli Transmisi</td>
+                            </tr>
+                            <tr>
+                                <td align="center">24.000</td>
+                                <td>Ban Depan</td>
+                            </tr>
+                            <tr>
+                                <td align="center">24.000</td>
+                                <td>Ban Belakang</td>
+                            </tr>
+                            <tr>
+                                <td align="center">24.000</td>
+                                <td>Rantai</td>
+                            </tr>
+                            <tr>
+                                <td align="center">24.000</td>
+                                <td>Drive Belt</td>
+                            </tr>
+                            <tr>
+                                <td align="center">12.000</td>
+                                <td>Coolant</td>
+                            </tr>
+                            <tr>
+                                <td align="center">24.000</td>
+                                <td>Kampas Rem</td>
+                            </tr>
+                            <tr>
+                                <td align="center">16.000</td>
+                                <td>Filter Udara</td>
+                            </tr>
+                            <tr>
+                                <td align="center">24.000</td>
+                                <td>Aki</td>
+                            </tr>
+                            <tr>
+                                <td align="center"></td>
+                                <td>Lampu Depan</td>
+                            </tr>
+                            <tr>
+                                <td align="center"></td>
+                                <td>Lampu Belakang</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="fw-bold bg-light text-center">Paket Tambahan</td>
+                            </tr>
+                            <tr>
+                                <td align="center">8.000</td>
+                                <td>Pembersihan CVT</td>
+                            </tr>
+                            <tr>
+                                <td align="center">10.000</td>
+                                <td>Kuras Tangki</td>
+                            </tr>
+                            <tr>
+                                <td align="center">10.000</td>
+                                <td>Kuras Radiator</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bagian Footer (Tetap) -->
+        </div>
+
+        <div class="mt-1" style="font-size: 9px;">
+            <div>*Apabila ada tambahan <strong>PEKERJAAN / PERGANTIAN PART</strong> di luar daftar diatas maka :</div>
+            <div class="d-flex align-items-center mt-1">
+                <span class="cb">&#9744;</span> Konfirmasi dulu / telp ke <span class="value-fill"
+                    style="flex-grow: 0;">+62 851-4300-8033</span><span class="cb ms-3">&#9744;</span> Langsung
+                dikerjakan
+            </div>
+            <div class="mt-1">
+                Part Bekas dibawa Konsumen : <span class="cb ms-2">&#9744;</span> Ya <span
+                    class="cb ms-2">&#9744;</span> Tidak
             </div>
         </div>
 
-        <div class="section-header text-start px-2 border-top border-2">Keluhan Konsumen</div>
-        <div style="height: 35px; border-bottom: 2px solid #000; padding: 5px;">{{ $advisor->customer_complaint }}</div>
+        <!-- Perbaikan Bagian Footer Tanda Tangan -->
+        <div class="row g-0 border border-dark mt-2 text-center" style="height: 80px;">
 
-        <div class="section-header text-start px-2">Analisa Service Advisor</div>
-        <div style="height: 40px; padding: 5px;">{{ $advisor->advisor_notes }}</div>
-
-    </div>
-    <div class="col-4">
-        <div class="section-header py-1">Saran Ganti Sparepart</div>
-        <table class="custom-table">
-            <thead>
-                <tr class="text-center bg-light">
-                    <th>Periode<br>Ganti (KM)</th>
-                    <th>Sparepart</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td align="center">8.000</td>
-                    <td>Busi</td>
-                </tr>
-                <tr>
-                    <td align="center">8.000</td>
-                    <td>Oli Transmisi</td>
-                </tr>
-                <tr>
-                    <td align="center">24.000</td>
-                    <td>Ban Depan</td>
-                </tr>
-                <tr>
-                    <td align="center">24.000</td>
-                    <td>Ban Belakang</td>
-                </tr>
-                <tr>
-                    <td align="center">24.000</td>
-                    <td>Rantai</td>
-                </tr>
-                <tr>
-                    <td align="center">24.000</td>
-                    <td>Drive Belt</td>
-                </tr>
-                <tr>
-                    <td align="center">12.000</td>
-                    <td>Coolant</td>
-                </tr>
-                <tr>
-                    <td align="center">24.000</td>
-                    <td>Kampas Rem</td>
-                </tr>
-                <tr>
-                    <td align="center">16.000</td>
-                    <td>Filter Udara</td>
-                </tr>
-                <tr>
-                    <td align="center">24.000</td>
-                    <td>Aki</td>
-                </tr>
-                <tr>
-                    <td align="center"></td>
-                    <td>Lampu Depan</td>
-                </tr>
-                <tr>
-                    <td align="center"></td>
-                    <td>Lampu Belakang</td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="fw-bold bg-light text-center">Paket Tambahan</td>
-                </tr>
-                <tr>
-                    <td align="center">8.000</td>
-                    <td>Pembersihan CVT</td>
-                </tr>
-                <tr>
-                    <td align="center">10.000</td>
-                    <td>Kuras Tangki</td>
-                </tr>
-                <tr>
-                    <td align="center">10.000</td>
-                    <td>Kuras Radiator</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    </div>
-
-    <!-- Bagian Footer (Tetap) -->
-    </div>
-
-    <div class="mt-1" style="font-size: 9px;">
-        <div>*Apabila ada tambahan <strong>PEKERJAAN / PERGANTIAN PART</strong> di luar daftar diatas maka :</div>
-        <div class="d-flex align-items-center mt-1">
-            <span class="cb">&#9744;</span> Konfirmasi dulu / telp ke <span class="value-fill" style="flex-grow: 0;">+62 851-4300-8033</span><span class="cb ms-3">&#9744;</span> Langsung dikerjakan
-        </div>
-        <div class="mt-1">
-            Part Bekas dibawa Konsumen : <span class="cb ms-2">&#9744;</span> Ya <span
-                class="cb ms-2">&#9744;</span> Tidak
-        </div>
-    </div>
-
-    <!-- Perbaikan Bagian Footer Tanda Tangan -->
-    <div class="row g-0 border border-dark mt-2 text-center" style="height: 80px;">
-
-        <!-- KOLOM 1: Persetujuan -->
-        <div class="col-4 border-end border-dark d-flex flex-column">
-            <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">Persetujuan Pekerjaan +
-                Biaya + Waktu</div>
-            <!-- Gunakan flex-grow-1 agar mengisi sisa ruang, bukan h-100 -->
-            <div class="row g-0 flex-grow-1">
-                <div class="col-6 border-end border-dark h-100 d-flex flex-column justify-content-end pb-1">
-                    <span style="font-size: 8px;">Konsumen Ttd</span>
-                </div>
-                <div class="col-6 h-100 d-flex flex-column justify-content-end pb-1">
-                    <span style="font-size: 8px;">Service Advisor Ttd</span>
+            <!-- KOLOM 1: Persetujuan -->
+            <div class="col-4 border-end border-dark d-flex flex-column">
+                <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">Persetujuan Pekerjaan +
+                    Biaya + Waktu</div>
+                <!-- Gunakan flex-grow-1 agar mengisi sisa ruang, bukan h-100 -->
+                <div class="row g-0 flex-grow-1">
+                    <div class="col-6 border-end border-dark h-100 d-flex flex-column justify-content-end pb-1">
+                        <span style="font-size: 8px;">Konsumen Ttd</span>
+                    </div>
+                    <div class="col-6 h-100 d-flex flex-column justify-content-end pb-1">
+                        <span style="font-size: 8px;">Service Advisor Ttd</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- KOLOM 2: Tambahan Pekerjaan -->
-        <div class="col-2 border-end border-dark d-flex flex-column">
-            <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">Tambahan Pekerjaan</div>
-            <!-- Gunakan flex-grow-1 -->
-            <div class="flex-grow-1 d-flex flex-column justify-content-end pb-1">
-                <span style="font-size: 8px;">Konsumen Ttd</span>
-            </div>
-        </div>
-
-        <!-- KOLOM 3: OK / Paraf -->
-        <div class="col-2 border-end border-dark d-flex flex-column">
-            <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">OK</div>
-            <!-- Gunakan flex-grow-1 -->
-            <div class="flex-grow-1 d-flex flex-column justify-content-end pb-1">
-                <span style="font-size: 8px;">Paraf Final Ins</span>
-            </div>
-        </div>
-
-        <!-- KOLOM 4: Penyerahan Motor -->
-        <div class="col-4 d-flex flex-column">
-            <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">Penyerahan Motor Oleh SA
-            </div>
-            <!-- Gunakan flex-grow-1 -->
-            <div class="row g-0 flex-grow-1">
-                <div class="col-4 border-end border-dark h-100 d-flex align-items-center justify-content-center">
-                    <h2 class="m-0">OK</h2>
-                </div>
-                <div class="col-8 h-100 d-flex flex-column justify-content-end pb-1">
+            <!-- KOLOM 2: Tambahan Pekerjaan -->
+            <div class="col-2 border-end border-dark d-flex flex-column">
+                <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">Tambahan Pekerjaan</div>
+                <!-- Gunakan flex-grow-1 -->
+                <div class="flex-grow-1 d-flex flex-column justify-content-end pb-1">
                     <span style="font-size: 8px;">Konsumen Ttd</span>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="row g-0 b-all mt-1">
-        <div class="col-8 b-right">
-            <div class="section-header" style="border-bottom: solid 1px #000;">Saran Mekanik</div>
-            <div class="d-flex" style="height: 50px;">
-                <div class="flex-grow-1 border-end border-dark p-1"></div>
-                <div class="d-flex align-items-end p-1" style="width: 150px; font-size: 9px;">
-                    Nama Mekanik : <div class="dotted-fill"></div>
+            <!-- KOLOM 3: OK / Paraf -->
+            <div class="col-2 border-end border-dark d-flex flex-column">
+                <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">OK</div>
+                <!-- Gunakan flex-grow-1 -->
+                <div class="flex-grow-1 d-flex flex-column justify-content-end pb-1">
+                    <span style="font-size: 8px;">Paraf Final Ins</span>
+                </div>
+            </div>
+
+            <!-- KOLOM 4: Penyerahan Motor -->
+            <div class="col-4 d-flex flex-column">
+                <div class="bg-light border-bottom border-dark py-1" style="font-size: 9px;">Penyerahan Motor Oleh SA
+                </div>
+                <!-- Gunakan flex-grow-1 -->
+                <div class="row g-0 flex-grow-1">
+                    <div class="col-4 border-end border-dark h-100 d-flex align-items-center justify-content-center">
+                        <h2 class="m-0">OK</h2>
+                    </div>
+                    <div class="col-8 h-100 d-flex flex-column justify-content-end pb-1">
+                        <span style="font-size: 8px;">Konsumen Ttd</span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-4">
-            <div class="section-header" style="border-bottom: solid 1px #000;">Estimasi Waktu</div>
-            <div class="p-1">
-                <div class="d-flex row-compact"><span style="width: 60px;">Pendaftaran</span> : <div
-                        class="dotted-fill"></div>
+
+        <div class="row g-0 b-all mt-1">
+            <div class="col-8 b-right">
+                <div class="section-header" style="border-bottom: solid 1px #000;">Saran Mekanik</div>
+                <div class="d-flex" style="height: 50px;">
+                    <div class="flex-grow-1 border-end border-dark p-1"></div>
+                    <div class="d-flex align-items-end p-1" style="width: 150px; font-size: 9px;">
+                        Nama Mekanik : <div class="dotted-fill"></div>
+                    </div>
                 </div>
-                <div class="d-flex row-compact"><span style="width: 60px;">Dikerjakan</span> : <div
-                        class="dotted-fill"></div>
-                </div>
-                <div class="d-flex row-compact"><span style="width: 60px;">Selesai</span> : <div
-                        class="dotted-fill"></div>
+            </div>
+            <div class="col-4">
+                <div class="section-header" style="border-bottom: solid 1px #000;">Estimasi Waktu</div>
+                <div class="p-1">
+                    <div class="d-flex row-compact"><span style="width: 60px;">Pendaftaran</span> : <div
+                            class="dotted-fill"></div>
+                    </div>
+                    <div class="d-flex row-compact"><span style="width: 60px;">Dikerjakan</span> : <div
+                            class="dotted-fill"></div>
+                    </div>
+                    <div class="d-flex row-compact"><span style="width: 60px;">Selesai</span> : <div
+                            class="dotted-fill"></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row mt-2 align-items-end">
-        <div class="col-8" style="font-size: 9px;">
-            <strong>Garansi :</strong><br>
-            - 500 Km / 1 minggu untuk Servis Reguler<br>
-            - 1.000 Km / 1 Bulan untuk Bongkar Mesin Reguler<br>
-            - 1.000 Km / 1 Bulan untuk Servis CBR 250 dan PCX 150<br>
-            <br>
+        <div class="row mt-2 align-items-end">
+            <div class="col-8" style="font-size: 9px;">
+                <strong>Garansi :</strong><br>
+                - 500 Km / 1 minggu untuk Servis Reguler<br>
+                - 1.000 Km / 1 Bulan untuk Bongkar Mesin Reguler<br>
+                - 1.000 Km / 1 Bulan untuk Servis CBR 250 dan PCX 150<br>
+                <br>
+            </div>
         </div>
-    </div>
 
     </div>
 

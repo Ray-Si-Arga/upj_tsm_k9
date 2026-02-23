@@ -7,7 +7,6 @@ use App\Models\ServiceAdvisor;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade\Pdf as FacadePdf; // Pastikan import ini benar
 
 class ServiceAdvisorController extends Controller
 {
@@ -164,24 +163,5 @@ class ServiceAdvisorController extends Controller
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
         }
-    }
-
-    /**
-     * Cetak Invoice PDF
-     */
-    public function print($id)
-    {
-        // PENTING: Gunakan with('booking.services') (JAMAK) jika relasi di model Booking adalah services()
-        $advisor = ServiceAdvisor::with('booking.services')->findOrFail($id);
-
-        // Pastikan sparepart di-decode
-        if (is_string($advisor->spareparts)) {
-            $advisor->spareparts = json_decode($advisor->spareparts, true);
-        }
-
-        $pdf = FacadePdf::loadView('advisor.print', compact('advisor'))
-            ->setPaper('A4', 'portrait');
-
-        return $pdf->download('service_advisor_' . $advisor->id . '.pdf');
     }
 }
