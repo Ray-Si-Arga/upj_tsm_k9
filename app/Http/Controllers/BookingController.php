@@ -47,94 +47,94 @@ class BookingController extends Controller
 
     public function createWalkIn()
     {
-        // hanya admin yang boleh akses
-        if (auth::user()->role !== 'admin') {
-            return redirect()->route('booking.create')->with('error', 'Hanya admin yang boleh akses');
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('booking.create')->with('error', 'Hanya admin yang boleh akses.');
         }
 
         $services = Service::all();
 
-        // dd($request->all());
+        // Ambil semua user dengan role customer (untuk dropdown)
+        $customers = User::where('role', 'customer')
+            ->orderBy('name', 'asc')
+            ->get();
 
         $todayactive = Booking::whereDate('booking_date', date('Y-m-d'))
             ->whereIn('status', ['pending', 'approved', 'on_progress'])
             ->count();
 
-        return view('booking.admin_create', compact('services', 'todayactive'));
+        return view('booking.admin_create', compact('services', 'customers', 'todayactive'));
     }
 
     public function storeWalkIn(Request $request)
     {
         $request->validate([
-            'customer_name' => 'required|string|max:225',
-            'vehicle_type' => 'required|string|max:50',
-            'plate_number' => 'required|string|max:25',
-            'service_id' => 'required|exists:services,id',
-            'customer_whatsapp' => 'nullable|string|max:15',
-            'booking_date' => 'required|date', // Pastikan required
-
-            'estimation_hours' => 'nullable|integer|min:0',
+            'user_id'            => 'required|exists:users,id',
+            'vehicle_type'       => 'required|in:bebek,sport,matic',
+            'plate_number'       => 'required|string|max:25',
+            'service_ids'        => 'required|array|min:1',
+            'service_ids.*'      => 'exists:services,id',
+            'customer_whatsapp'  => 'nullable|string|max:15',
+            'booking_date'       => 'required|date',
+            'complaint'          => 'nullable|string',
+            'estimation_hours'   => 'nullable|integer|min:0',
             'estimation_minutes' => 'nullable|integer|min:0|max:59',
         ]);
 
         try {
-            // 1. Ambil waktu yang diinginkan dari Input Form
             $bookingTime = \Carbon\Carbon::parse($request->booking_date);
 
-            // 2. Cek Slot (PERBAIKAN FORMAT DATE DISINI)
-            // Menggunakan format('Y-m-d H:i:s') -> Huruf 'd' kecil
+            // Cek slot (maks 2 motor per jam)
             $existBooking = Booking::whereBetween('booking_date', [
                 $bookingTime->format('Y-m-d H:i:s'),
                 $bookingTime->copy()->addMinutes(59)->format('Y-m-d H:i:s'),
             ])->count();
 
-            $maxCapacity = 2; // Batas 2 motor per jam
-
-            if ($existBooking >= $maxCapacity) {
+            if ($existBooking >= 2) {
                 return back()
-                    ->with('error', 'Mohon maaf, slot waktu jam ' . $bookingTime->format('H:i') . ' sudah penuh! Silakan pilih jam lain.')
+                    ->with('error', 'Slot jam ' . $bookingTime->format('H:i') . ' sudah penuh! Silakan pilih jam lain.')
                     ->withInput();
             }
 
-            // 3. Persiapkan Data
-            // Hapus variabel $now = now() karena kita pakai inputan admin
+            // Ambil data user yang dipilih
+            $selectedUser = User::findOrFail($request->user_id);
 
-            // Hitung nomor antrian untuk TANGGAL BOOKING TERSEBUT
-            $dateOnly = $bookingTime->format('Y-m-d');
-            $lastqueue = Booking::whereDate('booking_date', $dateOnly)->max('queue_number');
-            $newQueueNumber = $lastqueue ? $lastqueue + 1 : 1;
+            // Nomor antrian
+            $dateOnly     = $bookingTime->format('Y-m-d');
+            $lastQueue    = Booking::whereDate('booking_date', $dateOnly)->max('queue_number') ?? 0;
+            $newQueueNumber = $lastQueue + 1;
 
-            $booking = new Booking();
-            $booking->user_id = null;
-            $booking->customer_name = $request->customer_name;
-            $booking->customer_whatsapp = $request->customer_whatsapp ?? '000000000000';
-            $booking->vehicle_type = $request->vehicle_type;
-            $booking->plate_number = $request->plate_number;
-            $booking->service_id = $request->service_id;
-
-            // PERBAIKAN: Simpan waktu sesuai inputan, BUKAN waktu sekarang
-            $booking->booking_date = $bookingTime;
-
-            // Logic Durasi
-            $hours = $request->estimation_hours ?? 0;
-            $minutes = $request->estimation_minutes ?? 0;
+            // Estimasi durasi
+            $hours        = $request->estimation_hours ?? 0;
+            $minutes      = $request->estimation_minutes ?? 0;
             $totalMinutes = ($hours * 60) + $minutes;
-            $booking->estimation_duration = $totalMinutes > 0 ? $totalMinutes : null;
 
-            $booking->queue_number = $newQueueNumber;
-            $booking->status = 'approved'; // Walk-in biasanya langsung approved
-            $booking->save();
+            // Simpan booking
+            $booking = Booking::create([
+                'user_id'             => $selectedUser->id,
+                'customer_name'       => $selectedUser->name,
+                'customer_whatsapp'   => $request->customer_whatsapp ?? $selectedUser->phone ?? '000000000000',
+                'vehicle_type'        => $request->vehicle_type,
+                'plate_number'        => strtoupper($request->plate_number),
+                'complaint'           => $request->complaint,
+                'booking_date'        => $bookingTime,
+                'estimation_duration' => $totalMinutes > 0 ? $totalMinutes : null,
+                'queue_number'        => $newQueueNumber,
+                'status'              => 'approved',
+            ]);
 
-            // Pesan Sukses
-            $pesanSukses = 'Booking Walk-in Berhasil! Antrian No: ' . $newQueueNumber;
+            // Simpan ke tabel pivot booking_service (multi-service)
+            $booking->services()->attach($request->service_ids);
+
+            $pesanSukses = 'Booking Walk-in Berhasil! Antrian No: ' . $newQueueNumber
+                         . ' atas nama ' . $selectedUser->name . '.';
 
             if ($totalMinutes > 0) {
-                $jamSelesai = $booking->booking_date->copy()->addMinutes($totalMinutes)->format('H:i');
-                $pesanSukses .= ". Estimasi selesai pukul: " . $jamSelesai . " WIB";
+                $jamSelesai   = $booking->booking_date->copy()->addMinutes($totalMinutes)->format('H:i');
+                $pesanSukses .= " Estimasi selesai pukul {$jamSelesai} WIB.";
             }
 
-            return redirect()->route('admin.dashboard')
-                ->with('success', $pesanSukses);
+            return redirect()->route('admin.dashboard')->with('success', $pesanSukses);
+
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal menyimpan: ' . $e->getMessage())->withInput();
         }
