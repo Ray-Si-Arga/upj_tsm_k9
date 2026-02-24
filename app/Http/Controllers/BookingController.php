@@ -8,6 +8,7 @@ use App\Models\User; // Digunakan untuk statistik
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 class BookingController extends Controller
 {
@@ -190,44 +191,39 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Validasi Input
+        // 1. Validasi Dasar
         $request->validate([
-            'service_ids'       => 'required|array|min:1', // Wajib array
-            'service_ids.*'     => 'exists:services,id',
-            'booking_date'      => 'required|date',
-            'plate_number'      => 'required|string',
-            'vehicle_type'      => 'required|string',
-            'customer_whatsapp' => 'required|string',
-            'customer_name'     => 'required|string',
-            'complaint'         => 'nullable|string',
+            'service_ids' => 'required|array|min:1',
+            'service_ids.*' => 'exists:services,id',
+            'booking_date' => 'required|date',
+            'customer_name' => 'required|string|max:255',
+            'customer_whatsapp' => 'required|string|max:20',
+            'vehicle_type' => 'required|string|max:255',
+            'plate_number' => 'required|string|max:20',
         ]);
 
-        $user = Auth::user();
+        // 2. LOGIKA VALIDASI HARI MINGGU
+        $date = Carbon::parse($request->booking_date);
+        if ($date->isSunday()) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Mohon maaf, bengkel kami libur pada hari Minggu. Silakan pilih hari lain.');
+        }
 
-        // 2. Logic Nomor Antrian (Dijalankan SEKALI saja)
-        $date = \Carbon\Carbon::parse($request->booking_date)->format('Y-m-d');
-        $lastQueue = Booking::whereDate('booking_date', $date)->max('queue_number') ?? 0;
-        $newQueueNumber = $lastQueue + 1;
-
-        // 3. Simpan Data Booking UTAMA (Hapus 'service_id' dari sini)
+        // 3. Proses Simpan Data
         $booking = Booking::create([
-            'user_id'           => $user->id,
-            'booking_date'      => $request->booking_date,
-            'customer_name'     => $request->customer_name,
+            'user_id' => Auth::id(),
+            'booking_date' => $request->booking_date,
+            'customer_name' => $request->customer_name,
             'customer_whatsapp' => $request->customer_whatsapp,
-            'vehicle_type'      => $request->vehicle_type,
-            'plate_number'      => strtoupper($request->plate_number),
-            'status'            => 'pending',
-            'queue_number'      => $newQueueNumber, // Satu nomor antrian
-            'complaint'         => $request->complaint,
-            // Jangan isi 'service_id' karena kolom ini sudah tidak dipakai/dihapus
+            'vehicle_type' => $request->vehicle_type,
+            'plate_number' => $request->plate_number,
+            'status' => 'pending',
         ]);
 
-        // 4. Simpan Layanan ke Tabel Pivot (booking_service)
-        // Inilah yang menghubungkan 1 Booking dengan Banyak Service
         $booking->services()->attach($request->service_ids);
 
-        return redirect()->route('pelanggan.dashboard')->with('success', 'Booking berhasil! Nomor antrian Anda: ' . $newQueueNumber);
+        return redirect()->route('booking.create')->with('success', 'Booking berhasil dibuat! Silakan tunggu konfirmasi admin.');
     }
 
     /**

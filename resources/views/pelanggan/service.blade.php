@@ -3,8 +3,15 @@
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.css">
 
     <style>
+        :root {
+            --brand-primary: #2A6E7F;
+            --brand-primary-dark: #1D4F5D;
+            --brand-secondary: #FF7A45;
+            --bg-body: #f4f7f9;
+        }
         :root {
             --brand-primary: #2A6E7F;
             --brand-primary-dark: #1D4F5D;
@@ -315,7 +322,9 @@
                                         <div class="input-group">
                                             <span class="input-group-text"><i
                                                     class="fas fa-calendar-day text-primary"></i></span>
-                                            <input type="datetime-local" name="booking_date" class="form-control" required>
+                                            <input type="datetime-local" name="booking_date" id="booking_date" 
+                       class="form-control form-control-lg shadow-sm" required
+                       value="{{ old('booking_date') }}">
                                         </div>
                                         <div class="form-text small text-danger mt-1">
                                             <i class="fas fa-info-circle me-1"></i> Slot terbatas.
@@ -533,4 +542,75 @@
             });
         });
     </script>
-@endsection
+<script src="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bookingDateInput = document.getElementById('booking_date');
+
+            // 1. Fungsi Notifikasi
+            function showToast(status, title, msg) {
+                new Notify({
+                    status: status,
+                    title: title,
+                    text: msg,
+                    effect: 'slide',
+                    speed: 300,
+                    autoclose: true,
+                    autotimeout: 5000,
+                    position: 'right top'
+                });
+            }
+
+            // 2. Cek Notifikasi dari Session Laravel
+            @if (Session::has('success'))
+                showToast('success', 'Berhasil', "{!! Session::get('success') !!}");
+            @endif
+
+            @if (Session::has('error'))
+                showToast('error', 'Gagal', "{!! Session::get('error') !!}");
+            @endif
+
+            // 3. Validasi Real-time Hari Minggu
+            bookingDateInput.addEventListener('change', function() {
+                const date = new Date(this.value);
+                const day = date.getDay(); // 0 = Minggu
+
+                if (day === 0) {
+                    showToast('error', 'Bengkel Tutup', 'Mohon maaf, kami libur di hari Minggu. Silakan pilih hari lain.');
+                    this.value = ''; // Reset input
+                }
+            });
+
+            // 4. Script Perhitungan Harga (Ringkasan)
+            const checkboxes = document.querySelectorAll('.service-checkbox');
+            const summaryLists = document.querySelectorAll('.summary-list');
+            const totalPriceDisplays = document.querySelectorAll('.total-price-display');
+
+            const formatRupiah = (number) => {
+                return new Intl.NumberFormat('id-ID').format(number);
+            };
+
+            const updateSummary = () => {
+                let total = 0;
+                let html = '';
+                
+                checkboxes.forEach(chk => {
+                    if (chk.checked) {
+                        const name = chk.getAttribute('data-name');
+                        const price = parseFloat(chk.getAttribute('data-price'));
+                        total += price;
+                        html += `<li class="d-flex justify-content-between mb-2">
+                                    <span>${name}</span>
+                                    <strong>Rp ${formatRupiah(price)}</strong>
+                                 </li>`;
+                    }
+                });
+
+                summaryLists.forEach(list => { list.innerHTML = html; });
+                totalPriceDisplays.forEach(display => { display.innerText = formatRupiah(total); });
+            };
+
+            checkboxes.forEach(chk => chk.addEventListener('change', updateSummary));
+        });
+    </script>
+    @endsection
