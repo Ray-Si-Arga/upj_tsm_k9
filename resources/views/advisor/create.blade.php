@@ -242,17 +242,17 @@
                                         <input type="text" name="owner_phone" id="owner_phone" class="form-control">
                                     </div>
                                     <div class="col-6">
-                                        <label class="form-label-custom">Sumber Unit</label>
+                                        <label class="form-label-custom">Dari Dealer Sendiri</label>
                                         <div class="d-flex gap-2 mt-2">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="is_own_dealer"
                                                     id="dYes" value="1">
-                                                <label class="form-check-label small" for="dYes">Dealer Ini</label>
+                                                <label class="form-check-label small" for="dYes">Ya</label>
                                             </div>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="is_own_dealer"
                                                     id="dNo" value="0" checked>
-                                                <label class="form-check-label small" for="dNo">Luar</label>
+                                                <label class="form-check-label small" for="dNo">Tidak</label>
                                             </div>
                                         </div>
                                     </div>
