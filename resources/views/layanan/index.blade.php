@@ -2,11 +2,24 @@
 
 @section('content')
     <div class="container py-4">
+        <style>
+            /* Responsive Button: Full width mobile, Auto desktop */
+            .btn-create-layanan {
+                width: 100%;
+            }
+
+            @media (min-width: 768px) {
+                .btn-create-layanan {
+                    width: auto;
+                    min-width: 160px;
+                }
+            }
+        </style>
 
         {{-- HEADER: Flex column di HP, Flex row di Laptop --}}
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
             <h3 class="fw-bold text-dark m-0">Kelola Layanan & Paket</h3>
-            <a href="{{ route('layanan.create') }}" class="btn btn-primary rounded-pill shadow w-100 w-md-auto">
+            <a href="{{ route('layanan.create') }}" class="btn btn-primary rounded-pill shadow btn-create-layanan">
                 <i class="fas fa-plus me-2"></i>Tambah Layanan Baru
             </a>
         </div>
@@ -45,12 +58,10 @@
                                 <td class="px-4 text-center">
                                     <a href="{{ route('layanan.edit', $service->id) }}"
                                         class="btn btn-sm btn-outline-warning me-1"><i class="fas fa-edit"></i></a>
-                                    <form action="{{ route('layanan.destroy', $service->id) }}" method="POST"
-                                        class="d-inline">
+                                    <form action="{{ route('layanan.destroy', $service->id) }}" method="POST" class="d-inline">
                                         @csrf @method('DELETE')
                                         <button class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('Hapus layanan ini?')"><i
-                                                class="fas fa-trash"></i></button>
+                                            onclick="return confirm('Hapus layanan ini?')"><i class="fas fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>

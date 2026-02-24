@@ -7,6 +7,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\ServiceAdvisorController;
 use App\Http\Controllers\KeuanganController;
+use App\Http\Controllers\CetakController;
 
 
 // --- Rute Dashboard ---
@@ -41,17 +42,17 @@ Route::get('/pelanggan/dashboard', [BookingController::class, 'pelangganDashboar
 // Menu Service (Dulu booking.create)
 // Kita ubah URL-nya jadi /pelanggan/service, tapi controllernya tetap pakai method create & store yang lama
 Route::get('/pelanggan/service', [BookingController::class, 'create'])->name('pelanggan.service'); // Pengganti booking.create
-Route::post('/pelanggan/service', [BookingController::class, 'store'])->name('booking.store'); // Tetap pakai store yg sama
+Route::post('/pelanggan/service', [BookingController::class, 'store'])->name('customer.booking.store'); // Tetap pakai store yg sama
 Route::get('/pelanggan/history', [BookingController::class, 'pelangganHistory'])->name('pelanggan.history');
 
 // ----------------------------------------------- //
 // ----------------- Advisor --------------------- //
 // ----------------------------------------------- //
 Route::prefix('advisor')->name('advisor.')->group(function () {
-    Route::get('/history', [ServiceAdvisorController::class, 'index'])->name('index');
+    Route::get('/index', [ServiceAdvisorController::class, 'index'])->name('index');
     Route::get('/create', [ServiceAdvisorController::class, 'create'])->name('create');
     Route::post('/store', [ServiceAdvisorController::class, 'store'])->name('store');
-    Route::get('/{advisor}/print', [ServiceAdvisorController::class, 'print'])->name('print');
+    Route::get('/print/{id}', [CetakController::class, 'print'])->name('print');
 });
 
 

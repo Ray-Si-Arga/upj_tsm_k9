@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inventory;
+use App\Models\Pengeluaran;
 use Illuminate\Http\Request;
 
 class InventoryController extends Controller
@@ -26,11 +27,20 @@ class InventoryController extends Controller
         $request->validate([
             'nama_barang'   => 'required',
             'jumlah_barang' => 'required|integer|min:0',
-            'harga_beli'    => 'required|numeric|min:0', // Update ini
-            'harga_jual'    => 'required|numeric|min:0', // Tambah ini
+            'harga_beli'    => 'required|numeric|min:0',
+            'harga_jual'    => 'required|numeric|min:0',
         ]);
 
-        Inventory::create($request->all());
+        $inventory = Inventory::create($request->all());
+
+        // Otomatis catat ke pengeluaran
+        Pengeluaran::create([
+            'judul'      => 'Pembelian : ' . $inventory->nama_barang,
+            'nominal'    => $inventory->harga_beli * $inventory->jumlah_barang,
+            'kategori'   => 'inventory',
+            'keterangan' => 'Stok awal ' . $inventory->jumlah_barang . ' unit @ Rp ' . number_format($inventory->harga_beli, 0, ',', '.'),
+        ]);
+
         return redirect()->route('inventory.index')->with('success', 'Data Berhasil Di Tambah');
     }
 
