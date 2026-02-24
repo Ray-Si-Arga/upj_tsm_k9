@@ -74,10 +74,12 @@ class ServiceAdvisorController extends Controller
             // Ambil data Booking beserta layanan-layanannya
             $booking = Booking::with('services')->findOrFail($request->booking_id);
 
-            // PERBAIKAN: Hitung total harga dari BANYAK layanan
-            $servicePrice = $booking->services->sum('price');
-            // Gabungkan nama layanan (Contoh: "Ganti Oli, Tambal Ban")
-            $jobNames = $booking->services->pluck('name')->implode(', ');
+           // Ambil pekerjaan dari input form (editable oleh advisor)
+$jobsNames  = $request->input('jobs_name', []);
+$jobsPrices = $request->input('jobs_price', []);
+
+$servicePrice = array_sum(array_map('intval', $jobsPrices));
+$jobNames     = implode(', ', array_filter($jobsNames));
 
             // --- LOGIKA SPAREPART ---
             $processedParts = [];
