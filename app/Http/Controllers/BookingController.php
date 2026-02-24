@@ -8,6 +8,11 @@ use App\Models\User; // Digunakan untuk statistik
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
+use App\Models\ServiceAdvisor;
+use App\Models\Inventory;
+use Illuminate\Support\Facades\DB;
+
 
 class BookingController extends Controller
 {
@@ -16,32 +21,105 @@ class BookingController extends Controller
      */
     public function adminDashboard()
     {
-        // Pengecekan role manual untuk akses dashboard
         if (Auth::user()->role !== 'admin') {
-            // Jika bukan admin, arahkan ke halaman booking/create (atau halaman customer lainnya)
-            return redirect()->route('booking.create')->with('error', 'Akses dibatasi untuk Admin.');
+            return redirect()->route('booking.create')
+                ->with('error', 'Akses dibatasi untuk Admin.');
         }
 
-        // 1. Ambil data statistik untuk Card
         $today = date('Y-m-d');
+        $now   = Carbon::now();
 
+        // ── 1. KARTU RINGKASAN ──────────────────────────
         $totalBookingsToday = Booking::whereDate('booking_date', $today)->count();
+
         $pendingBookings = Booking::whereIn('status', ['pending', 'approved', 'on_progress'])->count();
+
         $registeredCustomers = User::where('role', 'customer')->count();
 
-        // 2. Ambil data antrian hari ini (untuk ditampilkan di bagian bawah dashboard)
+        // Service selesai bulan ini
+        $doneThisMonth = Booking::where('status', 'done')
+            ->whereYear('booking_date', $now->year)
+            ->whereMonth('booking_date', $now->month)
+            ->count();
+
+        // Pemasukan bulan ini (ServiceAdvisor yang booking-nya done)
+        $revenueThisMonth = ServiceAdvisor::whereHas('booking', fn($q) =>
+                $q->where('status', 'done')
+            )
+            ->whereYear('created_at', $now->year)
+            ->whereMonth('created_at', $now->month)
+            ->sum('total_estimation');
+
+        // Jumlah item stok menipis
+        $lowStockCount = Inventory::where('jumlah_barang', '<=', 6)->count();
+
+        // ── 2. ANTRIAN AKTIF HARI INI ───────────────────
         $queueBookings = Booking::with(['user', 'services'])
             ->whereDate('booking_date', $today)
             ->whereIn('status', ['pending', 'approved', 'on_progress'])
-            // Sorting di client (JS/Blade) atau jika diperlukan gunakan orderBy di sini,
-            // namun dihindari karena berpotensi memerlukan index tambahan.
+            ->orderBy('queue_number', 'asc')
             ->get();
+
+        // ── 3. TOP 7 PELANGGAN SETIA ────────────────────
+        $topCustomers = Booking::select(
+                'customer_name',
+                'customer_whatsapp',
+                DB::raw('COUNT(*) as total')
+            )
+            ->where('status', 'done')
+            ->whereNotNull('customer_name')
+            ->groupBy('customer_name', 'customer_whatsapp')
+            ->orderByDesc('total')
+            ->limit(7)
+            ->get();
+
+        // ── 4. STOK MENIPIS (panel bawah) ───────────────
+        $lowStockItems = Inventory::where('jumlah_barang', '<=', 6)
+            ->orderBy('jumlah_barang', 'asc')
+            ->limit(8)
+            ->get();
+
+        // ── 5. LAYANAN TERPOPULER ────────────────────────
+        // Hitung via pivot booking_service, hanya booking yang done
+        $topServices = Service::select('services.id', 'services.name')
+            ->join('booking_service', 'services.id', '=', 'booking_service.service_id')
+            ->join('bookings', 'bookings.id', '=', 'booking_service.booking_id')
+            ->where('bookings.status', 'done')
+            ->groupBy('services.id', 'services.name')
+            ->selectRaw('COUNT(*) as total')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+
+        // ── 6. CHART DATA — 7 HARI TERAKHIR ─────────────
+        $chartLabels  = [];
+        $chartBooking = [];
+        $chartDone    = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $d    = $date->format('Y-m-d');
+
+            $chartLabels[]  = $date->locale('id')->translatedFormat('D d/m');
+            $chartBooking[] = Booking::whereDate('booking_date', $d)->count();
+            $chartDone[]    = Booking::whereDate('booking_date', $d)
+                ->where('status', 'done')->count();
+        }
 
         return view('admin.dashboard', compact(
             'totalBookingsToday',
             'pendingBookings',
             'registeredCustomers',
+            'doneThisMonth',
+            'revenueThisMonth',
+            'lowStockCount',
             'queueBookings',
+            'topCustomers',
+            'lowStockItems',
+            'topServices',
+            'chartLabels',
+            'chartBooking',
+            'chartDone',
         ));
     }
 
@@ -190,44 +268,39 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Validasi Input
+        // 1. Validasi Dasar
         $request->validate([
-            'service_ids'       => 'required|array|min:1', // Wajib array
-            'service_ids.*'     => 'exists:services,id',
-            'booking_date'      => 'required|date',
-            'plate_number'      => 'required|string',
-            'vehicle_type'      => 'required|string',
-            'customer_whatsapp' => 'required|string',
-            'customer_name'     => 'required|string',
-            'complaint'         => 'nullable|string',
+            'service_ids' => 'required|array|min:1',
+            'service_ids.*' => 'exists:services,id',
+            'booking_date' => 'required|date',
+            'customer_name' => 'required|string|max:255',
+            'customer_whatsapp' => 'required|string|max:20',
+            'vehicle_type' => 'required|string|max:255',
+            'plate_number' => 'required|string|max:20',
         ]);
 
-        $user = Auth::user();
+        // 2. LOGIKA VALIDASI HARI MINGGU
+        $date = Carbon::parse($request->booking_date);
+        if ($date->isSunday()) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Mohon maaf, bengkel kami libur pada hari Minggu. Silakan pilih hari lain.');
+        }
 
-        // 2. Logic Nomor Antrian (Dijalankan SEKALI saja)
-        $date = \Carbon\Carbon::parse($request->booking_date)->format('Y-m-d');
-        $lastQueue = Booking::whereDate('booking_date', $date)->max('queue_number') ?? 0;
-        $newQueueNumber = $lastQueue + 1;
-
-        // 3. Simpan Data Booking UTAMA (Hapus 'service_id' dari sini)
+        // 3. Proses Simpan Data
         $booking = Booking::create([
-            'user_id'           => $user->id,
-            'booking_date'      => $request->booking_date,
-            'customer_name'     => $request->customer_name,
+            'user_id' => Auth::id(),
+            'booking_date' => $request->booking_date,
+            'customer_name' => $request->customer_name,
             'customer_whatsapp' => $request->customer_whatsapp,
-            'vehicle_type'      => $request->vehicle_type,
-            'plate_number'      => strtoupper($request->plate_number),
-            'status'            => 'pending',
-            'queue_number'      => $newQueueNumber, // Satu nomor antrian
-            'complaint'         => $request->complaint,
-            // Jangan isi 'service_id' karena kolom ini sudah tidak dipakai/dihapus
+            'vehicle_type' => $request->vehicle_type,
+            'plate_number' => $request->plate_number,
+            'status' => 'pending',
         ]);
 
-        // 4. Simpan Layanan ke Tabel Pivot (booking_service)
-        // Inilah yang menghubungkan 1 Booking dengan Banyak Service
         $booking->services()->attach($request->service_ids);
 
-        return redirect()->route('pelanggan.dashboard')->with('success', 'Booking berhasil! Nomor antrian Anda: ' . $newQueueNumber);
+        return redirect()->route('booking.create')->with('success', 'Booking berhasil dibuat! Silakan tunggu konfirmasi admin.');
     }
 
     /**

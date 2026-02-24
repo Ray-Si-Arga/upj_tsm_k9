@@ -25,12 +25,13 @@ class CetakController extends Controller
         //     ->emulateMedia('print')
         //     ->screenshot();
 
-        // Export ke PDF
-        $PDFContent = Browsershot::html($html)
-            ->format('A4')
-            ->showBackground()
-            ->pdf();
-
+            $PDFContent = Browsershot::html($html)
+        ->setChromePath('/usr/bin/google-chrome-stable') // Path yang kamu temukan tadi
+        ->addArgs(['--no-sandbox', '--disable-setuid-sandbox']) // Wajib untuk Linux
+        ->format('A4')
+        ->showBackground()
+        ->pdf();
+    
         return response($PDFContent)
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'attachment; filename="invoice-ahass-' . $advisor->booking->queue_number . '.pdf"');
