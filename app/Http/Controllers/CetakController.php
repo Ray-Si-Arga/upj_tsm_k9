@@ -2,8 +2,6 @@
 namespace App\Http\Controllers;
 use Spatie\Browsershot\Browsershot;
 use App\Models\ServiceAdvisor;
-use App\Models\User;
-use App\Models\Inventory;
 use App\Http\Controllers\Controller;
 class CetakController extends Controller
 {
@@ -26,8 +24,8 @@ class CetakController extends Controller
         //     ->screenshot();
 
             $PDFContent = Browsershot::html($html)
-        ->setChromePath('/usr/bin/google-chrome-stable') // Path yang kamu temukan tadi
-        ->addArgs(['--no-sandbox', '--disable-setuid-sandbox']) // Wajib untuk Linux
+        // ->setChromePath('/usr/bin/google-chrome-stable')
+        // ->addArgs(['--no-sandbox', '--disable-setuid-sandbox'])
         ->format('A4')
         ->showBackground()
         ->pdf();
