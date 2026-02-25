@@ -1,4 +1,4 @@
-<div>
+<div @open-create-modal.window="$wire.create()">
     {{-- ==================== TABLE COMPONENT ==================== --}}
     <div class="table-card au d6 d-none d-md-block">
         <div class="table-header-bar">
@@ -292,11 +292,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body position-relative">
-                    {{-- Spinner Loading for Edit --}}
-                    <div wire:loading wire:target="edit" wire:loading.class="d-flex"
+                    <div wire:loading wire:target="edit, create" wire:loading.class="d-flex"
                         class="position-absolute w-100 h-100 top-0 start-0 justify-content-center align-items-center"
                         style="background: rgba(255,255,255,0.8); z-index: 10;">
-                        <div class="spinner-border text-primary" role="status">
+                        <div class="spinner-border text-danger" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </div>
@@ -335,7 +334,6 @@
                             </div>
                             @error('harga_jual') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
-
                         <div class="modal-footer px-0 pb-0">
                             <button type="button" class="btn btn-hitam" data-bs-dismiss="modal">Batal</button>
                             <button type="submit" class="btn btn-simpan-merah">

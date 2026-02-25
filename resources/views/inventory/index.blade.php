@@ -12,8 +12,8 @@
 
     <style>
         /* ==============================
-                       ROOT & BASE
-                    ============================== */
+                           ROOT & BASE
+                        ============================== */
         :root {
             --honda-red: #B10000;
             --honda-red-dark: #8B0000;
@@ -40,8 +40,8 @@
         }
 
         /* ==============================
-                       PAGE HEADER
-                    ============================== */
+                           PAGE HEADER
+                        ============================== */
         .page-header {
             display: flex;
             flex-wrap: wrap;
@@ -67,8 +67,8 @@
         }
 
         /* ==============================
-                       SUMMARY CARDS
-                    ============================== */
+                           SUMMARY CARDS
+                        ============================== */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -205,8 +205,8 @@
         }
 
         /* ==============================
-                       SEARCH + FILTER BAR
-                    ============================== */
+                           SEARCH + FILTER BAR
+                        ============================== */
         .toolbar {
             background: #fff;
             border-radius: 14px;
@@ -286,8 +286,8 @@
         }
 
         /* ==============================
-                       TABLE CARD
-                    ============================== */
+                           TABLE CARD
+                        ============================== */
         .table-card {
             background: #fff;
             border-radius: 18px;
@@ -520,8 +520,8 @@
         }
 
         /* ==============================
-                       MOBILE CARDS
-                    ============================== */
+                           MOBILE CARDS
+                        ============================== */
         .mobile-card {
             background: #fff;
             border-radius: 14px;
@@ -539,8 +539,8 @@
         }
 
         /* ==============================
-                       ANIMATIONS
-                    ============================== */
+                           ANIMATIONS
+                        ============================== */
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -582,8 +582,8 @@
         }
 
         /* ==============================
-                       ADD BUTTON
-                    ============================== */
+                           ADD BUTTON
+                        ============================== */
         .btn-add {
             background: linear-gradient(135deg, var(--honda-red) 0%, var(--honda-red-dark) 100%);
             color: #fff;
@@ -637,8 +637,8 @@
                 <h1 class="page-title"></i>Inventori Spare-Part</h1>
                 <p class="page-subtitle">Kelola stok, harga beli, dan potensi keuntungan bengkel.</p>
             </div>
-            <button onclick="Livewire.dispatch('create-inventory')" data-bs-toggle="modal" data-bs-target="#formModal"
-                class="btn-add">
+            <button onclick="window.dispatchEvent(new CustomEvent('open-create-modal'))" data-bs-toggle="modal"
+                data-bs-target="#formModal" class="btn-add">
                 <i class="fas fa-plus"></i> Tambah Barang
             </button>
         </div>

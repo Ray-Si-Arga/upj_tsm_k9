@@ -40,7 +40,6 @@ class InventoryTable extends Component
         $this->resetPage();
     }
 
-    #[On('create-inventory')]
     public function create()
     {
         $this->reset(['inventory_id', 'nama_barang', 'jumlah_barang', 'harga_beli', 'harga_jual']);
@@ -68,21 +67,21 @@ class InventoryTable extends Component
             // ── MODE EDIT ──────────────────────────────────────
             $inventory = Inventory::findOrFail($this->inventory_id);
             $inventory->update([
-                'nama_barang'   => $this->nama_barang,
+                'nama_barang' => $this->nama_barang,
                 'jumlah_barang' => $this->jumlah_barang,
-                'harga_beli'    => $this->harga_beli,
-                'harga_jual'    => $this->harga_jual,
+                'harga_beli' => $this->harga_beli,
+                'harga_jual' => $this->harga_jual,
             ]);
 
             // Update catatan keuangan yang terkait
             $keuangan = Keuangan::where('sumber', 'inventory')
-                                ->where('referensi_id', $inventory->id)
-                                ->latest()
-                                ->first();
+                ->where('referensi_id', $inventory->id)
+                ->latest()
+                ->first();
             if ($keuangan) {
                 $keuangan->update([
-                    'judul'      => 'Pembelian: ' . $inventory->nama_barang,
-                    'nominal'    => $inventory->harga_beli * $inventory->jumlah_barang,
+                    'judul' => 'Pembelian: ' . $inventory->nama_barang,
+                    'nominal' => $inventory->harga_beli * $inventory->jumlah_barang,
                     'keterangan' => 'Stok ' . $inventory->jumlah_barang . ' unit @ Rp ' . number_format($inventory->harga_beli, 0, ',', '.'),
                 ]);
             }
@@ -90,20 +89,20 @@ class InventoryTable extends Component
         } else {
             // ── MODE TAMBAH BARU ────────────────────────────────
             $inventory = Inventory::create([
-                'nama_barang'   => $this->nama_barang,
+                'nama_barang' => $this->nama_barang,
                 'jumlah_barang' => $this->jumlah_barang,
-                'harga_beli'    => $this->harga_beli,
-                'harga_jual'    => $this->harga_jual,
+                'harga_beli' => $this->harga_beli,
+                'harga_jual' => $this->harga_jual,
             ]);
 
             // Catat pengeluaran ke tabel keuangan
             Keuangan::create([
-                'tipe'         => 'pengeluaran',
-                'judul'        => 'Pembelian: ' . $inventory->nama_barang,
-                'nominal'      => $inventory->harga_beli * $inventory->jumlah_barang,
-                'sumber'       => 'inventory',
-                'kategori'     => 'inventory',
-                'keterangan'   => 'Stok awal ' . $inventory->jumlah_barang . ' unit @ Rp ' . number_format($inventory->harga_beli, 0, ',', '.'),
+                'tipe' => 'pengeluaran',
+                'judul' => 'Pembelian: ' . $inventory->nama_barang,
+                'nominal' => $inventory->harga_beli * $inventory->jumlah_barang,
+                'sumber' => 'inventory',
+                'kategori' => 'inventory',
+                'keterangan' => 'Stok awal ' . $inventory->jumlah_barang . ' unit @ Rp ' . number_format($inventory->harga_beli, 0, ',', '.'),
                 'referensi_id' => $inventory->id,
             ]);
         }
@@ -120,8 +119,8 @@ class InventoryTable extends Component
 
         // Hapus catatan keuangan terkait
         Keuangan::where('sumber', 'inventory')
-                ->where('referensi_id', $inventory->id)
-                ->delete();
+            ->where('referensi_id', $inventory->id)
+            ->delete();
 
         $inventory->delete();
         session()->flash('success', 'Barang berhasil dihapus!');
