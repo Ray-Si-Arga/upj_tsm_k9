@@ -133,6 +133,7 @@ Route::middleware(['auth'])->group(function () {
     // ---------------- Keuangan -------------------- //
     // --------------------------------------------- //
     Route::get('/keuangan', [KeuanganController::class, 'index'])->name('keuangan.index');
+    Route::post('/keuangan/store', [KeuanganController::class, 'store'])->name('keuangan.store');
 
 
     // ----------------------------------------------- //
