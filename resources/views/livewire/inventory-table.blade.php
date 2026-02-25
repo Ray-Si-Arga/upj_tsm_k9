@@ -14,11 +14,11 @@
 
         <div class="table-scroll" style="position: relative;">
             {{-- Loading Spinner hanya untuk event update tabel --}}
-            <div wire:loading wire:target="updateSearch, updateFilter, gotoPage, nextPage, previousPage" 
-                 wire:loading.class="d-flex" 
-                 class="position-absolute w-100 h-100 justify-content-center align-items-center" 
-                 style="background: rgba(255,255,255,0.7); z-index: 10;">
-                <div class="spinner-border text-primary" role="status">
+            <div wire:loading wire:target="updateSearch, updateFilter, gotoPage, nextPage, previousPage"
+                wire:loading.class="d-flex"
+                class="position-absolute w-100 h-100 justify-content-center align-items-center"
+                style="background: rgba(255,255,255,0.7); z-index: 10;">
+                <div class="spinner-border text-danger" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
@@ -94,23 +94,24 @@
                                 <div class="laba-per" style="color:#059669;">Rp {{ number_format($totalLaba, 0, ',', '.') }}
                                 </div>
                                 <div class="laba-total">{{ $data->jumlah_barang }} × Rp
-                                    {{ number_format($laba, 0, ',', '.') }}</div>
+                                    {{ number_format($laba, 0, ',', '.') }}
+                                </div>
                             </td>
 
                             {{-- Aksi --}}
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button wire:click="edit({{ $data->id }})" data-bs-toggle="modal"
-                                            data-bs-target="#formModal" class="btn-act btn-edit" title="Edit">
-                                            <i class="fas fa-pencil"></i>
-                                        </button>
-                                        <button wire:click="delete({{ $data->id }})"
-                                            wire:confirm="Hapus barang '{{ $data->nama_barang }}'?"
-                                            class="btn-act btn-hapus" title="Hapus">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </div>
-                                </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button wire:click="edit({{ $data->id }})" data-bs-toggle="modal"
+                                        data-bs-target="#formModal" class="btn-act btn-edit" title="Edit">
+                                        <i class="fas fa-pencil"></i>
+                                    </button>
+                                    <button wire:click="delete({{ $data->id }})"
+                                        wire:confirm="Hapus barang '{{ $data->nama_barang }}'?" class="btn-act btn-hapus"
+                                        title="Hapus">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -119,7 +120,8 @@
                                     <i class="fas fa-box-open"></i>
                                     <p>Belum ada data inventori mencocokkan pencarian Anda.</p>
                                     @if(empty($search))
-                                        <button wire:click="create" data-bs-toggle="modal" data-bs-target="#formModal" class="btn-add mt-2">
+                                        <button wire:click="create" data-bs-toggle="modal" data-bs-target="#formModal"
+                                            class="btn-add mt-2">
                                             <i class="fas fa-plus"></i> Tambah Sekarang
                                         </button>
                                     @endif
@@ -136,16 +138,16 @@
     </div>
 
     {{-- ==================== MOBILE CARDS ==================== --}}
-    <div class="d-md-none au d6 position-relative bg-white p-3 rounded-4 shadow-sm border" style="border-color: #e2e8f0;">
-        <div wire:loading wire:target="updateSearch, updateFilter, gotoPage, nextPage, previousPage" 
-             wire:loading.class="d-flex"
-             class="position-absolute w-100 h-100 justify-content-center align-items-center" 
-             style="background: rgba(255,255,255,0.7); z-index: 10; border-radius: 1rem;">
-            <div class="spinner-border text-primary" role="status">
+    <div class="d-md-none au d6 position-relative bg-white p-3 rounded-4 shadow-sm border"
+        style="border-color: #e2e8f0;">
+        <div wire:loading wire:target="updateSearch, updateFilter, gotoPage, nextPage, previousPage"
+            wire:loading.class="d-flex" class="position-absolute w-100 h-100 justify-content-center align-items-center"
+            style="background: rgba(255,255,255,0.7); z-index: 10; border-radius: 1rem;">
+            <div class="spinner-border text-danger" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
-        
+
         <div class="mb-3 fw-bold text-dark" style="font-size: 0.95rem;">
             <i class="fas fa-list text-muted me-2"></i>Daftar Inventori
         </div>
@@ -178,7 +180,8 @@
                             <div style="font-size:.65rem; color:#94a3b8; font-weight:700; text-transform:uppercase;">Harga
                                 Beli</div>
                             <div style="font-weight:800; color:#b91c1c; font-size:.88rem;">Rp
-                                {{ number_format($data->harga_beli, 0, ',', '.') }}</div>
+                                {{ number_format($data->harga_beli, 0, ',', '.') }}
+                            </div>
                         </div>
                     </div>
                     <div class="col-6">
@@ -186,7 +189,8 @@
                             <div style="font-size:.65rem; color:#94a3b8; font-weight:700; text-transform:uppercase;">Harga
                                 Jual</div>
                             <div style="font-weight:800; color:#15803d; font-size:.88rem;">Rp
-                                {{ number_format($data->harga_jual, 0, ',', '.') }}</div>
+                                {{ number_format($data->harga_jual, 0, ',', '.') }}
+                            </div>
                         </div>
                     </div>
                     <div class="col-6">
@@ -194,7 +198,8 @@
                             <div style="font-size:.65rem; color:#94a3b8; font-weight:700; text-transform:uppercase;">Laba /
                                 Unit</div>
                             <div style="font-weight:800; color:#1d4ed8; font-size:.88rem;">Rp
-                                {{ number_format($laba, 0, ',', '.') }}</div>
+                                {{ number_format($laba, 0, ',', '.') }}
+                            </div>
                         </div>
                     </div>
                     <div class="col-6">
@@ -202,7 +207,8 @@
                             <div style="font-size:.65rem; color:#94a3b8; font-weight:700; text-transform:uppercase;">Potensi
                                 Total</div>
                             <div style="font-weight:800; color:#059669; font-size:.88rem;">Rp
-                                {{ number_format($totalLaba, 0, ',', '.') }}</div>
+                                {{ number_format($totalLaba, 0, ',', '.') }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -213,8 +219,7 @@
                         style="width:auto; height:auto; padding:8px;">
                         <i class="fas fa-pencil me-1"></i> Edit
                     </button>
-                    <button wire:click="delete({{ $data->id }})"
-                        wire:confirm="Hapus barang ini?"
+                    <button wire:click="delete({{ $data->id }})" wire:confirm="Hapus barang ini?"
                         class="btn-act btn-hapus flex-fill"
                         style="height:auto; padding:8px; width:auto; border-radius:8px;">
                         <i class="fas fa-trash-alt me-1"></i> Hapus
@@ -232,12 +237,56 @@
         {{ $Inventory->links('livewire.mobile-pagination') }}
     </div>
 
+    <style>
+        /* Styling Font dan Warna Label */
+        form label,
+        form .input-group-text,
+        .modal-title {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+            font-size: medium !important;
+            /* Warna teks label jadi Merah Gelap */
+            font-weight: 500;
+        }
+
+        /* Styling Tombol Batal (Hitam) */
+        .btn-hitam {
+            background-color: #1a1a1a !important;
+            color: white !important;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-hitam:hover {
+            background-color: #000000 !important;
+            transform: translateY(-1px);
+        }
+
+        /* Styling Tombol Simpan (Merah) */
+        .btn-simpan-merah {
+            background-color: #8B0000 !important;
+            color: white !important;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-simpan-merah:hover {
+            background-color: #B10000 !important;
+            transform: translateY(-1px);
+        }
+
+        .form-control:focus {
+            border-color: #8B0000;
+            box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.1);
+        }
+    </style>
+
     <!-- Modal Bootstrap -->
-    <div wire:ignore.self class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="formModalLabel">
+                    <h5 style="font-weight: 900" class="modal-title" id="formModalLabel">
                         {{ $inventory_id ? 'Edit Barang' : 'Tambah Barang' }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -245,8 +294,8 @@
                 <div class="modal-body position-relative">
                     {{-- Spinner Loading for Edit --}}
                     <div wire:loading wire:target="edit" wire:loading.class="d-flex"
-                         class="position-absolute w-100 h-100 top-0 start-0 justify-content-center align-items-center" 
-                         style="background: rgba(255,255,255,0.8); z-index: 10;">
+                        class="position-absolute w-100 h-100 top-0 start-0 justify-content-center align-items-center"
+                        style="background: rgba(255,255,255,0.8); z-index: 10;">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
@@ -255,13 +304,15 @@
                     <form wire:submit.prevent="store">
                         <div class="mb-3">
                             <label class="form-label">Nama Barang</label>
-                            <input type="text" wire:model="nama_barang" class="form-control" placeholder="Contoh: Oli Mesin MPX 2">
+                            <input type="text" wire:model="nama_barang" class="form-control"
+                                placeholder="Contoh: Oli Mesin MPX 2">
                             @error('nama_barang') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
-                        
+
                         <div class="mb-3">
                             <label class="form-label">Jumlah Stok Barang</label>
-                            <input type="number" wire:model="jumlah_barang" class="form-control" placeholder="0" min="0">
+                            <input type="number" wire:model="jumlah_barang" class="form-control" placeholder="0"
+                                min="0">
                             @error('jumlah_barang') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
 
@@ -269,7 +320,8 @@
                             <label class="form-label">Harga Beli</label>
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
-                                <input type="number" wire:model="harga_beli" class="form-control" placeholder="0" min="0">
+                                <input type="number" wire:model="harga_beli" class="form-control" placeholder="0"
+                                    min="0">
                             </div>
                             @error('harga_beli') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
@@ -278,15 +330,17 @@
                             <label class="form-label">Harga Jual</label>
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
-                                <input type="number" wire:model="harga_jual" class="form-control" placeholder="0" min="0">
+                                <input type="number" wire:model="harga_jual" class="form-control" placeholder="0"
+                                    min="0">
                             </div>
                             @error('harga_jual') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
-                        
+
                         <div class="modal-footer px-0 pb-0">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">
-                                <span wire:loading wire:target="store" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                            <button type="button" class="btn btn-hitam" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-simpan-merah">
+                                <span wire:loading wire:target="store" class="spinner-border spinner-border-sm me-1"
+                                    role="status" aria-hidden="true"></span>
                                 Simpan
                             </button>
                         </div>
