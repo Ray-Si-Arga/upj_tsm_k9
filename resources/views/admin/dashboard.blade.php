@@ -490,7 +490,7 @@
                         <a href="{{ route('advisor.create') }}" class="qa-btn qa-blue">
                             <i class="fas fa-wrench"></i> Proses Service
                         </a>
-                        <a href="{{ route('inventory.create') }}" class="qa-btn qa-green">
+                        <a href="{{ route('inventory.index') }}" class="qa-btn qa-green">
                             <i class="fas fa-box-open"></i> Tambah Stok
                         </a>
                         <a href="{{ route('keuangan.index') }}" class="qa-btn qa-amber">
