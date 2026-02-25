@@ -279,6 +279,212 @@
         vertical-align: middle;
     }
 
+    /* Modal Tambah Keuangan */
+    /* ── Tombol Tambah Transaksi ── */
+.btn-tambah-transaksi {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 14px rgba(15,23,42,0.25);
+    text-decoration: none;
+}
+.btn-tambah-transaksi:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(15,23,42,0.35);
+    color: #fff;
+}
+.btn-tambah-transaksi i { font-size: 0.9rem; }
+
+/* ── Modal Overlay ── */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.55);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+.modal-overlay.active { display: flex; }
+
+/* ── Modal Box ── */
+.modal-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 20px 60px rgba(15,23,42,0.2);
+    animation: modalIn 0.25s ease;
+    position: relative;
+}
+@keyframes modalIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: #f1f5f9;
+    color: #64748b;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    transition: background 0.15s;
+}
+.modal-close:hover { background: #e2e8f0; color: #0f172a; }
+
+.modal-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+.modal-subtitle {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-weight: 500;
+    margin-bottom: 24px;
+}
+
+/* ── Tipe Toggle ── */
+.tipe-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 4px;
+}
+.tipe-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 9px;
+    border: none;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.tipe-btn.active-masuk {
+    background: #d1fae5;
+    color: #065f46;
+    box-shadow: 0 2px 8px rgba(5,150,105,0.15);
+}
+.tipe-btn.active-keluar {
+    background: #ffe4e6;
+    color: #9f1239;
+    box-shadow: 0 2px 8px rgba(225,29,72,0.15);
+}
+
+/* ── Form Fields ── */
+.modal-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+.modal-input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    color: #1e293b;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    background: #fafafa;
+}
+.modal-input:focus {
+    border-color: #0f172a;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(15,23,42,0.08);
+}
+.modal-input-group {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fafafa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.modal-input-group:focus-within {
+    border-color: #0f172a;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(15,23,42,0.08);
+}
+.modal-input-group span {
+    padding: 11px 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+    background: #f1f5f9;
+    border-right: 1.5px solid #e2e8f0;
+    white-space: nowrap;
+}
+.modal-input-group input {
+    flex: 1;
+    padding: 11px 14px;
+    border: none;
+    outline: none;
+    font-size: 0.88rem;
+    color: #1e293b;
+    background: transparent;
+}
+.modal-form-group { margin-bottom: 16px; }
+
+/* ── Submit Button ── */
+.btn-submit-modal {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.btn-submit-modal.masuk {
+    background: linear-gradient(135deg, #065f46, #059669);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+}
+.btn-submit-modal.keluar {
+    background: linear-gradient(135deg, #9f1239, #e11d48);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(225,29,72,0.3);
+}
+.btn-submit-modal:hover { transform: translateY(-1px); filter: brightness(1.05); }
+
     /* Tipe Badge */
     .tipe-badge {
         display: inline-flex;
@@ -381,6 +587,9 @@
                 </a>
             @endforeach
         </div>
+        <button class="btn-tambah-transaksi" onclick="openModalKeuangan()">
+    <i class="fa-solid fa-plus"></i> Tambah Transaksi
+</button>
     </div>
 
     {{-- ======================== SUMMARY CARDS ======================== --}}
@@ -537,6 +746,89 @@
         </div>
     </div>
 
+    {{-- Modal Tambah Transaksi Keuangan --}}
+<div class="modal-overlay" id="modalTambahTransaksi" onclick="handleOverlayClick(event)">
+    <div class="modal-box">
+
+        {{-- Tombol Close --}}
+        <button class="modal-close" onclick="closeModalKeuangan()" type="button">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        {{-- Header Modal --}}
+        <div class="modal-title"><i class="fa-solid fa-money-bill-transfer me-2" style="color:#0f172a;"></i>Tambah Transaksi</div>
+        <div class="modal-subtitle">Catat pemasukan atau pengeluaran secara manual</div>
+
+        {{-- Form --}}
+        <form method="POST" action="{{ route('keuangan.store') }}" id="formTambahTransaksi">
+            @csrf
+            <input type="hidden" name="periode" value="{{ $periode }}">
+            <input type="hidden" name="tipe" id="inputTipe" value="pemasukan">
+
+            {{-- Toggle Tipe --}}
+            <div class="tipe-toggle">
+                <button type="button" class="tipe-btn active-masuk" id="btnMasuk" onclick="setTipe('pemasukan')">
+                    <i class="fa-solid fa-arrow-trend-up"></i> Pemasukan
+                </button>
+                <button type="button" class="tipe-btn" id="btnKeluar" onclick="setTipe('pengeluaran')">
+                    <i class="fa-solid fa-arrow-trend-down"></i> Pengeluaran
+                </button>
+            </div>
+
+            {{-- Judul / Keterangan Singkat --}}
+            <div class="modal-form-group">
+                <label class="modal-label" for="inputJudul">Judul Transaksi</label>
+                <input
+                    type="text"
+                    id="inputJudul"
+                    name="judul"
+                    class="modal-input"
+                    placeholder="cth: Dana BOS Jurusan, Gaji Karyawan..."
+                    required
+                    autocomplete="off"
+                >
+            </div>
+
+            {{-- Nominal --}}
+            <div class="modal-form-group">
+                <label class="modal-label" for="inputNominalView">Nominal</label>
+                <div class="modal-input-group">
+                    <span>Rp</span>
+                    <input
+                        type="text"
+                        id="inputNominalView"
+                        placeholder="0"
+                        autocomplete="off"
+                        oninput="formatNominal(this)"
+                        required
+                    >
+                </div>
+                <input type="hidden" id="inputNominal" name="nominal">
+            </div>
+
+            {{-- Keterangan (Opsional) --}}
+            <div class="modal-form-group">
+                <label class="modal-label" for="inputKeterangan">Keterangan <span style="color:#94a3b8;font-weight:500;text-transform:none;">(opsional)</span></label>
+                <textarea
+                    id="inputKeterangan"
+                    name="keterangan"
+                    class="modal-input"
+                    rows="2"
+                    placeholder="Tambahkan catatan jika perlu..."
+                    style="resize:none;"
+                ></textarea>
+            </div>
+
+            {{-- Submit --}}
+            <button type="submit" class="btn-submit-modal masuk" id="btnSubmitModal">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span id="submitLabel">Simpan Pemasukan</span>
+            </button>
+        </form>
+
+    </div>
+</div>
+
 </div>
 
 {{-- ======================== CHART.JS ======================== --}}
@@ -617,5 +909,89 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
+<script>
+    // ── Open / Close Modal ──
+    function openModalKeuangan() {
+        document.getElementById('modalTambahTransaksi').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => document.getElementById('inputJudul').focus(), 100);
+    }
+
+    function closeModalKeuangan() {
+        document.getElementById('modalTambahTransaksi').classList.remove('active');
+        document.body.style.overflow = '';
+        // Reset form
+        document.getElementById('formTambahTransaksi').reset();
+        document.getElementById('inputNominal').value = '';
+        setTipe('pemasukan');
+    }
+
+    function handleOverlayClick(e) {
+        if (e.target === document.getElementById('modalTambahTransaksi')) {
+            closeModalKeuangan();
+        }
+    }
+
+    // Tutup modal dengan Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModalKeuangan();
+    });
+
+    // ── Toggle Tipe Pemasukan / Pengeluaran ──
+    function setTipe(tipe) {
+        const btnMasuk   = document.getElementById('btnMasuk');
+        const btnKeluar  = document.getElementById('btnKeluar');
+        const btnSubmit  = document.getElementById('btnSubmitModal');
+        const submitLabel = document.getElementById('submitLabel');
+
+        document.getElementById('inputTipe').value = tipe;
+
+        if (tipe === 'pemasukan') {
+            btnMasuk.className  = 'tipe-btn active-masuk';
+            btnKeluar.className = 'tipe-btn';
+            btnSubmit.className = 'btn-submit-modal masuk';
+            submitLabel.textContent = 'Simpan Pemasukan';
+        } else {
+            btnMasuk.className  = 'tipe-btn';
+            btnKeluar.className = 'tipe-btn active-keluar';
+            btnSubmit.className = 'btn-submit-modal keluar';
+            submitLabel.textContent = 'Simpan Pengeluaran';
+        }
+    }
+
+    // ── Format Nominal Rupiah ──
+    function formatNominal(el) {
+        let angka = el.value.replace(/[^0-9]/g, '');
+        document.getElementById('inputNominal').value = angka;
+        el.value = angka ? new Intl.NumberFormat('id-ID').format(angka) : '';
+    }
+
+    // ── Validasi sebelum submit ──
+    document.getElementById('formTambahTransaksi').addEventListener('submit', function(e) {
+        const nominal = document.getElementById('inputNominal').value;
+        if (!nominal || parseInt(nominal) < 1) {
+            e.preventDefault();
+            document.getElementById('inputNominalView').style.borderColor = '#e11d48';
+            document.getElementById('inputNominalView').focus();
+        }
+    });
+
+    // ── Auto-buka modal jika ada validasi error dari server ──
+    @if($errors->any())
+        document.addEventListener('DOMContentLoaded', () => openModalKeuangan());
+    @endif
+
+    // ── Auto-close success message ──
+    @if(session('success'))
+        setTimeout(() => {
+            const alert = document.querySelector('.alert-success');
+            if (alert) alert.style.opacity = '0';
+        }, 3000);
+    @endif
+</script>
+
+
+
 
 @endsection
