@@ -98,22 +98,19 @@
                             </td>
 
                             {{-- Aksi --}}
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <a href="{{ route('inventory.edit', $data->id) }}" class="btn-act btn-edit"
-                                        title="Edit">
-                                        <i class="fas fa-pencil"></i>
-                                    </a>
-                                    <form action="{{ route('inventory.destroy', $data->id) }}" method="POST"
-                                        class="d-inline"
-                                        onsubmit="return confirm('Hapus barang \'{{ $data->nama_barang }}\'?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn-act btn-hapus" title="Hapus">
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button wire:click="edit({{ $data->id }})" data-bs-toggle="modal"
+                                            data-bs-target="#formModal" class="btn-act btn-edit" title="Edit">
+                                            <i class="fas fa-pencil"></i>
+                                        </button>
+                                        <button wire:click="delete({{ $data->id }})"
+                                            wire:confirm="Hapus barang '{{ $data->nama_barang }}'?"
+                                            class="btn-act btn-hapus" title="Hapus">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
-                                    </form>
-                                </div>
-                            </td>
+                                    </div>
+                                </td>
                         </tr>
                     @empty
                         <tr>
@@ -122,9 +119,9 @@
                                     <i class="fas fa-box-open"></i>
                                     <p>Belum ada data inventori mencocokkan pencarian Anda.</p>
                                     @if(empty($search))
-                                        <a href="{{ route('inventory.create') }}" class="btn-add mt-2">
+                                        <button wire:click="create" data-bs-toggle="modal" data-bs-target="#formModal" class="btn-add mt-2">
                                             <i class="fas fa-plus"></i> Tambah Sekarang
-                                        </a>
+                                        </button>
                                     @endif
                                 </div>
                             </td>
@@ -211,19 +208,17 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <a href="{{ route('inventory.edit', $data->id) }}"
+                    <button wire:click="edit({{ $data->id }})" data-bs-toggle="modal" data-bs-target="#formModal"
                         class="btn-act btn-edit flex-fill justify-content-center"
                         style="width:auto; height:auto; padding:8px;">
                         <i class="fas fa-pencil me-1"></i> Edit
-                    </a>
-                    <form action="{{ route('inventory.destroy', $data->id) }}" method="POST" class="flex-fill"
-                        onsubmit="return confirm('Hapus barang ini?')">
-                        @csrf @method('DELETE')
-                        <button type="submit" class="btn-act btn-hapus w-100"
-                            style="height:auto; padding:8px; width:100%!important; border-radius:8px;">
-                            <i class="fas fa-trash-alt me-1"></i> Hapus
-                        </button>
-                    </form>
+                    </button>
+                    <button wire:click="delete({{ $data->id }})"
+                        wire:confirm="Hapus barang ini?"
+                        class="btn-act btn-hapus flex-fill"
+                        style="height:auto; padding:8px; width:auto; border-radius:8px;">
+                        <i class="fas fa-trash-alt me-1"></i> Hapus
+                    </button>
                 </div>
             </div>
         @empty
@@ -236,4 +231,69 @@
         {{-- Gunakan template pagination praktis khusus mobile --}}
         {{ $Inventory->links('livewire.mobile-pagination') }}
     </div>
+
+    <!-- Modal Bootstrap -->
+    <div wire:ignore.self class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formModalLabel">
+                        {{ $inventory_id ? 'Edit Barang' : 'Tambah Barang' }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body position-relative">
+                    {{-- Spinner Loading for Edit --}}
+                    <div wire:loading wire:target="edit" wire:loading.class="d-flex"
+                         class="position-absolute w-100 h-100 top-0 start-0 justify-content-center align-items-center" 
+                         style="background: rgba(255,255,255,0.8); z-index: 10;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+
+                    <form wire:submit.prevent="store">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Barang</label>
+                            <input type="text" wire:model="nama_barang" class="form-control" placeholder="Contoh: Oli Mesin MPX 2">
+                            @error('nama_barang') <span class="text-danger small">{{ $message }}</span> @enderror
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Jumlah Stok Barang</label>
+                            <input type="number" wire:model="jumlah_barang" class="form-control" placeholder="0" min="0">
+                            @error('jumlah_barang') <span class="text-danger small">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Harga Beli</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="number" wire:model="harga_beli" class="form-control" placeholder="0" min="0">
+                            </div>
+                            @error('harga_beli') <span class="text-danger small">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Harga Jual</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="number" wire:model="harga_jual" class="form-control" placeholder="0" min="0">
+                            </div>
+                            @error('harga_jual') <span class="text-danger small">{{ $message }}</span> @enderror
+                        </div>
+                        
+                        <div class="modal-footer px-0 pb-0">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">
+                                <span wire:loading wire:target="store" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                Simpan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

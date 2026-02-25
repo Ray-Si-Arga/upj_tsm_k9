@@ -14,7 +14,16 @@ class InventoryTable extends Component
     public $search = '';
     public $filterStok = 'all';
 
+    public $inventory_id, $nama_barang, $jumlah_barang, $harga_beli, $harga_jual;
+
     protected $paginationTheme = 'bootstrap';
+
+    protected $rules = [
+        'nama_barang' => 'required|string|max:255',
+        'jumlah_barang' => 'required|integer|min:0',
+        'harga_beli' => 'required|numeric|min:0',
+        'harga_jual' => 'required|numeric|min:0',
+    ];
 
     #[On('searchUpdated')]
     public function updateSearch($search)
@@ -28,6 +37,51 @@ class InventoryTable extends Component
     {
         $this->filterStok = $filter;
         $this->resetPage();
+    }
+
+    #[On('create-inventory')]
+    public function create()
+    {
+        $this->reset(['inventory_id', 'nama_barang', 'jumlah_barang', 'harga_beli', 'harga_jual']);
+        $this->resetValidation();
+    }
+
+    public function edit($id)
+    {
+        $this->resetValidation();
+        $inventory = Inventory::findOrFail($id);
+        $this->inventory_id = $inventory->id;
+        $this->nama_barang = $inventory->nama_barang;
+        $this->jumlah_barang = $inventory->jumlah_barang;
+        $this->harga_beli = $inventory->harga_beli;
+        $this->harga_jual = $inventory->harga_jual;
+    }
+
+    public function store()
+    {
+        $this->validate();
+
+        Inventory::updateOrCreate(
+            ['id' => $this->inventory_id],
+            [
+                'nama_barang' => $this->nama_barang,
+                'jumlah_barang' => $this->jumlah_barang,
+                'harga_beli' => $this->harga_beli,
+                'harga_jual' => $this->harga_jual,
+            ]
+        );
+
+        session()->flash('success', $this->inventory_id ? 'Barang berhasil diperbarui!' : 'Barang berhasil ditambahkan!');
+
+        $this->dispatch('close-modal');
+        $this->create();
+    }
+
+    public function delete($id)
+    {
+        $inventory = Inventory::findOrFail($id);
+        $inventory->delete();
+        session()->flash('success', 'Barang berhasil dihapus!');
     }
 
     public function render()
