@@ -17,11 +17,11 @@ class CetakController extends Controller
         $html = view('cetak.cetak_booking', compact('advisor'))->render();
 
         // Export ke JPEG
-        // $imageContent = Browsershot::html($html)
-        //     ->windowSize(794, 1123)
-        //     ->setScreenshotType('jpeg', 100)
-        //     ->emulateMedia('print')
-        //     ->screenshot();
+        $imageContent = Browsershot::html($html)
+            ->windowSize(794, 1123)
+            ->setScreenshotType('jpeg', 100)
+            ->emulateMedia('print')
+            ->screenshot();
 
             $PDFContent = Browsershot::html($html)
         // ->setChromePath('/usr/bin/google-chrome-stable')

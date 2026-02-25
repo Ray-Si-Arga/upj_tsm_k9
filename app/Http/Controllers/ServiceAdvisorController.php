@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\ServiceAdvisor;
 use App\Models\Inventory;
+use App\Models\Keuangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -155,6 +156,16 @@ $jobNames     = implode(', ', array_filter($jobsNames));
             // Update status booking jadi done
             $booking->status = 'done';
             $booking->save();
+
+            Keuangan::create([
+    'tipe'         => 'pemasukan',
+    'judul'        => 'Service: ' . ($advisor->jobs ?? 'Servis Kendaraan'),
+    'nominal'      => $advisor->total_estimation,
+    'sumber'       => 'service',
+    'kategori'     => 'service',
+    'keterangan'   => ($booking->customer_name ?? '-') . ' • ' . ($booking->plate_number ?? '-') . ' • Mekanik: ' . ($advisor->nama_mekanik ?? '-'),
+    'referensi_id' => $advisor->id,
+]);
 
             DB::commit();
 
