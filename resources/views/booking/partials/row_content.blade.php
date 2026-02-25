@@ -10,11 +10,7 @@
     {{-- Kolom 1: Nomor Antrian (Besar jika hari ini) --}}
     <td class="text-center px-4">
         <div class="d-flex justify-content-center">
-            @if ($isToday)
-                <div class="queue-badge">{{ $booking->queue_number }}</div>
-            @else
-                <span class="text-muted fw-bold">#{{ $booking->queue_number }}</span>
-            @endif
+            <div class="text-dark fw-bold">{{ $booking->queue_number }}</div>
         </div>
     </td>
 
@@ -29,13 +25,13 @@
         <div class="mt-2">
             @if ($booking->services->count() > 0)
                 {{-- Tampilkan layanan pertama --}}
-                <span class="badge bg-info text-dark mb-1">
+                <span class="badge bg-dark bg-gradient mb-1">
                     {{ $booking->services->first()->name }}
                 </span>
 
                 {{-- Jika ada lebih dari 1 layanan, tampilkan badge "+X lainnya" --}}
                 @if ($booking->services->count() > 1)
-                    <span class="badge bg-secondary mb-1" title="Lihat detail untuk info lengkap">
+                    <span class="badge bg-dark bg-gradient mb-1" title="Lihat detail untuk info lengkap">
                         +{{ $booking->services->count() - 1 }} lainnya
                     </span>
                 @endif
@@ -86,12 +82,12 @@
                 onchange="handleStatusChange(this, '{{ $booking->id }}', '{{ route('booking.updateStatus', $booking->id) }}')"
                 style="min-width: 140px;">
 
-                <option value="pending" {{ $booking->status == 'pending' ? 'selected' : '' }}>⏳ Menunggu</option>
-                <option value="approved" {{ $booking->status == 'approved' ? 'selected' : '' }}>✅ Diterima</option>
-                <option value="on_progress" {{ $booking->status == 'on_progress' ? 'selected' : '' }}>🔧 Dikerjakan
+                <option value="pending" {{ $booking->status == 'pending' ? 'selected' : '' }}>Menunggu</option>
+                <option value="approved" {{ $booking->status == 'approved' ? 'selected' : '' }}>Diterima</option>
+                <option value="on_progress" {{ $booking->status == 'on_progress' ? 'selected' : '' }}>Dikerjakan
                 </option>
-                <option value="done" {{ $booking->status == 'done' ? 'selected' : '' }}>🏁 Selesai</option>
-                <option value="cancelled" {{ $booking->status == 'cancelled' ? 'selected' : '' }}>❌ Dibatalkan</option>
+                <option value="done" {{ $booking->status == 'done' ? 'selected' : '' }}>Selesai</option>
+                <option value="cancelled" {{ $booking->status == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
             </select>
         </form>
     </td>
@@ -99,13 +95,12 @@
     {{-- Kolom 5: Aksi --}}
     <td class="px-4 text-center">
         <div class="d-flex justify-content-center gap-2">
-            <a href="{{ route('booking.show', $booking->id) }}" class="btn btn-outline-primary btn-icon btn-sm"
-                title="Lihat Detail"><i class="fas fa-circle-info"></i></a>
+            <a href="{{ route('booking.show', $booking->id) }}" class="btn-act btn-detail" title="Lihat Detail"><i
+                    class="fas fa-circle-info"></i></a>
             <form action="{{ route('booking.destroy', $booking->id) }}" method="POST" class="d-inline">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn btn-outline-danger btn-icon btn-sm"
-                    onclick="return confirm('Hapus data booking ini?')" title="Hapus"><i
-                        class="fas fa-trash-alt"></i></button>
+                <button type="submit" class="btn-act btn-hapus" onclick="return confirm('Hapus data booking ini?')"
+                    title="Hapus"><i class="fas fa-trash-alt"></i></button>
             </form>
         </div>
     </td>

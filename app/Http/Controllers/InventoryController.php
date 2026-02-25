@@ -16,10 +16,10 @@ class InventoryController extends Controller
     }
 
     // Membuat Data
-    public function create()
-    {
-        return view('inventory.create');
-    }
+    // public function create()
+    // {
+    //     return view('inventory.create');
+    // }
 
     // Menyimpan Data
     public function store(Request $request)
