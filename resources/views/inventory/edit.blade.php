@@ -145,16 +145,22 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const viewInput = document.getElementById('harga_barang_view');
-            const realInput = document.getElementById('harga_barang');
+    document.addEventListener('DOMContentLoaded', function() {
+        function setupMask(viewId, hiddenId) {
+            const viewInput = document.getElementById(viewId);
+            const realInput = document.getElementById(hiddenId);
 
-            // Logic Format Rupiah
+            if (!viewInput || !realInput) return;
+
             viewInput.addEventListener('input', function() {
                 let angka = this.value.replace(/[^0-9]/g, '');
                 realInput.value = angka;
                 this.value = angka ? new Intl.NumberFormat('id-ID').format(angka) : '';
             });
-        });
-    </script>
+        }
+
+        setupMask('harga_beli_view', 'harga_beli');
+        setupMask('harga_jual_view', 'harga_jual');
+    });
+</script>
 @endsection

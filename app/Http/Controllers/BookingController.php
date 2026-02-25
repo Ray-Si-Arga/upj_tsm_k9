@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
+use App\Models\ServiceAdvisor;
+use App\Models\Inventory;
+use Illuminate\Support\Facades\DB;
+
 
 class BookingController extends Controller
 {
@@ -17,32 +21,105 @@ class BookingController extends Controller
      */
     public function adminDashboard()
     {
-        // Pengecekan role manual untuk akses dashboard
         if (Auth::user()->role !== 'admin') {
-            // Jika bukan admin, arahkan ke halaman booking/create (atau halaman customer lainnya)
-            return redirect()->route('booking.create')->with('error', 'Akses dibatasi untuk Admin.');
+            return redirect()->route('booking.create')
+                ->with('error', 'Akses dibatasi untuk Admin.');
         }
 
-        // 1. Ambil data statistik untuk Card
         $today = date('Y-m-d');
+        $now   = Carbon::now();
 
+        // ── 1. KARTU RINGKASAN ──────────────────────────
         $totalBookingsToday = Booking::whereDate('booking_date', $today)->count();
+
         $pendingBookings = Booking::whereIn('status', ['pending', 'approved', 'on_progress'])->count();
+
         $registeredCustomers = User::where('role', 'customer')->count();
 
-        // 2. Ambil data antrian hari ini (untuk ditampilkan di bagian bawah dashboard)
+        // Service selesai bulan ini
+        $doneThisMonth = Booking::where('status', 'done')
+            ->whereYear('booking_date', $now->year)
+            ->whereMonth('booking_date', $now->month)
+            ->count();
+
+        // Pemasukan bulan ini (ServiceAdvisor yang booking-nya done)
+        $revenueThisMonth = ServiceAdvisor::whereHas('booking', fn($q) =>
+                $q->where('status', 'done')
+            )
+            ->whereYear('created_at', $now->year)
+            ->whereMonth('created_at', $now->month)
+            ->sum('total_estimation');
+
+        // Jumlah item stok menipis
+        $lowStockCount = Inventory::where('jumlah_barang', '<=', 6)->count();
+
+        // ── 2. ANTRIAN AKTIF HARI INI ───────────────────
         $queueBookings = Booking::with(['user', 'services'])
             ->whereDate('booking_date', $today)
             ->whereIn('status', ['pending', 'approved', 'on_progress'])
-            // Sorting di client (JS/Blade) atau jika diperlukan gunakan orderBy di sini,
-            // namun dihindari karena berpotensi memerlukan index tambahan.
+            ->orderBy('queue_number', 'asc')
             ->get();
+
+        // ── 3. TOP 7 PELANGGAN SETIA ────────────────────
+        $topCustomers = Booking::select(
+                'customer_name',
+                'customer_whatsapp',
+                DB::raw('COUNT(*) as total')
+            )
+            ->where('status', 'done')
+            ->whereNotNull('customer_name')
+            ->groupBy('customer_name', 'customer_whatsapp')
+            ->orderByDesc('total')
+            ->limit(7)
+            ->get();
+
+        // ── 4. STOK MENIPIS (panel bawah) ───────────────
+        $lowStockItems = Inventory::where('jumlah_barang', '<=', 6)
+            ->orderBy('jumlah_barang', 'asc')
+            ->limit(8)
+            ->get();
+
+        // ── 5. LAYANAN TERPOPULER ────────────────────────
+        // Hitung via pivot booking_service, hanya booking yang done
+        $topServices = Service::select('services.id', 'services.name')
+            ->join('booking_service', 'services.id', '=', 'booking_service.service_id')
+            ->join('bookings', 'bookings.id', '=', 'booking_service.booking_id')
+            ->where('bookings.status', 'done')
+            ->groupBy('services.id', 'services.name')
+            ->selectRaw('COUNT(*) as total')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+
+        // ── 6. CHART DATA — 7 HARI TERAKHIR ─────────────
+        $chartLabels  = [];
+        $chartBooking = [];
+        $chartDone    = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $d    = $date->format('Y-m-d');
+
+            $chartLabels[]  = $date->locale('id')->translatedFormat('D d/m');
+            $chartBooking[] = Booking::whereDate('booking_date', $d)->count();
+            $chartDone[]    = Booking::whereDate('booking_date', $d)
+                ->where('status', 'done')->count();
+        }
 
         return view('admin.dashboard', compact(
             'totalBookingsToday',
             'pendingBookings',
             'registeredCustomers',
+            'doneThisMonth',
+            'revenueThisMonth',
+            'lowStockCount',
             'queueBookings',
+            'topCustomers',
+            'lowStockItems',
+            'topServices',
+            'chartLabels',
+            'chartBooking',
+            'chartDone',
         ));
     }
 

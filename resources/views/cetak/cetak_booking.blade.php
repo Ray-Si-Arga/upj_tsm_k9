@@ -526,7 +526,8 @@
                     </div>
                     <div class="row-compact"><span class="label-col">KM</span><span>:</span>
                         <div class="value-fill">
-                            {{ $advisor->odometer ? number_format($advisor->odometer, 0, ',', '.') : '-' }}</div>
+                            {{ $advisor->odometer ? number_format($advisor->odometer, 0, ',', '.') : '-' }}
+                        </div>
                     </div>
                     <div class="row-compact"><span class="label-col">* Email</span><span>:</span>
                         <div class="value-fill">{{ $advisor->booking->user->email ?? '-' }}</div>
@@ -555,16 +556,16 @@
 
                     <div class="fw-bold mb-1">Data Pemilik</div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Nama</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->booking->customer_name }}</div>
+                        <div class="value-fill">{{ $advisor->owner_name }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Alamat</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->booking->customer_address }}</div>
+                        <div class="value-fill">{{ $advisor->owner_address }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Kel/Kec</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->owner_area ?? '-' }}</div>
+                        <div class="value-fill">{{ $advisor->owner_area }}</div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">No. HP</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->booking->customer_whatsapp ?? '-' }}</div>
+                        <div class="value-fill">{{ $advisor->owner_phone }}</div>
                     </div>
                 </div>
 
@@ -572,8 +573,20 @@
                     <div class="d-flex align-items-center mb-1">
                         <span class="me-2">Dari Dealer Sendiri</span>
                         <span class="me-1">:</span>
-                        <span class="cb">&#9744;</span> Ya
-                        <span class="cb ms-2">&#9744;</span> Tidak
+                        <span class="cb">
+                            @if ($advisor->is_own_dealer === 1)
+                                &#9745;
+                            @else
+                                &#9744;
+                            @endif
+                        </span> Ya
+                        <span class="cb ms-2">
+                            @if ($advisor->is_own_dealer === 0)
+                                &#9745;
+                            @else
+                                &#9744;
+                            @endif
+                        </span> Tidak
                     </div>
                     <div class="mb-2">
                         <div class="d-flex row-compact">
@@ -583,12 +596,31 @@
                     </div>
 
                     <div class="fw-bold">Alasan ke AHASS</div>
-                    <div><span class="fw-bold">a.</span> Inisiatif Sendiri</div>
-                    <div><span class="fw-bold">b.</span> SMS Reminder</div>
-                    <div><span class="fw-bold">c.</span> Telp Reminder</div>
-                    <div><span class="fw-bold">d.</span> Sticker Reminder</div>
+                    <div><span
+                            class="fw-bold">{!! $advisor->visit_reason === 'Inisiatif Sendiri' ? '&#10004;' : 'a.' !!}</span>
+                        Inisiatif Sendiri</div>
+                    <div><span
+                            class="fw-bold">{!! $advisor->visit_reason === 'SMS Reminder' ? '&#10004;' : 'b.' !!}</span>
+                        SMS Reminder</div>
+                    <div><span
+                            class="fw-bold">{!! $advisor->visit_reason === 'Telp Reminder' ? '&#10004;' : 'c.' !!}</span>
+                        Telp Reminder</div>
+                    <div><span
+                            class="fw-bold">{!! $advisor->visit_reason === 'Sticker Reminder' ? '&#10004;' : 'd.' !!}</span>
+                        Sticker Reminder</div>
                     <div class="row-compact">
-                        <span class="fw-bold me-1">e.</span> Lainnya <div class="dotted-fill"></div>
+                        @php
+                            $isLainnya = !in_array($advisor->visit_reason, ['Inisiatif Sendiri', 'SMS Reminder', 'Telp Reminder', 'Sticker Reminder']);
+                        @endphp
+                        <span
+                            class="fw-bold me-1">{!! $isLainnya && $advisor->visit_reason ? '&#10004;' : 'e.' !!}</span>
+                        Lainnya
+                        @if($isLainnya && $advisor->visit_reason)
+                            <div class="dotted-fill text-start" style="padding-left: 5px; font-weight: bold;">
+                                {{ $advisor->visit_reason }}</div>
+                        @else
+                            <div class="dotted-fill"></div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -630,7 +662,8 @@
                             @for ($j = 0; $j < $totalJobRows; $j++)
                                 <div class="row g-0">
                                     <div class="col-7 border-end border-dark p-1 d-flex border-2">{{ $j + 1 }}. <span
-                                            class="{{ isset($jobsArray[$j]) ? 'value-fill' : 'dotted-fill' }}">{{ $jobsArray[$j] ?? '' }}</span></div>
+                                            class="{{ isset($jobsArray[$j]) ? 'value-fill' : 'dotted-fill' }}">{{ $jobsArray[$j] ?? '' }}</span>
+                                    </div>
                                     <div class="col-5 p-1 d-flex">Rp <span
                                             class="{{ $j === 0 ? 'value-fill' : 'dotted-fill' }} text-end">{{ $j === 0 ? number_format($advisor->estimation_cost ?? 0, 0, ',', '.') : '' }}</span>
                                     </div>
@@ -656,7 +689,8 @@
                                 @php $part = isset($parts[$k]) ? $parts[$k] : null; @endphp
                                 <div class="row g-0">
                                     <div class="col-7 border-end border-dark p-1 d-flex border-2">{{ $k + 1 }}. <span
-                                            class="{{ $part ? 'value-fill' : 'dotted-fill' }}">{{ $part ? data_get($part, 'name', '-') : '' }}</span></div>
+                                            class="{{ $part ? 'value-fill' : 'dotted-fill' }}">{{ $part ? data_get($part, 'name', '-') : '' }}</span>
+                                    </div>
                                     <div class="col-5 p-1 d-flex">Rp <span
                                             class="{{ $part ? 'value-fill' : 'dotted-fill' }} text-end">{{ $part ? number_format(is_numeric(data_get($part, 'price')) ? data_get($part, 'price') : 0, 0, ',', '.') : '' }}</span>
                                     </div>
@@ -675,7 +709,7 @@
 
                     <div class="section-header text-start px-2 border-top border-2">Keluhan Konsumen</div>
                     <div style="height: 35px; border-bottom: 2px solid #000; padding: 5px;">
-                        {{ $advisor->customer_complaint }}
+                        {{ $advisor->booking->complaint }}
                     </div>
 
                     <div class="section-header text-start px-2">Analisa Service Advisor</div>
@@ -766,8 +800,25 @@
         <div class="mt-1" style="font-size: 9px;">
             <div>*Apabila ada tambahan <strong>PEKERJAAN / PERGANTIAN PART</strong> di luar daftar diatas maka :</div>
             <div class="d-flex align-items-center mt-1">
-                <span class="cb">&#9744;</span> Konfirmasi dulu / telp ke <span class="value-fill"
-                    style="flex-grow: 0;">+62 851-4300-8033</span><span class="cb ms-3">&#9744;</span> Langsung
+                <span class="cb">
+                    @php
+                        if ($advisor->pkb_approval === 'hubungi') {
+                            echo '&#9745;'; 
+                        } else {
+                            echo '&#9744;';
+                        }
+                    @endphp
+                </span> Konfirmasi dulu / telp ke <span class="value-fill"
+                    style="flex-grow: 0;">+62 851-4300-8033</span>
+                <span class="cb ms-3">
+                    @php
+                        if ($advisor->pkb_approval === 'langsung') {
+                            echo '&#9745;'; 
+                        } else {
+                            echo '&#9744;';
+                        }
+                    @endphp
+                </span> Langsung
                 dikerjakan
             </div>
             <div class="mt-1">

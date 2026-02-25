@@ -52,17 +52,32 @@ class InventoryController extends Controller
 
     // Mengupdate Data
     public function update(Request $request, Inventory $inventory)
-    {
-        $request->validate([
-            'nama_barang'   => 'required',
-            'jumlah_barang' => 'required|integer|min:0',
-            'harga_beli'    => 'required|numeric|min:0', // Update ini
-            'harga_jual'    => 'required|numeric|min:0', // Tambah ini
-        ]);
+{
+    $request->validate([
+        'nama_barang'   => 'required',
+        'jumlah_barang' => 'required|integer|min:0',
+        'harga_beli'    => 'required|numeric|min:0',
+        'harga_jual'    => 'required|numeric|min:0',
+    ]);
 
-        $inventory->update($request->all());
-        return redirect()->route('inventory.index')->with('success', 'Data Berhasil Di Edit');
+    $inventory->update($request->all());
+
+    // Update data pengeluaran yang terkait di tabel keuangan
+    $pengeluaran = Pengeluaran::where('kategori', 'inventory')
+        ->where('judul', 'like', 'Pembelian : ' . $inventory->nama_barang . '%')
+        ->orWhere('judul', 'like', 'Pembelian : ' . $request->nama_barang . '%')
+        ->first();
+
+    if ($pengeluaran) {
+        $pengeluaran->update([
+            'judul'      => 'Pembelian : ' . $inventory->nama_barang,
+            'nominal'    => $inventory->harga_beli * $inventory->jumlah_barang,
+            'keterangan' => 'Stok ' . $inventory->jumlah_barang . ' unit @ Rp ' . number_format($inventory->harga_beli, 0, ',', '.'),
+        ]);
     }
+
+    return redirect()->route('inventory.index')->with('success', 'Data Berhasil Di Edit');
+}
 
     // Menghapus Data
     public function destroy(Inventory $inventory)

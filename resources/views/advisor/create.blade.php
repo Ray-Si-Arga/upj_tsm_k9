@@ -242,17 +242,17 @@
                                         <input type="text" name="owner_phone" id="owner_phone" class="form-control">
                                     </div>
                                     <div class="col-6">
-                                        <label class="form-label-custom">Sumber Unit</label>
+                                        <label class="form-label-custom">Dari Dealer Sendiri</label>
                                         <div class="d-flex gap-2 mt-2">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="is_own_dealer"
                                                     id="dYes" value="1">
-                                                <label class="form-check-label small" for="dYes">Dealer Ini</label>
+                                                <label class="form-check-label small" for="dYes">Ya</label>
                                             </div>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="is_own_dealer"
                                                     id="dNo" value="0" checked>
-                                                <label class="form-check-label small" for="dNo">Luar</label>
+                                                <label class="form-check-label small" for="dNo">Tidak</label>
                                             </div>
                                         </div>
                                     </div>
@@ -451,37 +451,41 @@
                 </div>
 
                 {{-- CARD 4: DAFTAR PEKERJAAN --}}
-                <div class="form-card">
-                    <div class="form-header-title">
-                        <i class="fas fa-tools me-2"></i> Daftar Pekerjaan
-                    </div>
-                    <div class="card-body p-4">
-                        {{-- Tambahkan table-responsive agar tabel bisa di-scroll di HP --}}
-                        <div class="table-responsive border rounded-3 bg-light p-3">
-                            <table class="table table-borderless table-sm mb-0 small" style="min-width: 300px;">
-                                <thead class="border-bottom">
-                                    <tr>
-                                        <th width="5%">No</th>
-                                        <th>Jenis Pekerjaan</th>
-                                        <th class="text-end">Estimasi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="jobListBody">
-                                    <tr>
-                                        <td colspan="3" class="text-center text-muted py-3">Pilih pelanggan dulu...
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot class="border-top fw-bold">
-                                    <tr>
-                                        <td colspan="2" class="text-end">TOTAL</td>
-                                        <td class="text-end" id="totalJobCost">Rp 0</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+<div class="form-card">
+    <div class="form-header-title">
+        <i class="fas fa-tools me-2"></i> Daftar Pekerjaan
+    </div>
+    <div class="card-body p-4">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle mb-0" id="jobTable" style="min-width: 400px;">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th style="width: 45%">Jenis Pekerjaan</th>
+                        <th style="width: 35%">Estimasi Biaya</th>
+                        <th style="width: 20%">x</th>
+                    </tr>
+                </thead>
+                <tbody id="jobListBody"></tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="p-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm fw-bold w-100" onclick="addJobRow()">
+                                <i class="fas fa-plus me-1"></i> Tambah Pekerjaan
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="fw-bold bg-light">
+                        <td class="text-end">Total Pekerjaan</td>
+                        <td colspan="2" class="text-primary text-end px-3" id="totalJobCost">Rp 0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div id="emptyJobState" class="text-center py-4 text-muted border rounded mt-0 bg-light" style="border-top: none !important;">
+            <p class="small mb-0">Belum ada pekerjaan. Pilih pelanggan atau tambah manual.</p>
+        </div>
+    </div>
+</div>
 
                 {{-- CARD 5: SPAREPART --}}
                 <div class="form-card mt-4">
@@ -618,33 +622,85 @@
             document.getElementById('carrier_name').value = selectedOption.getAttribute('data-name') || '';
             document.getElementById('carrier_phone').value = selectedOption.getAttribute('data-phone') || '';
 
-            // Populate Daftar Pekerjaan
-            var servicesData = selectedOption.getAttribute('data-services');
-            var tbody = document.getElementById('jobListBody');
-            var totalEl = document.getElementById('totalJobCost');
+            // Populate Daftar Pekerjaan (editable)
+var servicesData = selectedOption.getAttribute('data-services');
+var tbody = document.getElementById('jobListBody');
 
-            tbody.innerHTML = '';
-            var total = 0;
+tbody.innerHTML = '';
+jobRowIdx = 0;
 
-            if (servicesData) {
-                var services = JSON.parse(servicesData);
-                if (services.length > 0) {
-                    services.forEach((svc, index) => {
-                        total += parseInt(svc.price);
-                        var priceFormatted = new Intl.NumberFormat('id-ID').format(svc.price);
-                        var row =
-                            `<tr><td>${index + 1}</td><td class="fw-bold text-dark">${svc.name}</td><td class="text-end">Rp ${priceFormatted}</td></tr>`;
-                        tbody.insertAdjacentHTML('beforeend', row);
-                    });
-                } else {
-                    tbody.innerHTML =
-                        '<tr><td colspan="3" class="text-center text-muted">Tidak ada layanan terpilih.</td></tr>';
-                }
-            } else {
-                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Silakan pilih pelanggan.</td></tr>';
-            }
-            totalEl.innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
+if (servicesData) {
+    var services = JSON.parse(servicesData);
+    if (services.length > 0) {
+        services.forEach((svc) => {
+            addJobRow(svc.name, svc.price);
+        });
+    }
+}
+document.getElementById('emptyJobState').style.display = tbody.children.length === 0 ? 'block' : 'none';
+calcJobTotal();
         }
+
+        // JOB LOGIC
+let jobRowIdx = 0;
+
+function addJobRow(name = '', price = 0) {
+    document.getElementById('emptyJobState').style.display = 'none';
+    const tbody = document.getElementById('jobListBody');
+    const rowId = `job-row-${jobRowIdx}`;
+
+    const priceFormatted = price ? new Intl.NumberFormat('id-ID').format(price) : '';
+
+    const rowHtml = `
+        <tr id="${rowId}">
+            <td>
+                <input type="text" name="jobs_name[]" class="form-control form-control-sm"
+                    placeholder="Nama pekerjaan..." value="${name}" required>
+            </td>
+            <td>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text">Rp</span>
+                    <input type="text" class="form-control form-control-sm job-price-display text-end"
+                        placeholder="0" value="${priceFormatted}"
+                        oninput="syncJobPrice('${rowId}', this)"
+                        onkeyup="syncJobPrice('${rowId}', this)">
+                    <input type="hidden" name="jobs_price[]" class="job-price-raw" value="${price}">
+                </div>
+            </td>
+            <td class="text-center">
+                <button type="button" class="btn btn-link text-danger btn-sm p-0" onclick="removeJobRow('${rowId}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </td>
+        </tr>`;
+    tbody.insertAdjacentHTML('beforeend', rowHtml);
+    jobRowIdx++;
+    calcJobTotal();
+}
+
+function syncJobPrice(rowId, input) {
+    let angka = input.value.replace(/\D/g, '');
+    input.value = angka ? new Intl.NumberFormat('id-ID').format(parseInt(angka)) : '';
+    const row = document.getElementById(rowId);
+    row.querySelector('.job-price-raw').value = angka || 0;
+    calcJobTotal();
+}
+
+function removeJobRow(rowId) {
+    document.getElementById(rowId).remove();
+    calcJobTotal();
+    if (document.getElementById('jobListBody').children.length === 0) {
+        document.getElementById('emptyJobState').style.display = 'block';
+    }
+}
+
+function calcJobTotal() {
+    let total = 0;
+    document.querySelectorAll('.job-price-raw').forEach(input => {
+        total += parseInt(input.value) || 0;
+    });
+    document.getElementById('totalJobCost').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
+}
 
         // SPAREPART LOGIC
         const inventoryData = @json($spareparts);
