@@ -383,7 +383,7 @@
                         <tr>
                             <th class="text-center" style="width:60px;">Antrian</th>
                             <th>Pelanggan & Kendaraan</th>
-                            <th>Layanan</th>
+                            
                             <th>Jadwal</th>
                             <th class="text-center">Status</th>
                             <th class="text-center" style="width:90px;">Aksi</th>
