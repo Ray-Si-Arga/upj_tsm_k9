@@ -631,11 +631,11 @@
                                         default       => 'sp-cancelled',
                                     };
                                     $pillLabel = match($booking->status) {
-                                        'pending'     => '⏳ Tunggu',
-                                        'approved'    => '✅ Terima',
-                                        'on_progress' => '🔧 Proses',
-                                        'done'        => '🏁 Selesai',
-                                        default       => '❌ Batal',
+                                        'pending'     => 'Menunggu',
+                                        'approved'    => 'Diterima',
+                                        'on_progress' => 'Dikerjakan',
+                                        'done'        => 'Selesai',
+                                        default       => 'Batal',
                                     };
                                 @endphp
                                 <tr>
