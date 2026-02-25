@@ -132,9 +132,11 @@ Route::middleware(['auth'])->group(function () {
     // --------------------------------------------- //
     // ---------------- Keuangan -------------------- //
     // --------------------------------------------- //
-    Route::get('/keuangan', [KeuanganController::class, 'index'])->name('keuangan.index');
-    Route::post('/keuangan/store', [KeuanganController::class, 'store'])->name('keuangan.store');
-
+   Route::prefix('keuangan')->name('keuangan.')->group(function () {
+    Route::get('/',        [KeuanganController::class, 'index'])  ->name('index');
+    Route::post('/store',  [KeuanganController::class, 'store'])  ->name('store');
+    Route::delete('/{id}', [KeuanganController::class, 'destroy'])->name('destroy');
+});
 
     // ----------------------------------------------- //
     // ---------------- Customers -------------------- //
