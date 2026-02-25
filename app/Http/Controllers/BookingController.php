@@ -441,7 +441,7 @@ class BookingController extends Controller
             ->get();
 
 
-        return view('customers.index', compact('customers'));
+        return view('data_customers.index', compact('customers'));
     }
 
     /**
@@ -465,7 +465,7 @@ class BookingController extends Controller
         // Ambil customer name untuk header view
         $customerName = $bookings->first()->customer_name ?? 'Customer Tidak Ditemukan';
 
-        return view('customers.bookings', compact('bookings', 'customerName'));
+        return view('data_customers.bookings', compact('bookings', 'customerName'));
     }
 
     public function destroy($id)
