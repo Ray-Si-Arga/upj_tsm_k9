@@ -654,21 +654,48 @@
                                 <div class="col-5 py-1">Estimasi Biaya</div>
                             </div>
                             <!-- List Pekerjaan -->
-                            @php
-                                $jobsArray = array_filter(array_map('trim', explode(',', $advisor->jobs ?? '')));
-                                $totalJobRows = max(6, count($jobsArray));
-                            @endphp
+@php
+    // Ambil jobs: bisa array (JSON baru) atau string lama
+    $rawJobs = $advisor->jobs;
 
-                            @for ($j = 0; $j < $totalJobRows; $j++)
-                                <div class="row g-0">
-                                    <div class="col-7 border-end border-dark p-1 d-flex border-2">{{ $j + 1 }}. <span
-                                            class="{{ isset($jobsArray[$j]) ? 'value-fill' : 'dotted-fill' }}">{{ $jobsArray[$j] ?? '' }}</span>
-                                    </div>
-                                    <div class="col-5 p-1 d-flex">Rp <span
-                                            class="{{ $j === 0 ? 'value-fill' : 'dotted-fill' }} text-end">{{ $j === 0 ? number_format($advisor->estimation_cost ?? 0, 0, ',', '.') : '' }}</span>
-                                    </div>
-                                </div>
-                            @endfor
+    if (is_array($rawJobs) && count($rawJobs) > 0) {
+        // Format BARU: JSON array [['name'=>'...','price'=>...], ...]
+        $jobsArray = $rawJobs;
+    } elseif (is_string($rawJobs) && $rawJobs !== '') {
+        // Format LAMA: string "Ganti Oli, Tune Up" (backward compatible)
+        $names = array_values(array_filter(array_map('trim', explode(',', $rawJobs))));
+        $jobsArray = array_map(fn($n) => ['name' => $n, 'price' => null], $names);
+    } else {
+        $jobsArray = [];
+    }
+
+    // Tentukan jumlah baris minimum (6 agar form tidak terlihat kosong)
+    $totalJobRows = max(6, count($jobsArray));
+@endphp
+
+@for ($j = 0; $j < $totalJobRows; $j++)
+    @php
+        $job      = $jobsArray[$j] ?? null;
+        $jobName  = $job ? data_get($job, 'name', '') : '';
+        $jobPrice = $job ? data_get($job, 'price', null) : null;
+    @endphp
+    <div class="row g-0">
+        <div class="col-7 border-end border-dark p-1 d-flex border-2">
+            {{ $j + 1 }}. <span class="{{ $job ? 'value-fill' : 'dotted-fill' }}">{{ $jobName }}</span>
+        </div>
+        <div class="col-5 p-1 d-flex">
+            Rp
+            <span class="{{ $job && $jobPrice !== null ? 'value-fill' : 'dotted-fill' }} text-end">
+                @if($job && $jobPrice !== null)
+                    {{ number_format((int) $jobPrice, 0, ',', '.') }}
+                @endif
+            </span>
+        </div>
+    </div>
+@endfor
+
+
+
 
                             <!-- Header Suku Cadang -->
                             <div

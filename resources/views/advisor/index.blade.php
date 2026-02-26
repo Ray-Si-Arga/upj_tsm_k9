@@ -288,10 +288,23 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="badge-status badge-service">
-                                        {{ $data->jobs ?? 'General Service' }}
-                                    </span>
-                                </td>
+    @php
+        $jobs = $data->jobs;
+
+        if (is_array($jobs) && count($jobs) > 0) {
+            // Format BARU: JSON array [['name'=>'...','price'=>...], ...]
+            $jobLabel = implode(', ', array_column($jobs, 'name'));
+        } elseif (is_string($jobs) && $jobs !== '') {
+            // Format LAMA: string biasa (backward compatible)
+            $jobLabel = $jobs;
+        } else {
+            $jobLabel = 'General Service';
+        }
+    @endphp
+    <span class="badge-status badge-service">
+        {{ $jobLabel }}
+    </span>
+</td>
                                 <td class="text-end fw-bold text-dark">
                                     Rp{{ number_format($data->total_estimation, 0, ',', '.') }}
                                 </td>

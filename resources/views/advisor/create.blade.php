@@ -158,7 +158,20 @@
                                 data-date="{{ \Carbon\Carbon::parse($data->booking_date)->format('d M Y') }}"
                                 data-plate="{{ strtoupper($data->plate_number) }}" data-type="{{ $data->vehicle_type }}"
                                 data-name="{{ $data->customer_name }}" data-phone="{{ $data->customer_whatsapp }}"
-                                data-services="{{ json_encode($data->services) }}">
+                                @foreach ($bookings as $data)
+    <option
+        value="{{ $data->id }}"
+        data-complaint="{{ $data->complaint }}"
+        data-queue="{{ $data->queue_number }}"
+        data-date="{{ \Carbon\Carbon::parse($data->booking_date)->format('d M Y') }}"
+        data-plate="{{ strtoupper($data->plate_number) }}"
+        data-type="{{ $data->vehicle_type }}"
+        data-name="{{ $data->customer_name }}"
+        data-phone="{{ $data->customer_whatsapp }}"
+        data-services='@json($data->services->map(fn($s) => ["name" => $s->name, "price" => (int) $s->price]))'>
+        No. {{ $data->queue_number }} - {{ $data->customer_name }} ({{ strtoupper($data->plate_number) }})
+    </option>
+@endforeach
                                 No. {{ $data->queue_number }} - {{ $data->customer_name }}
                             </option>
                         @endforeach
@@ -604,42 +617,72 @@
 
         // Handle Change Booking
         function handleBookingChange() {
-            var select = document.getElementById('bookingSelect');
-            var selectedOption = select.options[select.selectedIndex];
+    const select = document.getElementById('bookingSelect');
+    const selectedOption = select.options[select.selectedIndex];
 
-            // Keluhan & Info Kendaraan
-            var complaint = selectedOption.getAttribute('data-complaint');
-            var text = document.getElementById('complaintText');
-            if (select.value === "") text.innerText = "Silakan pilih pelanggan.";
-            else if (complaint && complaint.trim() !== "") text.innerText = '"' + complaint + '"';
-            else text.innerText = "Tidak ada complaint.";
+    if (!selectedOption.value) {
+        // Reset semua field jika tidak ada yang dipilih
+        document.getElementById('complaintText').innerText = 'Pilih pelanggan atau tambah manual.';
+        document.getElementById('displayQueue').value = '-';
+        document.getElementById('displayDate').value = '-';
+        document.getElementById('displayPlate').value = '-';
+        document.getElementById('displayType').value = '-';
+        document.getElementById('carrier_name').value = '';
+        document.getElementById('carrier_phone').value = '';
 
-            document.getElementById('displayQueue').value = selectedOption.getAttribute('data-queue') || '-';
-            document.getElementById('displayDate').value = selectedOption.getAttribute('data-date') || '-';
-            document.getElementById('displayPlate').value = selectedOption.getAttribute('data-plate') || '-';
-            document.getElementById('displayType').value = selectedOption.getAttribute('data-type') || '-';
-
-            document.getElementById('carrier_name').value = selectedOption.getAttribute('data-name') || '';
-            document.getElementById('carrier_phone').value = selectedOption.getAttribute('data-phone') || '';
-
-            // Populate Daftar Pekerjaan (editable)
-var servicesData = selectedOption.getAttribute('data-services');
-var tbody = document.getElementById('jobListBody');
-
-tbody.innerHTML = '';
-jobRowIdx = 0;
-
-if (servicesData) {
-    var services = JSON.parse(servicesData);
-    if (services.length > 0) {
-        services.forEach((svc) => {
-            addJobRow(svc.name, svc.price);
-        });
+        // Kosongkan tabel pekerjaan
+        document.getElementById('jobListBody').innerHTML = '';
+        jobRowIdx = 0;
+        document.getElementById('emptyJobState').style.display = 'block';
+        calcJobTotal();
+        return;
     }
-}
-document.getElementById('emptyJobState').style.display = tbody.children.length === 0 ? 'block' : 'none';
-calcJobTotal();
+
+    // Isi complaint
+    const complaint = selectedOption.getAttribute('data-complaint');
+    const text = document.getElementById('complaintText');
+    if (!complaint || complaint.trim() === '') {
+        text.innerText = 'Tidak ada complaint.';
+    } else {
+        text.innerText = '"' + complaint + '"';
+    }
+
+    document.getElementById('displayQueue').value = selectedOption.getAttribute('data-queue') || '-';
+    document.getElementById('displayDate').value  = selectedOption.getAttribute('data-date')  || '-';
+    document.getElementById('displayPlate').value = selectedOption.getAttribute('data-plate') || '-';
+    document.getElementById('displayType').value  = selectedOption.getAttribute('data-type')  || '-';
+    document.getElementById('carrier_name').value = selectedOption.getAttribute('data-name')  || '';
+    document.getElementById('carrier_phone').value= selectedOption.getAttribute('data-phone') || '';
+
+    // =============================================
+    // POPULATE DAFTAR PEKERJAAN (PERBAIKAN UTAMA)
+    // =============================================
+    const servicesRaw = selectedOption.getAttribute('data-services');
+    const tbody = document.getElementById('jobListBody');
+
+    tbody.innerHTML = '';
+    jobRowIdx = 0;
+
+    if (servicesRaw) {
+        try {
+            const services = JSON.parse(servicesRaw);
+            if (Array.isArray(services) && services.length > 0) {
+                services.forEach((svc) => {
+                    // Pastikan price adalah integer bersih
+                    const price = parseInt(svc.price) || 0;
+                    addJobRow(svc.name || '', price);
+                });
+            }
+        } catch (e) {
+            console.error('Gagal parse data-services:', e);
         }
+    }
+
+    document.getElementById('emptyJobState').style.display =
+        tbody.children.length === 0 ? 'block' : 'none';
+
+    calcJobTotal();
+}
 
         // JOB LOGIC
 let jobRowIdx = 0;
