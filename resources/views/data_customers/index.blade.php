@@ -10,8 +10,8 @@
 
     <style>
         /* =========================================
-                                                           TOKENS
-                                                        ========================================= */
+                                                               TOKENS
+                                                            ========================================= */
         :root {
             --honda-red: #B10000;
             --honda-red-dark: #8B0000;
@@ -52,8 +52,8 @@
         }
 
         /* ============================
-                PAGE HEADER 
-        ===============================*/
+                    PAGE HEADER 
+            ===============================*/
         .page-header {
             background: linear-gradient(135deg, var(--navy) 0%, #16213e 50%, #0f172a 100%);
             border-radius: 20px;
@@ -152,8 +152,8 @@
         }
 
         /* ==============================
-                    SUMMARY CARDS
-            ============================== */
+                        SUMMARY CARDS
+                ============================== */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -268,8 +268,8 @@
         }
 
         /* ==============================
-                                   SEARCH + FILTER BAR
-                                ============================== */
+                                       SEARCH + FILTER BAR
+                                    ============================== */
         .toolbar {
             background: #fff;
             border-radius: 14px;
@@ -349,8 +349,8 @@
         }
 
         /* ==============================
-                                   TABLE CARD
-                                ============================== */
+                                       TABLE CARD
+                                    ============================== */
         .table-card {
             background: #fff;
             border-radius: 18px;
@@ -583,8 +583,8 @@
         }
 
         /* ==============================
-                                   MOBILE CARDS
-                                ============================== */
+                                       MOBILE CARDS
+                                    ============================== */
         .mobile-card {
             background: #fff;
             border-radius: 14px;
@@ -602,8 +602,8 @@
         }
 
         /* =========================================
-                                                           ANIMATIONS
-                                                        ========================================= */
+                                                               ANIMATIONS
+                                                            ========================================= */
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -637,8 +637,8 @@
         }
 
         /* =========================================
-                                                           RESPONSIVE
-                                                        ========================================= */
+                                                               RESPONSIVE
+                                                            ========================================= */
         @media (max-width: 768px) {
             .page-wrap {
                 padding: 1.25rem 1rem 3rem;
@@ -672,9 +672,9 @@
                 <p class="header-sub">Kelola Akun Pengguna Dan Akun Administrator yang Terdaftar Sistem</p>
             </div>
             <div class="header-actions">
-                <a href="{{ route('layanan.create') }}" class="btn-add">
-                    <i class="fas fa-plus"></i> Tambah Layanan
-                </a>
+                <button type="button" class="btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                    <i class="fas fa-plus"></i> Tambah Pengguna
+                </button>
             </div>
         </div>
 

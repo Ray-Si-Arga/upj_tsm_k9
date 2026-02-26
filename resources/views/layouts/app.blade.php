@@ -444,14 +444,14 @@
                     <li class="sidebar-divider"></li>
                     <li class="sidebar-label">Administrator</li>
 
-                    {{-- Registrasi Khusus Admin --}}
-                    <!-- <li class="sidebar-menu-item">
+                    {{-- Registrasi Khusus Admin 
+                    <li class="sidebar-menu-item">
                         <a href="{{ route('admin.register') }}"
                             class="sidebar-menu-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-user-plus"></i></div>
                             <span>Registrasi</span>
                         </a>
-                    </li> -->
+                    </li> --}}
 
                     {{-- Akun--}}
                     <li class="sidebar-menu-item">

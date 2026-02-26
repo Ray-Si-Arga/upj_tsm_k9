@@ -13,7 +13,50 @@ class CustomerTable extends Component
 
     public $search = '';
 
+    // Form Properties for Add User
+    public $name = '';
+    public $email = '';
+    public $role = 'customer'; // Default role
+    public $phone = '';
+    public $password = '';
+    public $password_confirmation = '';
+
     protected $paginationTheme = 'bootstrap';
+
+    protected function rules()
+    {
+        return [
+            'name' => 'required|string|max:255|unique:users,name',
+            'email' => 'required|email|unique:users,email',
+            'role' => 'required|in:admin,customer',
+            'phone' => 'nullable|required_if:role,customer|string|max:20',
+            'password' => 'required|min:6|confirmed',
+        ];
+    }
+
+    public function registerUser()
+    {
+        $this->validate();
+
+        User::create([
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => \Illuminate\Support\Facades\Hash::make($this->password),
+            'role' => $this->role,
+            'phone' => $this->phone,
+        ]);
+
+        $this->resetForm();
+
+        // Dispatch browser event to close modal and show toast
+        $this->dispatch('user-registered');
+    }
+
+    public function resetForm()
+    {
+        $this->reset(['name', 'email', 'role', 'phone', 'password', 'password_confirmation']);
+        $this->resetValidation();
+    }
 
     #[On('searchUpdated')]
     public function updateSearch($search)

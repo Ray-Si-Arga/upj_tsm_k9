@@ -59,6 +59,7 @@ Route::prefix('advisor')->name('advisor.')->group(function () {
 // ---------------------------------------------------------------------- //
 // ---------------- Rute Yang Diharuskan Autentikasi -------------------- //
 // ---------------------------------------------------------------------- //
+
 Route::middleware(['auth'])->group(function () {
     // ------------------------------------------------------ //
     // ---------------- Service Layanan  -------------------- //
@@ -70,12 +71,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/layanan/update/{id}', [LayananController::class, 'update'])->name('layanan.update');
     Route::delete('/layanan/delete/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy');
 
-
-    // ----------------------------------------------------- //
-    // ---------------- Register Admin  -------------------- //
-    // ----------------------------------------------------- //
-    Route::get('/admin/register', [AuthController::class, 'register'])->name('admin.register');
-    Route::post('/admin/register', [AuthController::class, 'registerPost'])->name('admin.register.post');
 
     // ------------------------------------------------------------------------ //
     // ---------------- Booking Admin jika customer gaptek -------------------- //
@@ -93,7 +88,7 @@ Route::middleware(['auth'])->group(function () {
     // ---------------- Inventory -------------------- //
     // ----------------------------------------------- //
     Route::prefix('inventory')->name('inventory.')->group(function () {
-         Route::get('/', [InventoryController::class, 'index'])->name('index');
+        Route::get('/', [InventoryController::class, 'index'])->name('index');
     });
 
     // --------------------------------------------- //
@@ -124,19 +119,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/history', [BookingController::class, 'historyDetail'])->name('history.detail');
 
         Route::delete('/destroy/{id}', [BookingController::class, 'destroy'])->name('destroy');
-
-
-
     });
 
     // --------------------------------------------- //
     // ---------------- Keuangan -------------------- //
     // --------------------------------------------- //
-   Route::prefix('keuangan')->name('keuangan.')->group(function () {
-    Route::get('/',        [KeuanganController::class, 'index'])  ->name('index');
-    Route::post('/store',  [KeuanganController::class, 'store'])  ->name('store');
-    Route::delete('/{id}', [KeuanganController::class, 'destroy'])->name('destroy');
-});
+    Route::prefix('keuangan')->name('keuangan.')->group(function () {
+        Route::get('/', [KeuanganController::class, 'index'])->name('index');
+        Route::post('/store', [KeuanganController::class, 'store'])->name('store');
+        Route::delete('/{id}', [KeuanganController::class, 'destroy'])->name('destroy');
+    });
 
     // ----------------------------------------------- //
     // ---------------- Customers -------------------- //

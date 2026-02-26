@@ -13,8 +13,7 @@
         </div>
 
         <div class="table-scroll" style="position: relative;">
-            <div wire:loading wire:target="updateSearch, gotoPage, nextPage, previousPage"
-                wire:loading.class="d-flex"
+            <div wire:loading wire:target="updateSearch, gotoPage, nextPage, previousPage" wire:loading.class="d-flex"
                 class="position-absolute w-100 h-100 justify-content-center align-items-center"
                 style="background: rgba(255,255,255,0.7); z-index: 10;">
                 <div class="spinner-border text-danger" role="status">
@@ -44,11 +43,13 @@
                             <td>
                                 <div class="price-row">
                                     <i class="fas fa-phone-alt price-label"></i>
-                                    <span class="price-val" style="background:#f8fafc; color:#64748b;">{{ $customer->phone ?? '-' }}</span>
+                                    <span class="price-val"
+                                        style="background:#f8fafc; color:#64748b;">{{ $customer->phone ?? '-' }}</span>
                                 </div>
                                 <div class="price-row">
                                     <i class="fas fa-envelope price-label"></i>
-                                    <span class="price-val" style="background:#f8fafc; color:#64748b;">{{ Str::limit($customer->email, 40) }}</span>
+                                    <span class="price-val"
+                                        style="background:#f8fafc; color:#64748b;">{{ Str::limit($customer->email, 40) }}</span>
                                 </div>
                             </td>
 
@@ -74,12 +75,13 @@
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     @else
-                                        <button class="btn-act" disabled title="Belum ada riwayat" style="background:#f1f5f9; color:#94a3b8; border-color:#e2e8f0;">
+                                        <button class="btn-act" disabled title="Belum ada riwayat"
+                                            style="background:#f1f5f9; color:#94a3b8; border-color:#e2e8f0;">
                                             <i class="fas fa-ban"></i>
                                         </button>
                                     @endif
-                                    <a href="{{ route('hapus', $customer->id) }}" onclick="return confirm('Hapus data ini?')"
-                                        class="btn-act btn-hapus" title="Hapus">
+                                    <a href="{{ route('hapus', $customer->id) }}"
+                                        onclick="return confirm('Hapus data ini?')" class="btn-act btn-hapus" title="Hapus">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </div>
@@ -137,10 +139,13 @@
                 <div class="row g-2 mb-3">
                     <div class="col-12">
                         <div class="p-2 rounded-3" style="background:#f8fafc;">
-                            <div style="font-size:.65rem; color:#94a3b8; font-weight:700; text-transform:uppercase;">Kontak</div>
+                            <div style="font-size:.65rem; color:#94a3b8; font-weight:700; text-transform:uppercase;">Kontak
+                            </div>
                             <div style="font-weight:700; color:#475569; font-size:.85rem;">
-                                <i class="fas fa-phone-alt me-1" style="color:#94a3b8;"></i>{{ $customer->phone ?? '-' }} <br>
-                                <i class="fas fa-envelope me-1" style="color:#94a3b8; margin-top:5px;"></i>{{ Str::limit($customer->email, 30) }}
+                                <i class="fas fa-phone-alt me-1" style="color:#94a3b8;"></i>{{ $customer->phone ?? '-' }}
+                                <br>
+                                <i class="fas fa-envelope me-1"
+                                    style="color:#94a3b8; margin-top:5px;"></i>{{ Str::limit($customer->email, 30) }}
                             </div>
                         </div>
                     </div>
@@ -159,14 +164,11 @@
                 <div class="d-flex gap-2">
                     @if ($customer->bookings->isNotEmpty())
                         <a href="{{ route('customers.bookings', ['whatsapp' => $customer->phone, 'email' => $customer->email]) }}"
-                            class="btn-act btn-edit flex-fill"
-                            style="height:auto; padding:8px; width:auto; border-radius:8px;">
+                            class="btn-act btn-edit flex-fill" style="height:auto; padding:8px; width:auto; border-radius:8px;">
                             <i class="fas fa-eye me-1"></i> Detail
                         </a>
                     @else
-                        <button
-                            class="btn btn-act flex-fill"
-                            disabled
+                        <button class="btn btn-act flex-fill" disabled
                             style="height:auto; padding:8px; width:auto; border-radius:8px; background:#f1f5f9; color:#94a3b8; font-weight:600;">
                             <i class="fas fa-ban me-1"></i> Belum ada
                         </button>
@@ -187,4 +189,115 @@
 
         {{ $users->links('livewire.mobile-pagination') }}
     </div>
+
+    {{-- ==================== MODAL TAMBAH PENGGUNA ==================== --}}
+    <div wire:ignore.self class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-bottom-0 pb-0" style="padding: 24px 24px 10px;">
+                    <h5 class="modal-title fw-bold" id="addUserModalLabel" style="font-size: 1.2rem; color: #1e293b;">
+                        Tambah Pengguna Baru
+                    </h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"
+                        wire:click="resetForm"></button>
+                </div>
+
+                <form wire:submit.prevent="registerUser">
+                    <div class="modal-body" style="padding: 20px 24px;">
+
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: .85rem; font-weight: 600; color: #475569;">Nama
+                                Lengkap</label>
+                            <input type="text" class="form-control" wire:model="name" style="border-radius: 10px;"
+                                placeholder="Masukkan nama pengguna">
+                            @error('name') <span class="text-danger mt-1 d-block"
+                            style="font-size: .75rem;">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label"
+                                    style="font-size: .85rem; font-weight: 600; color: #475569;">Email</label>
+                                <input type="email" class="form-control" wire:model="email" style="border-radius: 10px;"
+                                    placeholder="Alamat email">
+                                @error('email') <span class="text-danger mt-1 d-block"
+                                style="font-size: .75rem;">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"
+                                    style="font-size: .85rem; font-weight: 600; color: #475569;">Peran (Role)</label>
+                                <select class="form-select" wire:model.live="role" style="border-radius: 10px;">
+                                    <option value="customer">Customer</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                                @error('role') <span class="text-danger mt-1 d-block"
+                                style="font-size: .75rem;">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: .85rem; font-weight: 600; color: #475569;">Nomor
+                                WhatsApp</label>
+                            <input type="text" class="form-control" wire:model="phone" style="border-radius: 10px;"
+                                placeholder="08xxxxxxxxxx">
+                            <div class="form-text" style="font-size: .75rem;">Status Admin tidak wajib mengisi nomor WA.
+                            </div>
+                            @error('phone') <span class="text-danger mt-1 d-block"
+                            style="font-size: .75rem;">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label"
+                                    style="font-size: .85rem; font-weight: 600; color: #475569;">Password</label>
+                                <input type="password" class="form-control" wire:model="password"
+                                    style="border-radius: 10px;" placeholder="Minimal 6 karakter">
+                                @error('password') <span class="text-danger mt-1 d-block"
+                                style="font-size: .75rem;">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"
+                                    style="font-size: .85rem; font-weight: 600; color: #475569;">Konfirmasi
+                                    Password</label>
+                                <input type="password" class="form-control" wire:model="password_confirmation"
+                                    style="border-radius: 10px;" placeholder="Ulangi password">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer border-top-0" style="padding: 16px 24px 24px; gap: 10px;">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal"
+                            style="border-radius: 10px; font-weight: 600; color: #64748b;"
+                            wire:click="resetForm">Batal</button>
+                        <button type="submit" class="btn btn-primary px-4"
+                            style="border-radius: 10px; font-weight: 600; background-color: var(--honda-red); border-color: var(--honda-red);">
+                            <span wire:loading.remove wire:target="registerUser"><i
+                                    class="fas fa-save me-2"></i>Simpan</span>
+                            <span wire:loading wire:target="registerUser">
+                                <span class="spinner-border spinner-border-sm me-2" role="status"
+                                    aria-hidden="true"></span>
+                                Menyimpan...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Script for handling modal behavior --}}
+    @script
+    <script>
+        $wire.on('user-registered', () => {
+            var addModal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+            if (addModal) {
+                addModal.hide();
+            }
+
+            // Optional: show a toast or alert using sweetalert if you have it
+            // alert('Pengguna berhasil didaftarkan!');
+        });
+    </script>
+    @endscript
 </div>

@@ -108,7 +108,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('admin.register.post') }}" method="POST">
+            <form action="{{ route('public.register.post') }}" method="POST">
                 @csrf
 
                 <div class="form-card">
