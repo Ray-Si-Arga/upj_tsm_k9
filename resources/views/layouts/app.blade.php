@@ -445,20 +445,20 @@
                     <li class="sidebar-label">Administrator</li>
 
                     {{-- Registrasi Khusus Admin --}}
-                    <li class="sidebar-menu-item">
+                    <!-- <li class="sidebar-menu-item">
                         <a href="{{ route('admin.register') }}"
                             class="sidebar-menu-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-user-plus"></i></div>
                             <span>Registrasi</span>
                         </a>
-                    </li>
+                    </li> -->
 
-                    {{-- Akun Customer Admin --}}
+                    {{-- Akun--}}
                     <li class="sidebar-menu-item">
                         <a href="{{ route('customers.index') }}"
                             class="sidebar-menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-users"></i></div>
-                            <span>Akun Customers</span>
+                            <span>Akun</span>
                         </a>
                     </li>
 
