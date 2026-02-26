@@ -27,15 +27,18 @@ class ServiceAdvisorController extends Controller
      * Halaman Form Pengecekan (Create)
      */
     public function create()
-    {
-        $bookings = Booking::with('services')
-            ->where('status', 'approved')
-            ->get();
+{
+    
+    $bookings = Booking::with('services')
+        ->where('status', 'approved')
+        ->get();
 
-        $spareparts = Inventory::where('jumlah_barang', '>', 0)->get();
+    $spareparts = Inventory::where('jumlah_barang', '>', 0)->get();
+    
+    $services = \App\Models\Service::all(); 
 
-        return view('advisor.create', compact('bookings', 'spareparts'));
-    }
+    return view('advisor.create', compact('bookings', 'spareparts', 'services'));
+}
 
     /**
      * Simpan Data Pengecekan & Sparepart

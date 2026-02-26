@@ -3,6 +3,7 @@
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
 
     <style>
         /* Modern & Soft UI */
@@ -93,6 +94,18 @@
             transform: translateY(-2px);
         }
 
+        /* Tambahan agar dropdown Tom Select tidak terpotong di dalam tabel */
+    .table-responsive {
+        overflow: visible !important;
+    }
+    .ts-dropdown {
+        z-index: 9999;
+    }
+    .ts-control {
+        border-radius: 8px;
+        padding: 8px 12px;
+    }
+
         /* RESPONSIF KHUSUS */
         @media (max-width: 768px) {
             .form-header-title {
@@ -159,19 +172,19 @@
                                 data-plate="{{ strtoupper($data->plate_number) }}" data-type="{{ $data->vehicle_type }}"
                                 data-name="{{ $data->customer_name }}" data-phone="{{ $data->customer_whatsapp }}"
                                 @foreach ($bookings as $data)
-    <option
-        value="{{ $data->id }}"
-        data-complaint="{{ $data->complaint }}"
-        data-queue="{{ $data->queue_number }}"
-        data-date="{{ \Carbon\Carbon::parse($data->booking_date)->format('d M Y') }}"
-        data-plate="{{ strtoupper($data->plate_number) }}"
-        data-type="{{ $data->vehicle_type }}"
-        data-name="{{ $data->customer_name }}"
-        data-phone="{{ $data->customer_whatsapp }}"
-        data-services='@json($data->services->map(fn($s) => ["name" => $s->name, "price" => (int) $s->price]))'>
-        No. {{ $data->queue_number }} - {{ $data->customer_name }} ({{ strtoupper($data->plate_number) }})
-    </option>
-@endforeach
+                            <option
+                                value="{{ $data->id }}"
+                                data-complaint="{{ $data->complaint }}"
+                                data-queue="{{ $data->queue_number }}"
+                                data-date="{{ \Carbon\Carbon::parse($data->booking_date)->format('d M Y') }}"
+                                data-plate="{{ strtoupper($data->plate_number) }}"
+                                data-type="{{ $data->vehicle_type }}"
+                                data-name="{{ $data->customer_name }}"
+                                data-phone="{{ $data->customer_whatsapp }}"
+                                data-services='@json($data->services->map(fn($s) => ["name" => $s->name, "price" => (int) $s->price]))'>
+                                No. {{ $data->queue_number }} - {{ $data->customer_name }} ({{ strtoupper($data->plate_number) }})
+                            </option>
+                        @endforeach
                                 No. {{ $data->queue_number }} - {{ $data->customer_name }}
                             </option>
                         @endforeach
@@ -633,6 +646,7 @@
         // Kosongkan tabel pekerjaan
         document.getElementById('jobListBody').innerHTML = '';
         jobRowIdx = 0;
+        
         document.getElementById('emptyJobState').style.display = 'block';
         calcJobTotal();
         return;
@@ -686,19 +700,29 @@
 
         // JOB LOGIC
 let jobRowIdx = 0;
+const servicesData = @json($services ?? []);
 
 function addJobRow(name = '', price = 0) {
     document.getElementById('emptyJobState').style.display = 'none';
     const tbody = document.getElementById('jobListBody');
     const rowId = `job-row-${jobRowIdx}`;
+    const selectId = `job-select-${jobRowIdx}`; // ID unik untuk Tom Select
 
     const priceFormatted = price ? new Intl.NumberFormat('id-ID').format(price) : '';
+
+    // Siapkan daftar opsi dari database
+    let optionsHtml = '<option value="">Pilih / Ketik Pekerjaan...</option>';
+    servicesData.forEach(svc => {
+        // Kita gunakan nama sebagai value agar saat disubmit langsung terisi nama pekerjaannya
+        optionsHtml += `<option value="${svc.name}">${svc.name}</option>`;
+    });
 
     const rowHtml = `
         <tr id="${rowId}">
             <td>
-                <input type="text" name="jobs_name[]" class="form-control form-control-sm"
-                    placeholder="Nama pekerjaan..." value="${name}" required>
+                <select name="jobs_name[]" id="${selectId}" class="form-select form-select-sm" required>
+                    ${optionsHtml}
+                </select>
             </td>
             <td>
                 <div class="input-group input-group-sm">
@@ -716,7 +740,26 @@ function addJobRow(name = '', price = 0) {
                 </button>
             </td>
         </tr>`;
+        
     tbody.insertAdjacentHTML('beforeend', rowHtml);
+
+    // Inisialisasi Tom Select dengan fitur "CREATE: TRUE"
+    const ts = new TomSelect(`#${selectId}`, {
+        create: true, // INI KUNCINYA: Mengizinkan input teks bebas jika tidak ada di saran!
+        sortField: {
+            field: "text",
+            direction: "asc"
+        },
+        placeholder: "Pilih / Ketik baru...",
+        createOnBlur: true // Jika user ngetik lalu klik di luar, otomatis dianggap sebagai input
+    });
+
+    // Jika parameter 'name' terisi (contoh: dipanggil otomatis dari Booking)
+    if (name) {
+        ts.addOption({value: name, text: name}); // Tambahkan ke opsi secara on-the-fly jika belum ada
+        ts.setValue(name); // Set nilainya
+    }
+
     jobRowIdx++;
     calcJobTotal();
 }
@@ -753,17 +796,19 @@ function calcJobTotal() {
             document.getElementById('emptyPartState').style.display = 'none';
             const tableBody = document.getElementById('sparepartTableBody');
             const rowId = `row-${rowIdx}`;
+            const selectId = `select-${rowId}`; // Buat ID unik untuk Tom Select
 
-            let optionsHtml = '<option value="">Pilih...</option>';
+            let optionsHtml = '<option value="">Cari & Pilih Barang...</option>';
             inventoryData.forEach(item => {
                 optionsHtml +=
                     `<option value="${item.id}" data-price="${item.harga_jual}">${item.nama_barang} (Stok: ${item.jumlah_barang})</option>`;
             });
 
+            // Perhatikan penghapusan onchange inline, dan penambahan id="${selectId}"
             const rowHtml = `
                 <tr id="${rowId}">
-                    <td style="min-width: 150px;">
-                        <select name="parts_id[]" class="form-select form-select-sm" onchange="updatePartPrice(this, '${rowId}')" required>${optionsHtml}</select>
+                    <td style="min-width: 250px;">
+                        <select name="parts_id[]" id="${selectId}" class="form-select form-select-sm" required>${optionsHtml}</select>
                     </td>
                     <td style="min-width: 70px;">
                         <input type="number" name="parts_qty[]" class="form-control form-control-sm text-center" value="1" min="1" onchange="calcSub('${rowId}')" onkeyup="calcSub('${rowId}')" required>
@@ -779,7 +824,24 @@ function calcJobTotal() {
                         <button type="button" class="btn btn-link text-danger btn-sm p-0" onclick="removePart('${rowId}')"><i class="fas fa-times"></i></button>
                     </td>
                 </tr>`;
+            
             tableBody.insertAdjacentHTML('beforeend', rowHtml);
+
+            // Inisialisasi Tom Select SETELAH elemen dirender di layar
+            new TomSelect(`#${selectId}`, {
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                },
+                placeholder: "Ketik nama barang...",
+                onChange: function(value) {
+                    // Memicu perhitungan harga secara otomatis ketika barang dipilih
+                    const selectElement = document.getElementById(selectId);
+                    updatePartPrice(selectElement, rowId);
+                }
+            });
+
             rowIdx++;
         }
 
@@ -817,4 +879,5 @@ function calcJobTotal() {
             document.getElementById('totalPartDisplay').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
 @endsection
