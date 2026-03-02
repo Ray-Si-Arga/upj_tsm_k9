@@ -666,7 +666,7 @@
         <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <div>
                 <div class="header-eyebrow">
-                    <i class="fas fa-boxes-stacked"></i> Administrator
+                    Administrator
                 </div>
                 <h1 class="header-title">Akun</h1>
                 <p class="header-sub">Kelola Akun Pengguna Dan Akun Administrator yang Terdaftar Sistem</p>

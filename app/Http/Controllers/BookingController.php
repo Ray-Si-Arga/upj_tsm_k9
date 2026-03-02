@@ -268,41 +268,40 @@ class BookingController extends Controller
 
 
     public function store(Request $request)
-    {
-        // 1. Validasi Dasar
-        $request->validate([
-            'service_ids' => 'required|array|min:1',
-            'service_ids.*' => 'exists:services,id',
-            'booking_date' => 'required|date',
-            'customer_name' => 'required|string|max:255',
-            'customer_whatsapp' => 'required|string|max:20',
-            'vehicle_type' => 'required|string|max:255',
-            'plate_number' => 'required|string|max:20',
-        ]);
+{
+    // 1. Validasi Dasar
+    $request->validate([
+        'service_ids' => 'required|array|min:1',
+        'service_ids.*' => 'exists:services,id',
+        'booking_date' => 'required|date',
+        'customer_name' => 'required|string|max:255',
+        'customer_whatsapp' => 'required|string|max:20',
+        'vehicle_type' => 'required|string|max:255',
+        'plate_number' => 'required|string|max:20',
+    ]);
 
-        // 2. LOGIKA VALIDASI HARI MINGGU
-        $date = Carbon::parse($request->booking_date);
-        if ($date->isSunday()) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Mohon maaf, bengkel kami libur pada hari Minggu. Silakan pilih hari lain.');
-        }
+    // 2. Hitung nomor antrian berdasarkan tanggal booking
+    $bookingDate = \Carbon\Carbon::parse($request->booking_date)->format('Y-m-d');
+    $lastQueue = Booking::whereDate('booking_date', $bookingDate)->max('queue_number') ?? 0;
+    $newQueueNumber = $lastQueue + 1;
 
-        // 3. Proses Simpan Data
-        $booking = Booking::create([
-            'user_id' => Auth::id(),
-            'booking_date' => $request->booking_date,
-            'customer_name' => $request->customer_name,
-            'customer_whatsapp' => $request->customer_whatsapp,
-            'vehicle_type' => $request->vehicle_type,
-            'plate_number' => $request->plate_number,
-            'status' => 'pending',
-        ]);
+    // 3. Buat booking dengan queue_number
+    $booking = Booking::create([
+        'user_id'            => Auth::id(),
+        'customer_name'      => $request->customer_name,
+        'customer_whatsapp'  => $request->customer_whatsapp,
+        'vehicle_type'       => $request->vehicle_type,
+        'plate_number'       => strtoupper($request->plate_number),
+        'booking_date'       => $request->booking_date,
+        'queue_number'       => $newQueueNumber, // ← INI YANG DITAMBAHKAN
+        'status'             => 'pending',
+    ]);
 
-        $booking->services()->attach($request->service_ids);
+    // 4. Attach services
+    $booking->services()->attach($request->service_ids);
 
-        return redirect()->route('booking.create')->with('success', 'Booking berhasil dibuat! Silakan tunggu konfirmasi admin.');
-    }
+    return redirect()->route('booking.success', $booking->id);
+}
 
     /**
      * Dashboard: Hanya menampilkan booking yang SEDANG AKTIF

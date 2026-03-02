@@ -387,24 +387,45 @@
 
                     <form action="{{ route('public.register.post') }}" method="POST">
                         @csrf
+
+                        {{-- Nama Lengkap --}}
                         <div class="input-box">
                             <i class="ri-user-fill"></i>
-                            <input type="text" name="name" placeholder="Nama Lengkap" required autofocus>
+                            <input type="text" name="name" placeholder="Nama Lengkap" value="{{ old('name') }}" required autofocus>
                         </div>
+                        @error('name')
+                            <div style="color: red; font-size: 12px; margin-top: 5px">
+                                {{ $message }}
+                            </div>
+                        @enderror
 
+                        {{-- Email --}}
                         <div class="input-box">
                             <i class="ri-mail-fill"></i>
-                            <input type="email" name="email" placeholder="Email" required>
+                            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
                         </div>
+                        @error('email')
+                            <div style="color: red; font-size: 12px; margin-top: 5px">
+                                {{ $message }}
+                            </div>
+                        @enderror
 
+                        {{-- Nomor Telepon --}}
                         <div class="input-box">
                             <i class="ri-phone-fill"></i>
-                            <input type="number" name="phone" placeholder="Nomor Telepon" required>
+                            <input type="tel" name="phone" placeholder="Nomor Telepon" value="{{ old('phone') }}" required>
                         </div>
+                        @error('phone')
+                            <div style="color: red; font-size: 12px; margin-top: 5px">
+                                {{ $message }}
+                            </div>
+                        @enderror
 
+
+                        {{-- Password --}}
                         <div class="input-box">
                             <i class="ri-lock-fill"></i>
-                            <input type="password" name="password" id="password" placeholder="Password" required>
+                            <input type="password" name="password" id="password" placeholder="Password"  required>
                             <i class="ri-eye-off-fill" id="togglePassword"></i>
                         </div>
 
@@ -414,6 +435,12 @@
                                 placeholder="Konfirmasi Password" required>
                             <i class="ri-eye-off-fill" id="toggleConfirmPassword"></i>
                         </div>
+
+                        @error('password')
+                            <div style="color: #b30000; font-size: 12px; margin-top: 5px">
+                                {{ $message }}
+                            </div>
+                        @enderror
 
                         <input type="hidden" name="role" value="customer">
                         <button type="submit" class="btn-register">Buat Akun Sekarang</button>
@@ -442,6 +469,7 @@
             const progressBar = document.getElementById('progress-bar-fill');
             const progressText = document.getElementById('load-perc');
             const statusText = document.getElementById('load-status');
+            const hasErrors = {{ $errors->any() ? 'true' : 'false' }};
 
             // Hanya kumpulkan aset yang benar-benar ada di halaman login
             const criticalAssets = [
@@ -453,6 +481,12 @@
             const totalToLoad = criticalAssets.length;
 
             async function startFastPreload() {
+                if (hasErrors) {
+                    if(mainWrapper) mainWrapper.classList.add('is-ready');
+                    if(loadingScreen) loadingScreen.style.display = 'none';
+                    return;
+                }
+
                 if (totalToLoad === 0) return finishLoading();
 
                 await Promise.all(criticalAssets.map(src => {

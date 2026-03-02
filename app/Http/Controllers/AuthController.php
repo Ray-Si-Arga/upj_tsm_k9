@@ -105,6 +105,13 @@ class AuthController extends Controller
             'email' => ['required', 'email', 'unique:users,email'],
             'phone' => ['required', 'string', 'max:20'],
             'password' => ['required', 'min:6', 'confirmed'],
+        ], 
+        [
+            'name' => 'Nama Diperlukan',
+            'email' => 'Email Diperlukan',
+            'phone' => 'Nomor Telepon Diperlukan',
+            'password.min' => 'Password minimal 6 karakter',
+            'password.confirmed' => 'Konfirmasi password tidak cocok',
         ]);
 
         User::create([
