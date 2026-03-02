@@ -284,7 +284,6 @@
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            
             border: 2px solid var(--navy);
             border-radius: 8px;
             padding: 5px 14px;
@@ -624,6 +623,7 @@
                                             {{ \Carbon\Carbon::parse($booking->booking_date)->format('d M Y') }}
                                         </div>
                                         <div class="date-day">
+                                            {{ \Carbon\Carbon::setLocale('id') }}
                                             {{ \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('l') }}
                                         </div>
                                     </td>
