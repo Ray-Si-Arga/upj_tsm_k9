@@ -14,31 +14,51 @@ class ServiceAdvisorController extends Controller
     /**
      * Halaman Utama Riwayat Service Advisor
      */
-    public function index()
-    {
-        $histories = ServiceAdvisor::with(['booking.services'])
-            ->latest()
-            ->paginate(10);
+    public function index(Request $request)
+        {
+            // Inisialisasi query dengan relasi
+            $query = ServiceAdvisor::with(['booking.services']);
 
-        return view('advisor.index', compact('histories'));
-    }
+            // Cek jika ada input pencarian
+            if ($request->has('search') && $request->search != '') {
+                $search = $request->search;
+                
+                $query->where(function($q) use ($search) {
+                    // Cari berdasarkan nama mekanik
+                    $q->where('nama_mekanik', 'like', "%{$search}%")
+                    // Cari di tabel relasi bookings (Plat Nomor & Nama Pelanggan)
+                    ->orWhereHas('booking', function($b) use ($search) {
+                        $b->where('plate_number', 'like', "%{$search}%")
+                            ->orWhere('customer_name', 'like', "%{$search}%")
+                            ->orWhere('vehicle_type', 'like', "%{$search}%");
+                    });
+                });
+            }
+
+            $histories = $query->latest()->paginate(10);
+
+            // Menjaga parameter pencarian tetap ada saat pindah halaman (pagination)
+            $histories->appends(['search' => $request->search]);
+
+            return view('advisor.index', compact('histories'));
+        }
 
     /**
      * Halaman Form Pengecekan (Create)
      */
     public function create()
-{
-    
-    $bookings = Booking::with('services')
-        ->where('status', 'approved')
-        ->get();
+    {
+        
+        $bookings = Booking::with('services')
+            ->where('status', 'approved')
+            ->get();
 
-    $spareparts = Inventory::where('jumlah_barang', '>', 0)->get();
-    
-    $services = \App\Models\Service::all(); 
+        $spareparts = Inventory::where('jumlah_barang', '>', 0)->get();
+        
+        $services = \App\Models\Service::all(); 
 
-    return view('advisor.create', compact('bookings', 'spareparts', 'services'));
-}
+        return view('advisor.create', compact('bookings', 'spareparts', 'services'));
+    }
 
     /**
      * Simpan Data Pengecekan & Sparepart
