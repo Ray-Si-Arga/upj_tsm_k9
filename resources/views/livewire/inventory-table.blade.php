@@ -118,11 +118,11 @@
                             <td colspan="8">
                                 <div class="empty-state">
                                     <i class="fas fa-box-open"></i>
-                                    <p>Belum ada data inventori mencocokkan pencarian Anda.</p>
+                                    <p>Belum ada data inventori.</p>
                                     @if(empty($search))
                                         <button wire:click="create" data-bs-toggle="modal" data-bs-target="#formModal"
                                             class="btn-add mt-2">
-                                            <i class="fas fa-plus"></i> Tambah Sekarang
+                                            Tambah Sekarang
                                         </button>
                                     @endif
                                 </div>
