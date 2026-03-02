@@ -45,6 +45,7 @@ class ServiceAdvisor extends Model
 
     protected $casts = [
         'spareparts' => 'array',
+        'jobs' => 'array',
     ];
 
     public function booking()

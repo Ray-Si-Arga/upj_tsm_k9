@@ -21,105 +21,105 @@ class BookingController extends Controller
      * Menampilkan dashboard admin (Ringkasan dan Antrian Hari Ini)
      */
     public function adminDashboard()
-{
-    if (Auth::user()->role !== 'admin') {
-        return redirect()->route('booking.create')
-            ->with('error', 'Akses dibatasi untuk Admin.');
-    }
+    {
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('booking.create')
+                ->with('error', 'Akses dibatasi untuk Admin.');
+        }
 
-    $today = date('Y-m-d');
-    $now   = Carbon::now();
+        $today = date('Y-m-d');
+        $now = Carbon::now();
 
-    // ── 1. KARTU RINGKASAN ──────────────────────────
-    $totalBookingsToday = Booking::whereDate('booking_date', $today)->count();
+        // ── 1. KARTU RINGKASAN ──────────────────────────
+        $totalBookingsToday = Booking::whereDate('booking_date', $today)->count();
 
-    $pendingBookings = Booking::whereIn('status', ['pending', 'approved', 'on_progress'])->count();
+        $pendingBookings = Booking::whereIn('status', ['pending', 'approved', 'on_progress'])->count();
 
-    $registeredCustomers = User::where('role', 'customer')->count();
+        $registeredCustomers = User::where('role', 'customer')->count();
 
-    // Service selesai bulan ini
-    $doneThisMonth = Booking::where('status', 'done')
-        ->whereYear('booking_date', $now->year)
-        ->whereMonth('booking_date', $now->month)
-        ->count();
+        // Service selesai bulan ini
+        $doneThisMonth = Booking::where('status', 'done')
+            ->whereYear('booking_date', $now->year)
+            ->whereMonth('booking_date', $now->month)
+            ->count();
 
-    // ── DIUPDATE: Pemasukan bulan ini dari tabel keuangan ──
-    $revenueThisMonth = Keuangan::pemasukan()
-        ->whereYear('created_at', $now->year)
-        ->whereMonth('created_at', $now->month)
-        ->sum('nominal');
+        // ── DIUPDATE: Pemasukan bulan ini dari tabel keuangan ──
+        $revenueThisMonth = Keuangan::pemasukan()
+            ->whereYear('created_at', $now->year)
+            ->whereMonth('created_at', $now->month)
+            ->sum('nominal');
 
-    // Jumlah item stok menipis
-    $lowStockCount = Inventory::where('jumlah_barang', '<=', 6)->count();
+        // Jumlah item stok menipis
+        $lowStockCount = Inventory::where('jumlah_barang', '<=', 6)->count();
 
-    // ── 2. ANTRIAN AKTIF HARI INI ───────────────────
-    $queueBookings = Booking::with(['user', 'services'])
-        ->whereDate('booking_date', $today)
-        ->whereIn('status', ['pending', 'approved', 'on_progress'])
-        ->orderBy('queue_number', 'asc')
-        ->get();
+        // ── 2. ANTRIAN AKTIF HARI INI ───────────────────
+        $queueBookings = Booking::with(['user', 'services'])
+            ->whereDate('booking_date', $today)
+            ->whereIn('status', ['pending', 'approved', 'on_progress'])
+            ->orderBy('queue_number', 'asc')
+            ->get();
 
-    // ── 3. TOP 7 PELANGGAN SETIA ────────────────────
-    $topCustomers = Booking::select(
+        // ── 3. TOP 7 PELANGGAN SETIA ────────────────────
+        $topCustomers = Booking::select(
             'customer_name',
             'customer_whatsapp',
             DB::raw('COUNT(*) as total')
         )
-        ->where('status', 'done')
-        ->whereNotNull('customer_name')
-        ->groupBy('customer_name', 'customer_whatsapp')
-        ->orderByDesc('total')
-        ->limit(7)
-        ->get();
+            ->where('status', 'done')
+            ->whereNotNull('customer_name')
+            ->groupBy('customer_name', 'customer_whatsapp')
+            ->orderByDesc('total')
+            ->limit(7)
+            ->get();
 
-    // ── 4. STOK MENIPIS (panel bawah) ───────────────
-    $lowStockItems = Inventory::where('jumlah_barang', '<=', 6)
-        ->orderBy('jumlah_barang', 'asc')
-        ->limit(8)
-        ->get();
+        // ── 4. STOK MENIPIS (panel bawah) ───────────────
+        $lowStockItems = Inventory::where('jumlah_barang', '<=', 6)
+            ->orderBy('jumlah_barang', 'asc')
+            ->limit(8)
+            ->get();
 
-    // ── 5. LAYANAN TERPOPULER ────────────────────────
-    $topServices = Service::select('services.id', 'services.name')
-        ->join('booking_service', 'services.id', '=', 'booking_service.service_id')
-        ->join('bookings', 'bookings.id', '=', 'booking_service.booking_id')
-        ->where('bookings.status', 'done')
-        ->groupBy('services.id', 'services.name')
-        ->selectRaw('COUNT(*) as total')
-        ->orderByDesc('total')
-        ->limit(5)
-        ->get();
+        // ── 5. LAYANAN TERPOPULER ────────────────────────
+        $topServices = Service::select('services.id', 'services.name')
+            ->join('booking_service', 'services.id', '=', 'booking_service.service_id')
+            ->join('bookings', 'bookings.id', '=', 'booking_service.booking_id')
+            ->where('bookings.status', 'done')
+            ->groupBy('services.id', 'services.name')
+            ->selectRaw('COUNT(*) as total')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
 
-    // ── 6. CHART DATA — 7 HARI TERAKHIR ─────────────
-    $chartLabels  = [];
-    $chartBooking = [];
-    $chartDone    = [];
+        // ── 6. CHART DATA — 7 HARI TERAKHIR ─────────────
+        $chartLabels = [];
+        $chartBooking = [];
+        $chartDone = [];
 
-    for ($i = 6; $i >= 0; $i--) {
-        $date = Carbon::now()->subDays($i);
-        $d    = $date->format('Y-m-d');
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $d = $date->format('Y-m-d');
 
-        $chartLabels[]  = $date->locale('id')->translatedFormat('D d/m');
-        $chartBooking[] = Booking::whereDate('booking_date', $d)->count();
-        $chartDone[]    = Booking::whereDate('booking_date', $d)
-            ->where('status', 'done')->count();
+            $chartLabels[] = $date->locale('id')->translatedFormat('D d/m');
+            $chartBooking[] = Booking::whereDate('booking_date', $d)->count();
+            $chartDone[] = Booking::whereDate('booking_date', $d)
+                ->where('status', 'done')->count();
+        }
+
+        return view('admin.dashboard', compact(
+            'totalBookingsToday',
+            'pendingBookings',
+            'registeredCustomers',
+            'doneThisMonth',
+            'revenueThisMonth',
+            'lowStockCount',
+            'queueBookings',
+            'topCustomers',
+            'lowStockItems',
+            'topServices',
+            'chartLabels',
+            'chartBooking',
+            'chartDone',
+        ));
     }
-
-    return view('admin.dashboard', compact(
-        'totalBookingsToday',
-        'pendingBookings',
-        'registeredCustomers',
-        'doneThisMonth',
-        'revenueThisMonth',
-        'lowStockCount',
-        'queueBookings',
-        'topCustomers',
-        'lowStockItems',
-        'topServices',
-        'chartLabels',
-        'chartBooking',
-        'chartDone',
-    ));
-}
 
 
 
@@ -147,15 +147,15 @@ class BookingController extends Controller
     public function storeWalkIn(Request $request)
     {
         $request->validate([
-            'user_id'            => 'required|exists:users,id',
-            'vehicle_type'       => 'required|in:bebek,sport,matic',
-            'plate_number'       => 'required|string|max:25',
-            'service_ids'        => 'required|array|min:1',
-            'service_ids.*'      => 'exists:services,id',
-            'customer_whatsapp'  => 'nullable|string|max:15',
-            'booking_date'       => 'required|date',
-            'complaint'          => 'nullable|string',
-            'estimation_hours'   => 'nullable|integer|min:0',
+            'user_id' => 'required|exists:users,id',
+            'vehicle_type' => 'required|in:bebek,sport,matic',
+            'plate_number' => 'required|string|max:25',
+            'service_ids' => 'required|array|min:1',
+            'service_ids.*' => 'exists:services,id',
+            'customer_whatsapp' => 'nullable|string|max:15',
+            'booking_date' => 'required|date',
+            'complaint' => 'nullable|string',
+            'estimation_hours' => 'nullable|integer|min:0',
             'estimation_minutes' => 'nullable|integer|min:0|max:59',
         ]);
 
@@ -178,37 +178,37 @@ class BookingController extends Controller
             $selectedUser = User::findOrFail($request->user_id);
 
             // Nomor antrian
-            $dateOnly     = $bookingTime->format('Y-m-d');
-            $lastQueue    = Booking::whereDate('booking_date', $dateOnly)->max('queue_number') ?? 0;
+            $dateOnly = $bookingTime->format('Y-m-d');
+            $lastQueue = Booking::whereDate('booking_date', $dateOnly)->max('queue_number') ?? 0;
             $newQueueNumber = $lastQueue + 1;
 
             // Estimasi durasi
-            $hours        = $request->estimation_hours ?? 0;
-            $minutes      = $request->estimation_minutes ?? 0;
+            $hours = $request->estimation_hours ?? 0;
+            $minutes = $request->estimation_minutes ?? 0;
             $totalMinutes = ($hours * 60) + $minutes;
 
             // Simpan booking
             $booking = Booking::create([
-                'user_id'             => $selectedUser->id,
-                'customer_name'       => $selectedUser->name,
-                'customer_whatsapp'   => $request->customer_whatsapp ?? $selectedUser->phone ?? '000000000000',
-                'vehicle_type'        => $request->vehicle_type,
-                'plate_number'        => strtoupper($request->plate_number),
-                'complaint'           => $request->complaint,
-                'booking_date'        => $bookingTime,
+                'user_id' => $selectedUser->id,
+                'customer_name' => $selectedUser->name,
+                'customer_whatsapp' => $request->customer_whatsapp ?? $selectedUser->phone ?? '000000000000',
+                'vehicle_type' => $request->vehicle_type,
+                'plate_number' => strtoupper($request->plate_number),
+                'complaint' => $request->complaint,
+                'booking_date' => $bookingTime,
                 'estimation_duration' => $totalMinutes > 0 ? $totalMinutes : null,
-                'queue_number'        => $newQueueNumber,
-                'status'              => 'approved',
+                'queue_number' => $newQueueNumber,
+                'status' => 'approved',
             ]);
 
             // Simpan ke tabel pivot booking_service (multi-service)
             $booking->services()->attach($request->service_ids);
 
             $pesanSukses = 'Booking Walk-in Berhasil! Antrian No: ' . $newQueueNumber
-                         . ' atas nama ' . $selectedUser->name . '.';
+                . ' atas nama ' . $selectedUser->name . '.';
 
             if ($totalMinutes > 0) {
-                $jamSelesai   = $booking->booking_date->copy()->addMinutes($totalMinutes)->format('H:i');
+                $jamSelesai = $booking->booking_date->copy()->addMinutes($totalMinutes)->format('H:i');
                 $pesanSukses .= " Estimasi selesai pukul {$jamSelesai} WIB.";
             }
 
@@ -441,8 +441,15 @@ class BookingController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $totalCustomers = $customers->count();
+        $newCustomers = $customers->where('created_at', '>=', now()->subDays(7))->count();
 
-        return view('data_customers.index', compact('customers'));
+        // Data Admin
+        $admins = User::where('role', 'admin')->get();
+        $totalAdmins = $admins->count();
+        $newAdmins = $admins->where('created_at', '>=', now()->subDays(7))->count();
+
+        return view('data_customers.index', compact('customers', 'totalCustomers', 'newCustomers', 'totalAdmins', 'newAdmins'));
     }
 
     /**

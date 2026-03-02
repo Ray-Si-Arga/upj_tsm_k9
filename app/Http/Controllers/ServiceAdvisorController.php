@@ -16,7 +16,6 @@ class ServiceAdvisorController extends Controller
      */
     public function index()
     {
-        // PERBAIKAN: Ubah 'booking.service' menjadi 'booking.services'
         $histories = ServiceAdvisor::with(['booking.services'])
             ->latest()
             ->paginate(10);
@@ -28,17 +27,18 @@ class ServiceAdvisorController extends Controller
      * Halaman Form Pengecekan (Create)
      */
     public function create()
-    {
-        // Ambil booking yang statusnya 'approved' (Diterima)
-        $bookings = Booking::with('services')
-            ->where('status', 'approved')
-            ->get();
+{
+    
+    $bookings = Booking::with('services')
+        ->where('status', 'approved')
+        ->get();
 
-        // Ambil sparepart yang stoknya tersedia
-        $spareparts = Inventory::where('jumlah_barang', '>', 0)->get();
+    $spareparts = Inventory::where('jumlah_barang', '>', 0)->get();
+    
+    $services = \App\Models\Service::all(); 
 
-        return view('advisor.create', compact('bookings', 'spareparts'));
-    }
+    return view('advisor.create', compact('bookings', 'spareparts', 'services'));
+}
 
     /**
      * Simpan Data Pengecekan & Sparepart
@@ -47,40 +47,46 @@ class ServiceAdvisorController extends Controller
     {
         // 1. Validasi Input
         $request->validate([
-            'booking_id' => 'required|exists:bookings,id',
-            'nama_mekanik' => 'required|string|max:255',
-            'customer_complaint' => 'nullable|string',
-            'advisor_notes' => 'nullable|string',
-
-            // Validasi Data Pembawa & Pemilik (FITUR BARU)
-            'carrier_name' => 'required|string|max:255',
-            'carrier_phone' => 'required|string|max:20',
-            'owner_name' => 'required|string|max:255',
-
-            // Validasi Data Kendaraan (FITUR BARU)
-            'odometer' => 'required', // Bisa string/numeric krn nanti di-clean
-
-            'parts_id' => 'nullable|array',
-            'parts_qty' => 'nullable|array',
-            'fuel_level' => 'required|string',
-
-            // Validasi Telepon dulu?
-            'pkb_approval' => 'required',
+            'booking_id'        => 'required|exists:bookings,id',
+            'nama_mekanik'      => 'required|string|max:255',
+            'customer_complaint'=> 'nullable|string',
+            'advisor_notes'     => 'nullable|string',
+            'carrier_name'      => 'required|string|max:255',
+            'carrier_phone'     => 'required|string|max:20',
+            'owner_name'        => 'required|string|max:255',
+            'odometer'          => 'required',
+            'parts_id'          => 'nullable|array',
+            'parts_qty'         => 'nullable|array',
+            'fuel_level'        => 'required|string',
+            'pkb_approval'      => 'required',
             'part_bekas_dibawa' => 'required',
         ]);
 
         DB::beginTransaction();
 
         try {
-            // Ambil data Booking beserta layanan-layanannya
             $booking = Booking::with('services')->findOrFail($request->booking_id);
 
-           // Ambil pekerjaan dari input form (editable oleh advisor)
-$jobsNames  = $request->input('jobs_name', []);
-$jobsPrices = $request->input('jobs_price', []);
+            // --- LOGIKA JOBS (PEKERJAAN) → SIMPAN SEBAGAI JSON ---
+            $jobsNames  = $request->input('jobs_name', []);
+            $jobsPrices = $request->input('jobs_price', []);
 
-$servicePrice = array_sum(array_map('intval', $jobsPrices));
-$jobNames     = implode(', ', array_filter($jobsNames));
+            $processedJobs = [];
+            $servicePrice  = 0;
+
+            foreach ($jobsNames as $index => $name) {
+                $name = trim($name);
+                if ($name === '') continue; // skip baris kosong
+
+                $price    = isset($jobsPrices[$index]) ? (int) $jobsPrices[$index] : 0;
+                $servicePrice += $price;
+
+                $processedJobs[] = [
+                    'name'  => $name,
+                    'price' => $price,
+                ];
+            }
+            // -------------------------------------------------------
 
             // --- LOGIKA SPAREPART ---
             $processedParts = [];
@@ -90,7 +96,6 @@ $jobNames     = implode(', ', array_filter($jobsNames));
                 foreach ($request->parts_id as $index => $inventoryId) {
                     $qty = $request->parts_qty[$index];
 
-                    // Lock for update untuk mencegah race condition stok
                     $inventoryItem = Inventory::lockForUpdate()->find($inventoryId);
 
                     if (!$inventoryItem || $inventoryItem->jumlah_barang < $qty) {
@@ -98,18 +103,17 @@ $jobNames     = implode(', ', array_filter($jobsNames));
                         return back()->with('error', "Stok {$inventoryItem->nama_barang} kurang! Sisa: {$inventoryItem->jumlah_barang}");
                     }
 
-                    // Kurangi Stok
                     $inventoryItem->decrement('jumlah_barang', $qty);
 
-                    $price = $inventoryItem->harga_jual;
+                    $price    = $inventoryItem->harga_jual;
                     $subtotal = $price * $qty;
 
                     $processedParts[] = [
-                        'id' => $inventoryItem->id,
-                        'name' => $inventoryItem->nama_barang,
-                        'qty' => $qty,
-                        'price' => $price,
-                        'subtotal' => $subtotal
+                        'id'       => $inventoryItem->id,
+                        'name'     => $inventoryItem->nama_barang,
+                        'qty'      => $qty,
+                        'price'    => $price,
+                        'subtotal' => $subtotal,
                     ];
                     $totalPartsCost += $subtotal;
                 }
@@ -119,15 +123,13 @@ $jobNames     = implode(', ', array_filter($jobsNames));
             $advisor = ServiceAdvisor::create([
                 'booking_id'        => $booking->id,
                 'nama_mekanik'      => $request->nama_mekanik,
-                'jobs'              => $jobNames, // Simpan string gabungan nama service
+                'jobs'              => $processedJobs, // ← Sekarang array, otomatis jadi JSON
                 'estimation_cost'   => $servicePrice,
-                'spareparts'        => $processedParts, // Akan otomatis jadi JSON jika di-cast di Model
+                'spareparts'        => $processedParts,
                 'estimation_parts'  => $totalPartsCost,
                 'total_estimation'  => $servicePrice + $totalPartsCost,
-                'customer_complaint' => $request->customer_complaint,
+                'customer_complaint'=> $request->customer_complaint,
                 'advisor_notes'     => $request->advisor_notes,
-
-                // DATA BARU (Pastikan field ini ada di $fillable Model ServiceAdvisor)
                 'carrier_name'      => $request->carrier_name,
                 'carrier_address'   => $request->carrier_address,
                 'carrier_area'      => $request->carrier_area,
@@ -139,10 +141,7 @@ $jobNames     = implode(', ', array_filter($jobsNames));
                 'owner_phone'       => $request->owner_phone,
                 'is_own_dealer'     => $request->is_own_dealer ?? 0,
                 'visit_reason'      => $request->visit_reason,
-
-                // Hapus titik dari format ribuan (misal "15.000" jadi "15000")
                 'odometer'          => str_replace('.', '', $request->odometer),
-
                 'vehicle_year'      => $request->vehicle_year,
                 'engine_number'     => $request->engine_number,
                 'chassis_number'    => $request->chassis_number,
@@ -157,21 +156,25 @@ $jobNames     = implode(', ', array_filter($jobsNames));
             $booking->status = 'done';
             $booking->save();
 
+            // Ambil nama pekerjaan pertama untuk judul keuangan
+            $firstJobName = !empty($processedJobs) ? $processedJobs[0]['name'] : 'Servis Kendaraan';
+
             Keuangan::create([
-    'tipe'         => 'pemasukan',
-    'judul'        => 'Service: ' . ($advisor->jobs ?? 'Servis Kendaraan'),
-    'nominal'      => $advisor->total_estimation,
-    'sumber'       => 'service',
-    'kategori'     => 'service',
-    'keterangan'   => ($booking->customer_name ?? '-') . ' • ' . ($booking->plate_number ?? '-') . ' • Mekanik: ' . ($advisor->nama_mekanik ?? '-'),
-    'referensi_id' => $advisor->id,
-]);
+                'tipe'         => 'pemasukan',
+                'judul'        => 'Service: ' . $firstJobName,
+                'nominal'      => $advisor->total_estimation,
+                'sumber'       => 'service',
+                'kategori'     => 'service',
+                'keterangan'   => ($booking->customer_name ?? '-') . ' • ' . ($booking->plate_number ?? '-') . ' • Mekanik: ' . ($advisor->nama_mekanik ?? '-'),
+                'referensi_id' => $advisor->id,
+            ]);
 
             DB::commit();
 
             return redirect()->route('advisor.index')
                 ->with('success', 'Servis Selesai! Data Tersimpan.')
                 ->with('print_invoice_id', $advisor->id);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();

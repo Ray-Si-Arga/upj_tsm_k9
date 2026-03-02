@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ServiceSeeder::class,
             BookingSeeder::class,
             InventorySeeder::class,
+            UserSeeder::class,
         ]);
         // User::factory(10)->create();
 
