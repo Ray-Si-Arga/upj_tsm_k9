@@ -128,6 +128,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [KeuanganController::class, 'index'])->name('index');
         Route::post('/store', [KeuanganController::class, 'store'])->name('store');
         Route::delete('/{id}', [KeuanganController::class, 'destroy'])->name('destroy');
+        Route::get('/cetak', [KeuanganController::class, 'cetak'])->name('cetak');    
     });
 
     // ----------------------------------------------- //

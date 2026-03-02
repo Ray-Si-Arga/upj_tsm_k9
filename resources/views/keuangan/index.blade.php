@@ -567,6 +567,71 @@
     .delay-3 { animation-delay: 0.15s; }
     .delay-4 { animation-delay: 0.2s; }
     .delay-5 { animation-delay: 0.25s; }
+
+    .card-filter-cetak {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+        align-items: end;
+    }
+
+    .filter-group label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .custom-select-finance {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background-color: #f8fafc;
+        color: #0f172a;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .custom-select-finance:focus {
+        outline: none;
+        border-color: #3b82f6;
+        background-color: #fff;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .btn-cet-pdf {
+        background: #e11d48; /* Warna merah elegan */
+        color: white;
+        border: none;
+        padding: 11px 20px;
+        border-radius: 10px;
+        font-weight: 700;
+        width: 100%;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-cet-pdf:hover {
+        background: #be123c;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+    }
 </style>
 
 <div class="keuangan-wrap">
@@ -588,8 +653,65 @@
             @endforeach
         </div>
         <button class="btn-tambah-transaksi" onclick="openModalKeuangan()">
-    <i class="fa-solid fa-plus"></i> Tambah Transaksi
-</button>
+            <i class="fa-solid fa-plus"></i> Tambah Transaksi
+        </button>
+    </div>
+
+    <div class="card-filter-cetak mb-4">
+        <form action="{{ route('keuangan.cetak') }}" method="GET" target="_blank">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label><i class="fa-solid fa-calendar-day"></i> Mode Laporan</label>
+                    <select name="periode" id="periodeSelect" class="custom-select-finance" onchange="toggleFilterFields()">
+                        <option value="mingguan">Mingguan</option>
+                        <option value="bulanan" selected>Bulanan</option>
+                        <option value="tahunan">Tahunan</option>
+                        <option value="custom">Rentang Tanggal</option>
+                    </select>
+                </div>
+
+                <div class="filter-group" id="bulanField">
+                    <label>Bulan</label>
+                    <select name="bulan" class="custom-select-finance">
+                        @foreach(range(1, 12) as $m)
+                            <option value="{{ $m }}" {{ date('m') == $m ? 'selected' : '' }}>
+                                {{ Carbon\Carbon::create(null, $m, 1)->translatedFormat('F') }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="filter-group" id="tahunField">
+                    <label>Tahun</label>
+                    <select name="tahun" class="custom-select-finance">
+                        @foreach(range(date('Y')-3, date('Y')) as $y)
+                            <option value="{{ $y }}" {{ date('Y') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="filter-group d-none" id="mingguField">
+                    <label>Minggu Ke</label>
+                    <select name="minggu" class="custom-select-finance">
+                        @for($i=1; $i<=5; $i++) <option value="{{ $i }}">Minggu {{ $i }}</option> @endfor
+                    </select>
+                </div>
+
+                <div class="filter-group d-none" id="customField">
+                    <label>Rentang Tanggal</label>
+                    <div class="d-flex gap-2">
+                        <input type="date" name="start_date" class="custom-select-finance">
+                        <input type="date" name="end_date" class="custom-select-finance">
+                    </div>
+                </div>
+
+                <div class="filter-group d-flex align-items-end">
+                    <button type="submit" class="btn-cet-pdf">
+                        <i class="fa-solid fa-file-pdf"></i> Generate Laporan
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 
     {{-- ======================== SUMMARY CARDS ======================== --}}
@@ -910,6 +1032,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+
+
 <script>
     // ── Open / Close Modal ──
     function openModalKeuangan() {
@@ -959,6 +1083,33 @@ document.addEventListener('DOMContentLoaded', function () {
             submitLabel.textContent = 'Simpan Pengeluaran';
         }
     }
+
+    function toggleFilterFields() {
+    const p = document.getElementById('periodeSelect').value;
+    
+    // Sembunyikan semua field dinamis dulu
+    document.getElementById('mingguField').classList.add('d-none');
+    document.getElementById('bulanField').classList.add('d-none');
+    document.getElementById('tahunField').classList.add('d-none');
+    document.getElementById('customField').classList.add('d-none');
+
+    // Tampilkan berdasarkan pilihan
+    if (p === 'mingguan') {
+        document.getElementById('mingguField').classList.remove('d-none');
+        document.getElementById('bulanField').classList.remove('d-none');
+        document.getElementById('tahunField').classList.remove('d-none');
+    } else if (p === 'bulanan') {
+        document.getElementById('bulanField').classList.remove('d-none');
+        document.getElementById('tahunField').classList.remove('d-none');
+    } else if (p === 'tahunan') {
+        document.getElementById('tahunField').classList.remove('d-none');
+    } else if (p === 'custom') {
+        document.getElementById('customField').classList.remove('d-none');
+    }
+}
+
+// Jalankan saat halaman pertama kali dimuat
+document.addEventListener('DOMContentLoaded', toggleFilterFields);
 
     // ── Format Nominal Rupiah ──
     function formatNominal(el) {

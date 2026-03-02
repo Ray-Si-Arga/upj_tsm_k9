@@ -6,6 +6,7 @@ use App\Models\Keuangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Spatie\Browsershot\Browsershot;
 
 class KeuanganController extends Controller
 {
@@ -23,7 +24,7 @@ class KeuanganController extends Controller
         $periode = $request->get('periode', 'bulanan');
         $now     = Carbon::now();
 
-        [$startDate, $endDate, $labelPeriode] = $this->getPeriode($periode, $now);
+        [$startDate, $endDate, $labelPeriode] = $this->getPeriode($periode, $now, $request);
 
         // 2. Query dasar dalam periode
         $baseQuery = Keuangan::periode($startDate, $endDate);
@@ -137,39 +138,51 @@ class KeuanganController extends Controller
     // ──────────────────────────────────────────────────────────
     // PRIVATE — Tentukan rentang tanggal dari string periode
     // ──────────────────────────────────────────────────────────
-    private function getPeriode(string $periode, Carbon $now): array
+// Tambahkan parameter $request (default null agar tidak error di index)
+    private function getPeriode($periode, $now, $request = null)
     {
+        // Ambil input dari form, jika tidak ada gunakan default sekarang
+        $tahun = $request ? $request->get('tahun', $now->year) : $now->year;
+        $bulan = $request ? $request->get('bulan', $now->month) : $now->month;
+
         switch ($periode) {
-            case 'harian':
-                return [
-                    $now->copy()->startOfDay(),
-                    $now->copy()->endOfDay(),
-                    'Hari Ini, ' . $now->translatedFormat('d F Y'),
-                ];
             case 'mingguan':
-                $start = $now->copy()->startOfWeek(Carbon::MONDAY);
-                $end   = $now->copy()->endOfWeek(Carbon::SUNDAY);
-                return [
-                    $start, $end,
-                    $start->translatedFormat('d M') . ' – ' . $end->translatedFormat('d M Y'),
-                ];
+    $mingguKe = $request ? $request->get('minggu', 1) : 1;
+    $bulanPilihan = $request ? $request->get('bulan', $now->month) : $now->month;
+    $tahunPilihan = $request ? $request->get('tahun', $now->year) : $now->year;
+
+    // Mulai dari tanggal 1 bulan terpilih
+    $startOfMonth = Carbon::create($tahunPilihan, $bulanPilihan, 1)->startOfMonth();
+    
+    // Cari hari senin pertama di bulan itu sebagai patokan minggu ke-1
+    $startDate = $startOfMonth->copy()->addWeeks($mingguKe - 1)->startOfWeek(Carbon::MONDAY);
+    $endDate = $startDate->copy()->endOfWeek(Carbon::SUNDAY);
+    
+    $label = "Minggu ke-$mingguKe, " . $startOfMonth->translatedFormat('F Y');
+    break;
+
             case 'tahunan':
-                return [
-                    $now->copy()->startOfYear(),
-                    $now->copy()->endOfYear(),
-                    'Tahun ' . $now->year,
-                ];
+                $startDate = Carbon::create($tahun, 1, 1)->startOfYear();
+                $endDate = $startDate->copy()->endOfYear();
+                $label = "Tahun " . $tahun;
+                break;
+
+            case 'custom':
+                $startDate = Carbon::parse($request->get('start_date'))->startOfDay();
+                $endDate = Carbon::parse($request->get('end_date'))->endOfDay();
+                $label = $startDate->format('d/m/Y') . ' - ' . $endDate->format('d/m/Y');
+                break;
+
             case 'bulanan':
             default:
-                return [
-                    $now->copy()->startOfMonth(),
-                    $now->copy()->endOfMonth(),
-                    $now->translatedFormat('F Y'),
-                ];
+                $startDate = Carbon::create($tahun, $bulan, 1)->startOfMonth();
+                $endDate = $startDate->copy()->endOfMonth();
+                $label = $startDate->translatedFormat('F Y');
+                break;
         }
-    }
 
-    // ──────────────────────────────────────────────────────────
+        return [$startDate, $endDate, $label];
+    }    // ──────────────────────────────────────────────────────────
     // PRIVATE — Data untuk grafik chart
     // ──────────────────────────────────────────────────────────
     private function getChartData(string $periode, Carbon $now): array
@@ -236,5 +249,36 @@ class KeuanganController extends Controller
         }
 
         return compact('labels', 'pemasukan');
+    }
+
+    public function cetak(Request $request) 
+    {
+        $periode = $request->get('periode', 'bulanan');
+        $now = Carbon::now();
+        
+        // Gunakan request untuk mendapatkan filter spesifik
+        [$startDate, $endDate, $labelPeriode] = $this->getPeriode($periode, $now, $request);
+
+        $baseQuery = Keuangan::whereBetween('created_at', [$startDate, $endDate]);
+        
+        $totalPemasukan = (clone $baseQuery)->where('tipe', 'pemasukan')->sum('nominal');
+        $totalPengeluaran = (clone $baseQuery)->where('tipe', 'pengeluaran')->sum('nominal');
+        $saldo = $totalPemasukan - $totalPengeluaran;
+        $historyTransaksi = $baseQuery->orderBy('created_at', 'asc')->get();
+
+        $html = view('keuangan.pdf', compact('labelPeriode', 'totalPemasukan', 'totalPengeluaran', 'saldo', 'historyTransaksi'))->render();
+
+        // 1. Generate data PDF mentah
+        $pdfContent = Browsershot::html($html)
+            ->setChromePath('C:\Program Files\Google\Chrome\Application\chrome.exe') // Sesuaikan path Windows Anda
+            ->addChromiumArguments(['no-sandbox', 'disable-setuid-sandbox'])
+            ->emulateMedia('screen')
+            ->margins(10, 10, 10, 10)
+            ->format('A4')
+            ->pdf(); // Ini mengembalikan string biner PDF
+
+        return response($pdfContent)
+        ->header('Content-Type', 'application/pdf')
+        ->header('Content-Disposition', 'inline; filename="laporan-keuangan-' . $labelPeriode . '.pdf"');
     }
 }
