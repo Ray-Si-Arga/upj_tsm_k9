@@ -104,7 +104,7 @@
 
         .header-title {
             font-size: 1.65rem;
-            font-weight: 900;
+            font-weight: 700;
             color: #fff;
             letter-spacing: -.5px;
             margin: 0 0 4px;
