@@ -18,14 +18,6 @@ class LayananController extends Controller
     }
 
     /**
-     * Tampilkan Form Tambah Layanan
-     */
-    public function create()
-    {
-        return view('layanan.create');
-    }
-
-    /**
      * Simpan Data ke Database
      */
     public function store(Request $request)
@@ -40,15 +32,6 @@ class LayananController extends Controller
         Service::create($request->all());
 
         return redirect()->route('layanan.index')->with('success', 'Layanan berhasil ditambahkan!');
-    }
-
-    /**
-     * Tampilkan Form Edit
-     */
-    public function edit($id)
-    {
-        $service = Service::findOrFail($id);
-        return view('layanan.edit', compact('service'));
     }
 
     /**
