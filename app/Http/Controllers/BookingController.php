@@ -317,6 +317,7 @@ class BookingController extends Controller
             'customer_whatsapp' => 'required|string|max:20',
             'vehicle_type' => 'required|string|max:255',
             'plate_number' => 'required|string|max:20',
+            'complaint' => 'nullable|string', // <-- TAMBAHKAN VALIDASI INI
         ]);
 
         // 2. LOGIKA VALIDASI HARI MINGGU
@@ -338,10 +339,11 @@ class BookingController extends Controller
             'booking_date' => $request->booking_date,
             'customer_name' => $request->customer_name,
             'customer_whatsapp' => $request->customer_whatsapp,
-            'vehicle_type' => $request->vehicle_type,
-            'plate_number' => strtoupper($request->plate_number),
-            'queue_number' => $newQueueNumber,
-            'status' => 'pending',
+            'vehicle_type'      => $request->vehicle_type,
+            'plate_number'      => strtoupper($request->plate_number),
+            'queue_number'      => $newQueueNumber,
+            'status'            => 'pending',
+            'complaint'         => $request->complaint, // <-- TAMBAHKAN BARIS INI UNTUK MENYIMPAN KE DATABASE
         ]);
 
         $booking->services()->attach($request->service_ids);

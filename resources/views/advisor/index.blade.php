@@ -294,15 +294,13 @@
         <div class="table-container shadow-sm">
             <div class="px-4 py-3 border-bottom d-flex justify-content-between align-items-center bg-white">
                 <h6 class="fw-bold mb-0">Riwayat Transaksi Terbaru</h6>
-                <div class="dropdown">
-                    <form action="{{ route('advisor.index') }}" method="GET" class="d-flex gap-2">
-                        <input type="text" name="search" class="form-control form-control-sm"
-                            placeholder="Cari plat, nama, atau mekanik..." value="{{ request('search') }}">
-                        <button type="submit" class="btn btn-sm btn-primary-custom">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                </div>
+                <div class="position-relative">
+    <i class="fas fa-search position-absolute" style="left:12px; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:0.85rem; pointer-events:none;"></i>
+    <input type="text" id="realtimeSearch" class="form-control form-control-sm ps-4" 
+           placeholder="Cari plat, nama, atau mekanik..." 
+           value="{{ request('search') }}"
+           style="min-width:280px; padding-left:34px !important;">
+</div>
             </div>
 
             <div class="table-responsive">
@@ -320,83 +318,55 @@
                     </thead>
                     <tbody>
                         @forelse($histories as $index => $data)
-                                        <tr>
-                                            <td class="text-center text-muted small">{{ $index + $histories->firstItem() }}</td>
-                                            <td>
-                                                <div class="fw-semibold text-dark">{{ $data->created_at->format('d M Y') }}</div>
-                                                <div class="text-muted x-small" style="font-size: 0.75rem;">
-                                                    <i class="far fa-clock me-1"></i>{{ $data->created_at->format('H:i') }}
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="fw-bold text-primary">{{ strtoupper($data->booking->plate_number ?? '-') }}
-                                                </div>
-                                                <div class="small text-muted">{{ $data->booking->customer_name ?? '-' }} • {{
-                            $data->booking->vehicle_type ?? '-' }}</div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <div class="small fw-medium">{{ $data->nama_mekanik ?? 'N/A' }}</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                @php
-                                                    $jobs = $data->jobs;
+                            <tr>
+                                <td class="text-center text-muted small">{{ $index + $histories->firstItem() }}</td>
+                                <td>
+                                    <div class="fw-semibold text-dark">{{ $data->created_at->format('d M Y') }}</div>
+                                    <div class="text-muted x-small" style="font-size: 0.75rem;">
+                                        <i class="far fa-clock me-1"></i>{{ $data->created_at->format('H:i') }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-primary">{{ strtoupper($data->booking->plate_number ?? '-') }}</div>
+                                    <div class="small text-muted">{{ $data->booking->customer_name ?? '-' }} • {{ $data->booking->vehicle_type ?? '-' }}</div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="small fw-medium">{{ $data->nama_mekanik ?? 'N/A' }}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    @php
+                                        $jobs = $data->jobs;
 
-                                                    if (is_array($jobs) && count($jobs) > 0) {
-                                                        // Format BARU: JSON array [['name'=>'...','price'=>...], ...]
-                                                        $jobLabel = implode(', ', array_column($jobs, 'name'));
-                                                    } elseif (is_string($jobs) && $jobs !== '') {
-                                                        // Format LAMA: string biasa (backward compatible)
-                                                        $jobLabel = $jobs;
-                                                    } else {
-                                                        $jobLabel = 'General Service';
-                                                    }
-                                                @endphp
-                                                <span class="badge-status badge-service">
-                                                    {{ $jobLabel }}
-                                                </span>
-                                            </td>
-                                            <td class="text-end fw-bold text-dark">
-                                                Rp{{ number_format($data->total_estimation, 0, ',', '.') }}
-                                            </td>
-                                            <td class="text-center">
-                                                <a href="{{ route('advisor.print', $data->id) }}" class="btn btn-print btn-sm">
-                                                    <i class="fas fa-file-pdf me-1 text-danger"></i> PDF
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        @php
-                                            if (is_array($jobs) && count($jobs) > 0) {
-                                                // Format BARU: JSON array [['name'=>'...','price'=>...], ...]
-                                                $jobLabel = implode(', ', array_column($jobs, 'name'));
-                                            } elseif (is_string($jobs) && $jobs !== '') {
-                                                // Format LAMA: string biasa (backward compatible)
-                                                $jobLabel = $jobs;
-                                            } else {
-                                                $jobLabel = 'General Service';
-                                            }
-                                        @endphp
-                                        <span class="badge-status badge-service">
-                                            {{ $jobLabel }}
-                                        </span>
-                                        </td>
-                                        <td class="text-end fw-bold text-dark">
-                                            Rp{{ number_format($data->total_estimation, 0, ',', '.') }}
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="d-flex justify-content-center gap-1">
-                                                <a href="{{ route('advisor.edit', $data->id) }}" class="btn btn-outline-primary btn-sm"
-                                                    title="Edit">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="{{ route('advisor.print', $data->id) }}" class="btn btn-print btn-sm"
+                                        if (is_array($jobs) && count($jobs) > 0) {
+                                            // Format BARU: JSON array [['name'=>'...','price'=>...], ...]
+                                            $jobLabel = implode(', ', array_column($jobs, 'name'));
+                                        } elseif (is_string($jobs) && $jobs !== '') {
+                                            // Format LAMA: string biasa (backward compatible)
+                                            $jobLabel = $jobs;
+                                        } else {
+                                            $jobLabel = 'General Service';
+                                        }
+                                    @endphp
+                                    <span class="badge-status badge-service">
+                                        {{ $jobLabel }}
+                                    </span>
+                                </td>
+                                <td class="text-end fw-bold text-dark">
+                                    Rp{{ number_format($data->total_estimation, 0, ',', '.') }}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ route('advisor.print', $data->id) }}" class="btn btn-print btn-sm"
                                                     title="Cetak PDF">
                                                     <i class="fas fa-file-pdf text-danger"></i>
                                                 </a>
-                                            </div>
-                                        </td>
-                                        </tr>
+                                    <a href="{{ route('advisor.edit', $data->id) }}" class="btn btn-outline-primary btn-sm"
+                                                    title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                </td>
+                            </tr>
                         @empty
                             <tr>
                                 <td colspan="7" class="py-5 text-center">
@@ -418,4 +388,70 @@
             @endif
         </div>
     </div>
+
+    @push('scripts')
+<script>
+    (function () {
+        const input = document.getElementById('realtimeSearch');
+        if (!input) return;
+
+        let debounceTimer;
+
+        input.addEventListener('input', function () {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function () {
+                const keyword = input.value.trim();
+                const url = new URL(window.location.href);
+
+                if (keyword !== '') {
+                    url.searchParams.set('search', keyword);
+                } else {
+                    url.searchParams.delete('search');
+                }
+                url.searchParams.delete('page'); // reset ke halaman 1
+
+                window.location.href = url.toString();
+            }, 450); // delay 450ms setelah berhenti mengetik
+        });
+
+        // Auto-focus ke akhir text jika sudah ada value
+        if (input.value) {
+            const len = input.value.length;
+            input.setSelectionRange(len, len);
+            input.focus();
+        }
+    })();
+</script>
+@endpush
+
+<script>
+    (function () {
+        const input = document.getElementById('realtimeSearch');
+        if (!input) return;
+
+        let debounceTimer;
+
+        input.addEventListener('input', function () {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function () {
+                const keyword = input.value.trim();
+                const url = new URL(window.location.href);
+
+                if (keyword !== '') {
+                    url.searchParams.set('search', keyword);
+                } else {
+                    url.searchParams.delete('search');
+                }
+                url.searchParams.delete('page');
+                window.location.href = url.toString();
+            }, 450);
+        });
+
+        if (input.value) {
+            const len = input.value.length;
+            input.setSelectionRange(len, len);
+            input.focus();
+        }
+    })();
+</script>
 @endsection

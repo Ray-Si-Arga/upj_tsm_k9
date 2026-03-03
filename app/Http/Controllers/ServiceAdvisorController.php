@@ -15,47 +15,38 @@ class ServiceAdvisorController extends Controller
      * Halaman Utama Riwayat Service Advisor
      */
     public function index(Request $request)
-        {
-            // Inisialisasi query dengan relasi
-            $query = ServiceAdvisor::with(['booking.services']);
+    {
+        $query = ServiceAdvisor::with(['booking.services']);
 
-            // Cek jika ada input pencarian
-            if ($request->has('search') && $request->search != '') {
-                $search = $request->search;
-                
-                $query->where(function($q) use ($search) {
-                    // Cari berdasarkan nama mekanik
-                    $q->where('nama_mekanik', 'like', "%{$search}%")
-                    // Cari di tabel relasi bookings (Plat Nomor & Nama Pelanggan)
-                    ->orWhereHas('booking', function($b) use ($search) {
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_mekanik', 'like', "%{$search}%")
+                    ->orWhereHas('booking', function ($b) use ($search) {
                         $b->where('plate_number', 'like', "%{$search}%")
                             ->orWhere('customer_name', 'like', "%{$search}%")
                             ->orWhere('vehicle_type', 'like', "%{$search}%");
                     });
-                });
-            }
-
-            $histories = $query->latest()->paginate(10);
-
-            // Menjaga parameter pencarian tetap ada saat pindah halaman (pagination)
-            $histories->appends(['search' => $request->search]);
-
-            return view('advisor.index', compact('histories'));
+            });
         }
+
+        $histories = $query->latest()->paginate(10);
+        $histories->appends(['search' => $request->search]);
+
+        return view('advisor.index', compact('histories'));
+    }
 
     /**
      * Halaman Form Pengecekan (Create)
      */
     public function create()
     {
-        
         $bookings = Booking::with('services')
             ->where('status', 'approved')
             ->get();
 
         $spareparts = Inventory::where('jumlah_barang', '>', 0)->get();
-        
-        $services = \App\Models\Service::all(); 
+        $services   = \App\Models\Service::all();
 
         return view('advisor.create', compact('bookings', 'spareparts', 'services'));
     }
@@ -65,7 +56,6 @@ class ServiceAdvisorController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validasi Input
         $request->validate([
             'booking_id'        => 'required|exists:bookings,id',
             'nama_mekanik'      => 'required|string|max:255',
@@ -87,35 +77,27 @@ class ServiceAdvisorController extends Controller
         try {
             $booking = Booking::with('services')->findOrFail($request->booking_id);
 
-            // --- LOGIKA JOBS (PEKERJAAN) → SIMPAN SEBAGAI JSON ---
+            // --- JOBS ---
             $jobsNames  = $request->input('jobs_name', []);
             $jobsPrices = $request->input('jobs_price', []);
-
             $processedJobs = [];
             $servicePrice  = 0;
 
             foreach ($jobsNames as $index => $name) {
                 $name = trim($name);
-                if ($name === '') continue; // skip baris kosong
-
-                $price    = isset($jobsPrices[$index]) ? (int) $jobsPrices[$index] : 0;
+                if ($name === '') continue;
+                $price = isset($jobsPrices[$index]) ? (int) $jobsPrices[$index] : 0;
                 $servicePrice += $price;
-
-                $processedJobs[] = [
-                    'name'  => $name,
-                    'price' => $price,
-                ];
+                $processedJobs[] = ['name' => $name, 'price' => $price];
             }
-            // -------------------------------------------------------
 
-            // --- LOGIKA SPAREPART ---
+            // --- SPAREPART ---
             $processedParts = [];
             $totalPartsCost = 0;
 
             if ($request->parts_id) {
                 foreach ($request->parts_id as $index => $inventoryId) {
                     $qty = $request->parts_qty[$index];
-
                     $inventoryItem = Inventory::lockForUpdate()->find($inventoryId);
 
                     if (!$inventoryItem || $inventoryItem->jumlah_barang < $qty) {
@@ -139,11 +121,11 @@ class ServiceAdvisorController extends Controller
                 }
             }
 
-            // --- SIMPAN DATA LENGKAP KE SERVICE ADVISOR ---
+            // --- SIMPAN ---
             $advisor = ServiceAdvisor::create([
                 'booking_id'        => $booking->id,
                 'nama_mekanik'      => $request->nama_mekanik,
-                'jobs'              => $processedJobs, // ← Sekarang array, otomatis jadi JSON
+                'jobs'              => $processedJobs,
                 'estimation_cost'   => $servicePrice,
                 'spareparts'        => $processedParts,
                 'estimation_parts'  => $totalPartsCost,
@@ -172,11 +154,9 @@ class ServiceAdvisorController extends Controller
                 'part_bekas_dibawa' => $request->part_bekas_dibawa,
             ]);
 
-            // Update status booking jadi done
             $booking->status = 'done';
             $booking->save();
 
-            // Ambil nama pekerjaan pertama untuk judul keuangan
             $firstJobName = !empty($processedJobs) ? $processedJobs[0]['name'] : 'Servis Kendaraan';
 
             Keuangan::create([
@@ -202,19 +182,19 @@ class ServiceAdvisorController extends Controller
     }
 
     /**
-     * Halaman Edit Riwayat Service Advisor
+     * Halaman Form Edit
      */
     public function edit($id)
     {
-        $advisor = ServiceAdvisor::with('booking')->findOrFail($id);
-        $spareparts = Inventory::all();
-        $services = \App\Models\Service::all();
-        
+        $advisor    = ServiceAdvisor::with('booking')->findOrFail($id);
+        $spareparts = Inventory::where('jumlah_barang', '>', 0)->get();
+        $services   = \App\Models\Service::all();
+
         return view('advisor.edit', compact('advisor', 'spareparts', 'services'));
     }
 
     /**
-     * Update Data Pengecekan & Sparepart
+     * Update Data Service Advisor
      */
     public function update(Request $request, $id)
     {
@@ -237,19 +217,17 @@ class ServiceAdvisorController extends Controller
 
         try {
             $advisor = ServiceAdvisor::findOrFail($id);
-            $booking = Booking::findOrFail($advisor->booking_id);
 
-            // --- KEMBALIKAN STOK LAMA ---
-            if ($advisor->spareparts) {
-                foreach ($advisor->spareparts as $oldPart) {
-                    $inventoryItem = Inventory::find($oldPart['id']);
-                    if ($inventoryItem) {
-                        $inventoryItem->increment('jumlah_barang', $oldPart['qty']);
-                    }
+            // --- KEMBALIKAN STOK SPAREPART LAMA ---
+            $oldParts = is_array($advisor->spareparts) ? $advisor->spareparts : [];
+            foreach ($oldParts as $oldPart) {
+                $invItem = Inventory::find($oldPart['id'] ?? null);
+                if ($invItem) {
+                    $invItem->increment('jumlah_barang', $oldPart['qty'] ?? 0);
                 }
             }
 
-            // --- LOGIKA JOBS ---
+            // --- JOBS ---
             $jobsNames  = $request->input('jobs_name', []);
             $jobsPrices = $request->input('jobs_price', []);
             $processedJobs = [];
@@ -263,7 +241,7 @@ class ServiceAdvisorController extends Controller
                 $processedJobs[] = ['name' => $name, 'price' => $price];
             }
 
-            // --- LOGIKA SPAREPART BARU ---
+            // --- SPAREPART BARU ---
             $processedParts = [];
             $totalPartsCost = 0;
 
@@ -274,11 +252,14 @@ class ServiceAdvisorController extends Controller
 
                     if (!$inventoryItem || $inventoryItem->jumlah_barang < $qty) {
                         DB::rollBack();
-                        return back()->with('error', "Stok {$inventoryItem->nama_barang} kurang! Sisa: {$inventoryItem->jumlah_barang}");
+                        $name = $inventoryItem ? $inventoryItem->nama_barang : "ID:{$inventoryId}";
+                        $sisa = $inventoryItem ? $inventoryItem->jumlah_barang : 0;
+                        return back()->with('error', "Stok {$name} kurang! Sisa: {$sisa}")->withInput();
                     }
 
                     $inventoryItem->decrement('jumlah_barang', $qty);
-                    $price = $inventoryItem->harga_jual;
+
+                    $price    = $inventoryItem->harga_jual;
                     $subtotal = $price * $qty;
 
                     $processedParts[] = [
@@ -292,7 +273,7 @@ class ServiceAdvisorController extends Controller
                 }
             }
 
-            // --- UPDATE DATA SERVICE ADVISOR ---
+            // --- UPDATE DATA ---
             $advisor->update([
                 'nama_mekanik'      => $request->nama_mekanik,
                 'jobs'              => $processedJobs,
@@ -324,24 +305,61 @@ class ServiceAdvisorController extends Controller
                 'part_bekas_dibawa' => $request->part_bekas_dibawa,
             ]);
 
-            // --- UPDATE KEUANGAN ---
+            // --- UPDATE DATA KEUANGAN ---
             $firstJobName = !empty($processedJobs) ? $processedJobs[0]['name'] : 'Servis Kendaraan';
-            Keuangan::where('referensi_id', $advisor->id)
+            $booking = $advisor->booking;
+
+            $keuangan = Keuangan::where('referensi_id', $advisor->id)
                 ->where('sumber', 'service')
-                ->update([
+                ->first();
+
+            if ($keuangan) {
+                $keuangan->update([
                     'judul'      => 'Service: ' . $firstJobName,
                     'nominal'    => $advisor->total_estimation,
                     'keterangan' => ($booking->customer_name ?? '-') . ' • ' . ($booking->plate_number ?? '-') . ' • Mekanik: ' . ($advisor->nama_mekanik ?? '-'),
                 ]);
+            }
 
             DB::commit();
 
             return redirect()->route('advisor.index')
-                ->with('success', 'Data Service Berhasil Diperbarui!');
+                ->with('success', 'Data service berhasil diperbarui!');
 
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
         }
     }
+
+    /**
+     * Hapus Data Service Advisor
+     */
+    //public function destroy($id)
+    //{
+    //    DB::beginTransaction();
+    //    try {
+    //        $advisor = ServiceAdvisor::findOrFail($id);
+//
+    //        // Kembalikan stok sparepart
+    //        $parts = is_array($advisor->spareparts) ? $advisor->spareparts : [];
+    //        foreach ($parts as $part) {
+    //            $invItem = Inventory::find($part['id'] ?? null);
+    //            if ($invItem) {
+    //                $invItem->increment('jumlah_barang', $part['qty'] ?? 0);
+    //            }
+    //        }
+//
+    //        // Hapus data keuangan terkait
+    //        Keuangan::where('referensi_id', $advisor->id)->where('sumber', 'service')->delete();
+//
+    //        $advisor->delete();
+//
+    //        DB::commit();
+    //        return redirect()->route('advisor.index')->with('success', 'Data service berhasil dihapus.');
+    //    } catch (\Exception $e) {
+    //        DB::rollBack();
+    //        return back()->with('error', 'Gagal menghapus: ' . $e->getMessage());
+    //    }
+    //}
 }

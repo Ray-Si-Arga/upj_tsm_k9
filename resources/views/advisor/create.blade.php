@@ -159,36 +159,25 @@
                 {{-- PILIH BOOKING --}}
                 <div class="booking-selector-area">
                     <label class="form-label fw-bold text-primary mb-2">Pilih Antrian / Booking</label>
-                    <select name="booking_id" id="bookingSelect" class="form-select form-select-lg" required
-                        onchange="handleBookingChange()">
-                        <option value="" data-complaint="" data-queue="" data-date="" data-plate="" data-type=""
-                            data-name="" data-phone="">
-                            -- Pilih Customer --
-                        </option>
-                        @foreach ($bookings as $data)
-                            <option value="{{ $data->id }}" data-complaint="{{ $data->complaint }}"
-                                data-queue="{{ $data->queue_number }}"
-                                data-date="{{ \Carbon\Carbon::parse($data->booking_date)->format('d M Y') }}"
-                                data-plate="{{ strtoupper($data->plate_number) }}" data-type="{{ $data->vehicle_type }}"
-                                data-name="{{ $data->customer_name }}" data-phone="{{ $data->customer_whatsapp }}"
-                                @foreach ($bookings as $data)
-                            <option
-                                value="{{ $data->id }}"
-                                data-complaint="{{ $data->complaint }}"
-                                data-queue="{{ $data->queue_number }}"
-                                data-date="{{ \Carbon\Carbon::parse($data->booking_date)->format('d M Y') }}"
-                                data-plate="{{ strtoupper($data->plate_number) }}"
-                                data-type="{{ $data->vehicle_type }}"
-                                data-name="{{ $data->customer_name }}"
-                                data-phone="{{ $data->customer_whatsapp }}"
-                                data-services='@json($data->services->map(fn($s) => ["name" => $s->name, "price" => (int) $s->price]))'>
-                                No. {{ $data->queue_number }} - {{ $data->customer_name }} ({{ strtoupper($data->plate_number) }})
-                            </option>
-                        @endforeach
-                                No. {{ $data->queue_number }} - {{ $data->customer_name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <select name="booking_id" id="bookingSelect" class="form-select form-select-lg" required onchange="handleBookingChange()">
+    <option value="" data-complaint="" data-queue="" data-date="" data-plate="" data-type="" data-name="" data-phone="">
+        -- Pilih Customer --
+    </option>
+    @foreach ($bookings as $data)
+        <option
+            value="{{ $data->id }}"
+            data-complaint="{{ $data->complaint }}"
+            data-queue="{{ $data->queue_number }}"
+            data-date="{{ \Carbon\Carbon::parse($data->booking_date)->format('d M Y') }}"
+            data-plate="{{ strtoupper($data->plate_number) }}"
+            data-type="{{ $data->vehicle_type }}"
+            data-name="{{ $data->customer_name }}"
+            data-phone="{{ $data->customer_whatsapp }}"
+            data-services='@json($data->services->map(fn($s) => ["name" => $s->name, "price" => (int) $s->price]))'>
+            No. {{ $data->queue_number }} - {{ $data->customer_name }} ({{ strtoupper($data->plate_number) }})
+        </option>
+    @endforeach
+</select>
 
                     <div class="mt-3 p-3 rounded-3 bg-light border border-warning"
                         style="border-left-width: 4px !important;">
