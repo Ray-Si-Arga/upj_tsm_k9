@@ -2,7 +2,7 @@
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
+
     <style>
         :root {
             --primary-dark: #1e293b;
@@ -11,6 +11,9 @@
             --danger-red: #ef4444;
             --bg-body: #f8fafc;
             --card-border: #e2e8f0;
+
+            --navy: #0f172a;
+
         }
 
         body {
@@ -21,13 +24,35 @@
 
         /* Hero Section - Clean Modern */
         .hero-section {
-            background: var(--primary-dark);
-            background-image: radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
-            border-radius: 16px;
-            padding: 2.5rem;
+            background: linear-gradient(135deg, var(--navy) 0%, #16213e 50%, #0f172a 100%);
+            border-radius: 20px;
+            padding: 28px 34px;
             color: white;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(177, 0, 0, .25) 0%, transparent 70%);
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 25%;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .03);
         }
 
         /* Stats Cards - Minimalist */
@@ -160,8 +185,13 @@
         }
 
         @media (max-width: 768px) {
-            .hero-section { padding: 1.5rem; }
-            .stats-card { margin-bottom: 0.5rem; }
+            .hero-section {
+                padding: 1.5rem;
+            }
+
+            .stats-card {
+                margin-bottom: 0.5rem;
+            }
         }
     </style>
 
@@ -170,7 +200,21 @@
         <div class="hero-section">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <span class="badge mb-3" style="background: rgba(59, 130, 246, 0.2); color: #93c5fd;">Admin Panel</span>
+                    <span class="badge mb-3" style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: rgba(177, 0, 0, .35);
+                    border: 1px solid rgba(177, 0, 0, .5);
+                    color: #fca5a5;
+                    font-size: .7rem;
+                    font-weight: 800;
+                    letter-spacing: 1.1px;
+                    text-transform: uppercase;
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    margin-bottom: 10px;">Admin Panel</span>
+
                     <h2 class="fw-bold mb-1">Service Advisor Dashboard</h2>
                     <p class="mb-0 text-white-50">Monitoring dan manajemen operasional bengkel secara real-time.</p>
                 </div>
@@ -240,7 +284,9 @@
         <div class="info-box d-flex align-items-start gap-3">
             <i class="fas fa-circle-info mt-1 text-primary"></i>
             <p class="mb-0 small text-dark opacity-75">
-                <strong>Informasi:</strong> Untuk pelanggan yang datang langsung (walk-in), pastikan untuk membuat entri booking terlebih dahulu melalui menu <strong>Booking Walk-In</strong> agar data tercatat dalam sistem antrean.
+                <strong>Informasi:</strong> Untuk pelanggan yang datang langsung (walk-in), pastikan untuk membuat entri
+                booking terlebih dahulu melalui menu <strong>Booking Walk-In</strong> agar data tercatat dalam sistem
+                antrean.
             </p>
         </div>
 
@@ -250,14 +296,15 @@
                 <h6 class="fw-bold mb-0">Riwayat Transaksi Terbaru</h6>
                 <div class="dropdown">
                     <form action="{{ route('advisor.index') }}" method="GET" class="d-flex gap-2">
-                        <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari plat, nama, atau mekanik..." value="{{ request('search') }}">
+                        <input type="text" name="search" class="form-control form-control-sm"
+                            placeholder="Cari plat, nama, atau mekanik..." value="{{ request('search') }}">
                         <button type="submit" class="btn btn-sm btn-primary-custom">
                             <i class="fas fa-search"></i>
                         </button>
                     </form>
                 </div>
             </div>
-            
+
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead>
@@ -273,54 +320,57 @@
                     </thead>
                     <tbody>
                         @forelse($histories as $index => $data)
-                            <tr>
-                                <td class="text-center text-muted small">{{ $index + $histories->firstItem() }}</td>
-                                <td>
-                                    <div class="fw-semibold text-dark">{{ $data->created_at->format('d M Y') }}</div>
-                                    <div class="text-muted x-small" style="font-size: 0.75rem;">
-                                        <i class="far fa-clock me-1"></i>{{ $data->created_at->format('H:i') }}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-primary">{{ strtoupper($data->booking->plate_number ?? '-') }}</div>
-                                    <div class="small text-muted">{{ $data->booking->customer_name ?? '-' }} • {{ $data->booking->vehicle_type ?? '-' }}</div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="small fw-medium">{{ $data->nama_mekanik ?? 'N/A' }}</div>
-                                    </div>
-                                </td>
-                                <td>
-    @php
-        $jobs = $data->jobs;
+                                        <tr>
+                                            <td class="text-center text-muted small">{{ $index + $histories->firstItem() }}</td>
+                                            <td>
+                                                <div class="fw-semibold text-dark">{{ $data->created_at->format('d M Y') }}</div>
+                                                <div class="text-muted x-small" style="font-size: 0.75rem;">
+                                                    <i class="far fa-clock me-1"></i>{{ $data->created_at->format('H:i') }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-primary">{{ strtoupper($data->booking->plate_number ?? '-') }}
+                                                </div>
+                                                <div class="small text-muted">{{ $data->booking->customer_name ?? '-' }} • {{
+                            $data->booking->vehicle_type ?? '-' }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="small fw-medium">{{ $data->nama_mekanik ?? 'N/A' }}</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @php
+                                                    $jobs = $data->jobs;
 
-        if (is_array($jobs) && count($jobs) > 0) {
-            // Format BARU: JSON array [['name'=>'...','price'=>...], ...]
-            $jobLabel = implode(', ', array_column($jobs, 'name'));
-        } elseif (is_string($jobs) && $jobs !== '') {
-            // Format LAMA: string biasa (backward compatible)
-            $jobLabel = $jobs;
-        } else {
-            $jobLabel = 'General Service';
-        }
-    @endphp
-    <span class="badge-status badge-service">
-        {{ $jobLabel }}
-    </span>
-</td>
-                                <td class="text-end fw-bold text-dark">
-                                    Rp{{ number_format($data->total_estimation, 0, ',', '.') }}
-                                </td>
-                                <td class="text-center">
-                                    <a href="{{ route('advisor.print', $data->id) }}" class="btn btn-print btn-sm">
-                                        <i class="fas fa-file-pdf me-1 text-danger"></i> PDF
-                                    </a>
-                                </td>
-                            </tr>
+                                                    if (is_array($jobs) && count($jobs) > 0) {
+                                                        // Format BARU: JSON array [['name'=>'...','price'=>...], ...]
+                                                        $jobLabel = implode(', ', array_column($jobs, 'name'));
+                                                    } elseif (is_string($jobs) && $jobs !== '') {
+                                                        // Format LAMA: string biasa (backward compatible)
+                                                        $jobLabel = $jobs;
+                                                    } else {
+                                                        $jobLabel = 'General Service';
+                                                    }
+                                                @endphp
+                                                <span class="badge-status badge-service">
+                                                    {{ $jobLabel }}
+                                                </span>
+                                            </td>
+                                            <td class="text-end fw-bold text-dark">
+                                                Rp{{ number_format($data->total_estimation, 0, ',', '.') }}
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="{{ route('advisor.print', $data->id) }}" class="btn btn-print btn-sm">
+                                                    <i class="fas fa-file-pdf me-1 text-danger"></i> PDF
+                                                </a>
+                                            </td>
+                                        </tr>
                         @empty
                             <tr>
                                 <td colspan="7" class="py-5 text-center">
-                                    <img src="https://illustrations.popsy.co/slate/empty-folder.svg" alt="empty" style="width: 120px;" class="mb-3">
+                                    <img src="https://illustrations.popsy.co/slate/empty-folder.svg" alt="empty"
+                                        style="width: 120px;" class="mb-3">
                                     <h6 class="text-muted">Data transaksi tidak ditemukan</h6>
                                 </td>
                             </tr>
