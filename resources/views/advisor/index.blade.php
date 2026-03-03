@@ -201,19 +201,19 @@
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <span class="badge mb-3" style="
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 6px;
-                    background: rgba(177, 0, 0, .35);
-                    border: 1px solid rgba(177, 0, 0, .5);
-                    color: #fca5a5;
-                    font-size: .7rem;
-                    font-weight: 800;
-                    letter-spacing: 1.1px;
-                    text-transform: uppercase;
-                    padding: 4px 12px;
-                    border-radius: 20px;
-                    margin-bottom: 10px;">Admin Panel</span>
+                                display: inline-flex;
+                                align-items: center;
+                                gap: 6px;
+                                background: rgba(177, 0, 0, .35);
+                                border: 1px solid rgba(177, 0, 0, .5);
+                                color: #fca5a5;
+                                font-size: .7rem;
+                                font-weight: 800;
+                                letter-spacing: 1.1px;
+                                text-transform: uppercase;
+                                padding: 4px 12px;
+                                border-radius: 20px;
+                                margin-bottom: 10px;">Admin Panel</span>
 
                     <h2 class="fw-bold mb-1">Service Advisor Dashboard</h2>
                     <p class="mb-0 text-white-50">Monitoring dan manajemen operasional bengkel secara real-time.</p>
@@ -365,6 +365,37 @@
                                                     <i class="fas fa-file-pdf me-1 text-danger"></i> PDF
                                                 </a>
                                             </td>
+                                        </tr>
+                                        @php
+                                            if (is_array($jobs) && count($jobs) > 0) {
+                                                // Format BARU: JSON array [['name'=>'...','price'=>...], ...]
+                                                $jobLabel = implode(', ', array_column($jobs, 'name'));
+                                            } elseif (is_string($jobs) && $jobs !== '') {
+                                                // Format LAMA: string biasa (backward compatible)
+                                                $jobLabel = $jobs;
+                                            } else {
+                                                $jobLabel = 'General Service';
+                                            }
+                                        @endphp
+                                        <span class="badge-status badge-service">
+                                            {{ $jobLabel }}
+                                        </span>
+                                        </td>
+                                        <td class="text-end fw-bold text-dark">
+                                            Rp{{ number_format($data->total_estimation, 0, ',', '.') }}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <a href="{{ route('advisor.edit', $data->id) }}" class="btn btn-outline-primary btn-sm"
+                                                    title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{{ route('advisor.print', $data->id) }}" class="btn btn-print btn-sm"
+                                                    title="Cetak PDF">
+                                                    <i class="fas fa-file-pdf text-danger"></i>
+                                                </a>
+                                            </div>
+                                        </td>
                                         </tr>
                         @empty
                             <tr>

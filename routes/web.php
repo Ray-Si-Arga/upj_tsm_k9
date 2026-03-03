@@ -52,6 +52,8 @@ Route::prefix('advisor')->name('advisor.')->group(function () {
     Route::get('/index', [ServiceAdvisorController::class, 'index'])->name('index');
     Route::get('/create', [ServiceAdvisorController::class, 'create'])->name('create');
     Route::post('/store', [ServiceAdvisorController::class, 'store'])->name('store');
+    Route::get('/edit/{id}', [ServiceAdvisorController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}', [ServiceAdvisorController::class, 'update'])->name('update');
     Route::get('/print/{id}', [CetakController::class, 'print'])->name('print');
 });
 
