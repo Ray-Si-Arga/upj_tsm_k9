@@ -480,31 +480,36 @@ class BookingController extends Controller
             return redirect()->route('booking.create')->with('error', 'Akses dibatasi untuk Admin.');
         }
 
-        // Asumsi: Kita hanya mengambil user dengan role 'customer'
-        $customers = User::where('role', 'customer')
-            ->with('bookings')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $now = \Carbon\Carbon::now();
 
+        $totalCustomers = User::where('role', 'customer')->count();
+        $newCustomers = User::where('role', 'customer')
+            ->whereYear('created_at', $now->year)
+            ->whereMonth('created_at', $now->month)
+            ->count();
 
-        return view('customers.index', compact('customers'));
+        $totalAdmins = User::where('role', 'admin')->count();
+        $newAdmins = User::where('role', 'admin')
+            ->whereYear('created_at', $now->year)
+            ->whereMonth('created_at', $now->month)
+            ->count();
+
+        return view('customers.index', compact('totalCustomers', 'newCustomers', 'totalAdmins', 'newAdmins'));
     }
 
     /**
      * Menampilkan daftar booking berdasarkan nomor WhatsApp (Hanya Admin)
      */
-    public function customerBookings($whatsapp)
+    public function customerBookings($id)
     {
         // Pengecekan role manual
         if (Auth::user()->role !== 'admin') {
             return redirect()->route('booking.create')->with('error', 'Akses dibatasi untuk Admin.');
         }
 
-        // Ambil semua booking untuk nomor WhatsApp tertentu
+        // Ambil semua booking untuk user ID tertentu
         $bookings = Booking::with(['user', 'services'])
-            // ->where('whatsapp_number', $whatsapp)
-            ->where('customer_whatsapp', $whatsapp)
-            // ->orderBy('booking_date', 'desc')
+            ->where('user_id', $id)
             ->orderBy('booking_date', 'desc')
             ->get();
 

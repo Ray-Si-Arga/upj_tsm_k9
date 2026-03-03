@@ -70,7 +70,7 @@
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
                                     @if ($customer->bookings->isNotEmpty())
-                                        <a href="{{ route('customers.bookings', ['whatsapp' => $customer->phone, 'email' => $customer->email]) }}"
+                                        <a href="{{ route('customers.bookings', ['id' => $customer->id]) }}"
                                             class="btn-act btn-edit" title="Detail">
                                             <i class="fas fa-eye"></i>
                                         </a>
@@ -163,8 +163,8 @@
 
                 <div class="d-flex gap-2">
                     @if ($customer->bookings->isNotEmpty())
-                        <a href="{{ route('customers.bookings', ['whatsapp' => $customer->phone, 'email' => $customer->email]) }}"
-                            class="btn-act btn-edit flex-fill" style="height:auto; padding:8px; width:auto; border-radius:8px;">
+                        <a href="{{ route('customers.bookings', ['id' => $customer->id]) }}" class="btn-act btn-edit flex-fill"
+                            style="height:auto; padding:8px; width:auto; border-radius:8px;">
                             <i class="fas fa-eye me-1"></i> Detail
                         </a>
                     @else

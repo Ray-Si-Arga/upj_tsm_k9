@@ -137,7 +137,7 @@ Route::middleware(['auth'])->group(function () {
     // ----------------------------------------------- //
     Route::prefix('customers')->name('customers.')->group(function () {
         Route::get('/', [BookingController::class, 'customers'])->name('index');
-        Route::get('/{whatsapp}/bookings', [BookingController::class, 'customerBookings'])->name('bookings');
+        Route::get('/{id}/bookings', [BookingController::class, 'customerBookings'])->name('bookings');
         Route::get('/new-count', [BookingController::class, 'getNewCustomersCount'])->name('new-count');
         Route::post('/mark-checked', [BookingController::class, 'markCustomersChecked'])->name('mark-checked');
     });
