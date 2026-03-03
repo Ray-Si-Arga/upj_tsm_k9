@@ -312,9 +312,14 @@
                                     Rp{{ number_format($data->total_estimation, 0, ',', '.') }}
                                 </td>
                                 <td class="text-center">
-                                    <a href="{{ route('advisor.print', $data->id) }}" class="btn btn-print btn-sm">
-                                        <i class="fas fa-file-pdf me-1 text-danger"></i> PDF
-                                    </a>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="{{ route('advisor.edit', $data->id) }}" class="btn btn-outline-primary btn-sm" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{{ route('advisor.print', $data->id) }}" class="btn btn-print btn-sm" title="Cetak PDF">
+                                            <i class="fas fa-file-pdf text-danger"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

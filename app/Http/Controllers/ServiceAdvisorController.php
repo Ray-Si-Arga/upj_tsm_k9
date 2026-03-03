@@ -200,4 +200,148 @@ class ServiceAdvisorController extends Controller
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
         }
     }
+
+    /**
+     * Halaman Edit Riwayat Service Advisor
+     */
+    public function edit($id)
+    {
+        $advisor = ServiceAdvisor::with('booking')->findOrFail($id);
+        $spareparts = Inventory::all();
+        $services = \App\Models\Service::all();
+        
+        return view('advisor.edit', compact('advisor', 'spareparts', 'services'));
+    }
+
+    /**
+     * Update Data Pengecekan & Sparepart
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama_mekanik'      => 'required|string|max:255',
+            'customer_complaint'=> 'nullable|string',
+            'advisor_notes'     => 'nullable|string',
+            'carrier_name'      => 'required|string|max:255',
+            'carrier_phone'     => 'required|string|max:20',
+            'owner_name'        => 'required|string|max:255',
+            'odometer'          => 'required',
+            'parts_id'          => 'nullable|array',
+            'parts_qty'         => 'nullable|array',
+            'fuel_level'        => 'required|string',
+            'pkb_approval'      => 'required',
+            'part_bekas_dibawa' => 'required',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $advisor = ServiceAdvisor::findOrFail($id);
+            $booking = Booking::findOrFail($advisor->booking_id);
+
+            // --- KEMBALIKAN STOK LAMA ---
+            if ($advisor->spareparts) {
+                foreach ($advisor->spareparts as $oldPart) {
+                    $inventoryItem = Inventory::find($oldPart['id']);
+                    if ($inventoryItem) {
+                        $inventoryItem->increment('jumlah_barang', $oldPart['qty']);
+                    }
+                }
+            }
+
+            // --- LOGIKA JOBS ---
+            $jobsNames  = $request->input('jobs_name', []);
+            $jobsPrices = $request->input('jobs_price', []);
+            $processedJobs = [];
+            $servicePrice  = 0;
+
+            foreach ($jobsNames as $index => $name) {
+                $name = trim($name);
+                if ($name === '') continue;
+                $price = isset($jobsPrices[$index]) ? (int) $jobsPrices[$index] : 0;
+                $servicePrice += $price;
+                $processedJobs[] = ['name' => $name, 'price' => $price];
+            }
+
+            // --- LOGIKA SPAREPART BARU ---
+            $processedParts = [];
+            $totalPartsCost = 0;
+
+            if ($request->parts_id) {
+                foreach ($request->parts_id as $index => $inventoryId) {
+                    $qty = $request->parts_qty[$index];
+                    $inventoryItem = Inventory::lockForUpdate()->find($inventoryId);
+
+                    if (!$inventoryItem || $inventoryItem->jumlah_barang < $qty) {
+                        DB::rollBack();
+                        return back()->with('error', "Stok {$inventoryItem->nama_barang} kurang! Sisa: {$inventoryItem->jumlah_barang}");
+                    }
+
+                    $inventoryItem->decrement('jumlah_barang', $qty);
+                    $price = $inventoryItem->harga_jual;
+                    $subtotal = $price * $qty;
+
+                    $processedParts[] = [
+                        'id'       => $inventoryItem->id,
+                        'name'     => $inventoryItem->nama_barang,
+                        'qty'      => $qty,
+                        'price'    => $price,
+                        'subtotal' => $subtotal,
+                    ];
+                    $totalPartsCost += $subtotal;
+                }
+            }
+
+            // --- UPDATE DATA SERVICE ADVISOR ---
+            $advisor->update([
+                'nama_mekanik'      => $request->nama_mekanik,
+                'jobs'              => $processedJobs,
+                'estimation_cost'   => $servicePrice,
+                'spareparts'        => $processedParts,
+                'estimation_parts'  => $totalPartsCost,
+                'total_estimation'  => $servicePrice + $totalPartsCost,
+                'customer_complaint'=> $request->customer_complaint,
+                'advisor_notes'     => $request->advisor_notes,
+                'carrier_name'      => $request->carrier_name,
+                'carrier_address'   => $request->carrier_address,
+                'carrier_area'      => $request->carrier_area,
+                'carrier_phone'     => $request->carrier_phone,
+                'relationship'      => $request->relationship,
+                'owner_name'        => $request->owner_name,
+                'owner_address'     => $request->owner_address,
+                'owner_area'        => $request->owner_area,
+                'owner_phone'       => $request->owner_phone,
+                'is_own_dealer'     => $request->is_own_dealer ?? 0,
+                'visit_reason'      => $request->visit_reason,
+                'odometer'          => str_replace('.', '', $request->odometer),
+                'vehicle_year'      => $request->vehicle_year,
+                'engine_number'     => $request->engine_number,
+                'chassis_number'    => $request->chassis_number,
+                'customer_email'    => $request->customer_email,
+                'customer_social'   => $request->customer_social,
+                'fuel_level'        => $request->fuel_level,
+                'pkb_approval'      => $request->pkb_approval,
+                'part_bekas_dibawa' => $request->part_bekas_dibawa,
+            ]);
+
+            // --- UPDATE KEUANGAN ---
+            $firstJobName = !empty($processedJobs) ? $processedJobs[0]['name'] : 'Servis Kendaraan';
+            Keuangan::where('referensi_id', $advisor->id)
+                ->where('sumber', 'service')
+                ->update([
+                    'judul'      => 'Service: ' . $firstJobName,
+                    'nominal'    => $advisor->total_estimation,
+                    'keterangan' => ($booking->customer_name ?? '-') . ' • ' . ($booking->plate_number ?? '-') . ' • Mekanik: ' . ($advisor->nama_mekanik ?? '-'),
+                ]);
+
+            DB::commit();
+
+            return redirect()->route('advisor.index')
+                ->with('success', 'Data Service Berhasil Diperbarui!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
+        }
+    }
 }
