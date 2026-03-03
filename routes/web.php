@@ -65,9 +65,7 @@ Route::middleware(['auth'])->group(function () {
     // ---------------- Service Layanan  -------------------- //
     // ------------------------------------------------------ //
     Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
-    Route::get('/layanan/create', [LayananController::class, 'create'])->name('layanan.create');
     Route::post('/layanan/store', [LayananController::class, 'store'])->name('layanan.store');
-    Route::get('/layanan/edit/{id}', [LayananController::class, 'edit'])->name('layanan.edit');
     Route::put('/layanan/update/{id}', [LayananController::class, 'update'])->name('layanan.update');
     Route::delete('/layanan/delete/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy');
 
