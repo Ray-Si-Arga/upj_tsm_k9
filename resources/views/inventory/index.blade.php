@@ -1,4 +1,7 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+@endpush
 
 @section('content')
     @php
@@ -661,7 +664,7 @@
                 <div class="card-icon-wrap"><i class="fas fa-arrow-trend-down"></i></div>
                 <div class="card-label">Nilai Modal</div>
                 <div class="card-amount sm">Rp {{ number_format($nilaiModal, 0, ',', '.') }}</div>
-                <div class="card-meta">Total harga beli × stok</div>
+                <div class="card-meta">Total harga beli Ã— stok</div>
                 <div class="card-badge"><i class="fas fa-receipt" style="font-size:.6rem;"></i> Modal tersimpan</div>
             </div>
 
@@ -679,7 +682,7 @@
                 <div class="card-icon-wrap"><i class="fas fa-triangle-exclamation"></i></div>
                 <div class="card-label">Stok Menipis</div>
                 <div class="card-amount">{{ $stokMenipis }}</div>
-                <div class="card-meta">Item ≤ 6 unit tersisa</div>
+                <div class="card-meta">Item â‰¤ 6 unit tersisa</div>
                 <div class="card-badge"><i class="fas fa-bell" style="font-size:.6rem;"></i> Perlu restock</div>
             </div>
         </div>

@@ -1,4 +1,7 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+@endpush
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -318,26 +321,28 @@
                     </thead>
                     <tbody>
                         @forelse($histories as $index => $data)
-                            <tr>
-                                <td class="text-center text-muted small">{{ $index + $histories->firstItem() }}</td>
-                                <td>
-                                    <div class="fw-semibold text-dark">{{ $data->created_at->format('d M Y') }}</div>
-                                    <div class="text-muted x-small" style="font-size: 0.75rem;">
-                                        <i class="far fa-clock me-1"></i>{{ $data->created_at->format('H:i') }}
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-primary">{{ strtoupper($data->booking->plate_number ?? '-') }}</div>
-                                    <div class="small text-muted">{{ $data->booking->customer_name ?? '-' }} • {{ $data->booking->vehicle_type ?? '-' }}</div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="small fw-medium">{{ $data->nama_mekanik ?? 'N/A' }}</div>
-                                    </div>
-                                </td>
-                                <td>
-                                    @php
-                                        $jobs = $data->jobs;
+                                        <tr>
+                                            <td class="text-center text-muted small">{{ $index + $histories->firstItem() }}</td>
+                                            <td>
+                                                <div class="fw-semibold text-dark">{{ $data->created_at->format('d M Y') }}</div>
+                                                <div class="text-muted x-small" style="font-size: 0.75rem;">
+                                                    <i class="far fa-clock me-1"></i>{{ $data->created_at->format('H:i') }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="fw-bold text-primary">{{ strtoupper($data->booking->plate_number ?? '-') }}
+                                                </div>
+                                                <div class="small text-muted">{{ $data->booking->customer_name ?? '-' }} • {{
+                            $data->booking->vehicle_type ?? '-' }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="small fw-medium">{{ $data->nama_mekanik ?? 'N/A' }}</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @php
+                                                    $jobs = $data->jobs;
 
                                         if (is_array($jobs) && count($jobs) > 0) {
                                             // Format BARU: JSON array [['name'=>'...','price'=>...], ...]

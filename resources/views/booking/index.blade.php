@@ -1,4 +1,7 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+@endpush
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -636,7 +639,7 @@
                     <h1 class="page-title">
                         Antrian Booking
                     </h1>
-                    <p class="page-subtitle">Kelola jadwal servis — hari ini & mendatang.</p>
+                    <p class="page-subtitle">Kelola jadwal servis â€” hari ini & mendatang.</p>
                 </div>
                 <a href="{{ route('booking.walkin') }}" class="btn-walkin">
                     <i class="fas fa-user-plus"></i> Booking Walk-In

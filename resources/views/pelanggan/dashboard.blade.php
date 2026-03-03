@@ -1,4 +1,7 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+@endpush
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -100,7 +103,7 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-                    <h3 class="fw-bold text-dark">Halo, {{ Auth::user()->name }}! 👋</h3>
+                    <h3 class="fw-bold text-dark">Halo, {{ Auth::user()->name }}! ðŸ‘‹</h3>
                     <p class="text-muted mb-0">Pantau status servis kendaraan Anda.</p>
                 </div>
 

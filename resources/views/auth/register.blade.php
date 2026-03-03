@@ -1,4 +1,7 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+@endpush
 
 @section('title', 'Registrasi Pengguna Baru')
 
@@ -153,9 +156,9 @@
                                 <select name="role" id="roleSelect" class="form-select" required
                                     onchange="toggleWhatsapp()">
                                     <option value="" disabled selected>-- Pilih Role --</option>
-                                    <option value="customer" {{ old('role') == 'customer' ? 'selected' : '' }}>👤 Customer
+                                    <option value="customer" {{ old('role') == 'customer' ? 'selected' : '' }}>ðŸ‘¤ Customer
                                         (Pelanggan)</option>
-                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>🛠️ Admin
+                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>ðŸ› ï¸ Admin
                                         (Staff/Mekanik)</option>
                                 </select>
                             </div>

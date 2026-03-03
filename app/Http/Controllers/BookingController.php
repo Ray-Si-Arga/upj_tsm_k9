@@ -525,7 +525,6 @@ class BookingController extends Controller
     {
         $booking = Booking::findOrFail($id);
         $booking->delete();
-        // dd('Hapus berhasil' , $booking->all());
 
         return redirect()->route('booking.index')->with('success', 'Data booking berhasil dihapus');
     }

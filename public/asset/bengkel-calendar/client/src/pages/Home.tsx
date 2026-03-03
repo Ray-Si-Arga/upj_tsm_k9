@@ -29,6 +29,7 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
   const [selectedEventDetail, setSelectedEventDetail] = useState<any>(null);
+
   const { events, addEvent, deleteEvent } = useUserEvents();
 
   // Fetch holidays for the current year
@@ -64,24 +65,15 @@ export default function Home() {
 
   const handleDateSelect = (date: string) => {
     setSelectedDate(date);
-    
-    // Check if user event already exists on this date
-    const existingEvent = events.find((e) => e.date === date);
-    if (existingEvent) {
-      // If exists, show details
-      setSelectedEventDetail(existingEvent);
-    } else {
-      // If none, open add event form
-      setIsAddEventOpen(true);
-    }
+    setIsAddEventOpen(true);
   };
 
   const monthName = currentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+    <div className="min-h-fit bg-linear-to-br from-slate-50 via-white to-slate-50">
 
-      <main className="container max-w-6xl mx-auto px-4 py-8">
+      <main className="w-full max-w-6xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Calendar Section */}
           <div className="lg:col-span-2">

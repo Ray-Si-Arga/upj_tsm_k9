@@ -1,4 +1,7 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+@endpush
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -374,7 +377,7 @@
                 <div>
                     <div class="header-eyebrow">
                         <i class="fas fa-shield-halved" style="font-size:.65rem;"></i>
-                        Admin Panel · AHASS Honda
+                        Admin Panel Â· AHASS Honda
                     </div>
                     <h1 class="header-title">Dashboard Operasional</h1>
                     <p class="header-sub">Pantau seluruh aktivitas bengkel secara real-time.</p>
@@ -409,7 +412,7 @@
                 <div class="sc-label">Booking Hari Ini</div>
                 <div class="sc-val">{{ $totalBookingsToday }}</div>
                 <div class="sc-sub">Semua status</div>
-                <a href="{{ route('booking.index') }}" class="sc-link">Lihat detail →</a>
+                <a href="{{ route('booking.index') }}" class="sc-link">Lihat detail â†’</a>
             </div>
 
             <div class="sc sc-amber au d2">
@@ -417,7 +420,7 @@
                 <div class="sc-label">Antrian Aktif</div>
                 <div class="sc-val">{{ $pendingBookings }}</div>
                 <div class="sc-sub">Pending + proses</div>
-                <a href="{{ route('booking.index') }}" class="sc-link">Kelola →</a>
+                <a href="{{ route('booking.index') }}" class="sc-link">Kelola â†’</a>
             </div>
 
             <div class="sc sc-blue au d3">
@@ -425,7 +428,7 @@
                 <div class="sc-label">Customer</div>
                 <div class="sc-val">{{ $registeredCustomers }}</div>
                 <div class="sc-sub">Terdaftar</div>
-                <a href="{{ route('customers.index') }}" class="sc-link">Lihat →</a>
+                <a href="{{ route('customers.index') }}" class="sc-link">Lihat â†’</a>
             </div>
 
             <div class="sc sc-green au d4">
@@ -433,7 +436,7 @@
                 <div class="sc-label">Selesai Bulan Ini</div>
                 <div class="sc-val">{{ $doneThisMonth }}</div>
                 <div class="sc-sub">Service tuntas</div>
-                <a href="{{ route('advisor.index') }}" class="sc-link">Riwayat →</a>
+                <a href="{{ route('advisor.index') }}" class="sc-link">Riwayat â†’</a>
             </div>
 
             <div class="sc sc-teal au d5">
@@ -441,15 +444,15 @@
                 <div class="sc-label">Pemasukan Bulan Ini</div>
                 <div class="sc-val sm">Rp&nbsp;{{ number_format($revenueThisMonth, 0, ',', '.') }}</div>
                 <div class="sc-sub">Service selesai</div>
-                <a href="{{ route('keuangan.index') }}" class="sc-link">Keuangan →</a>
+                <a href="{{ route('keuangan.index') }}" class="sc-link">Keuangan â†’</a>
             </div>
 
             <div class="sc sc-red au d6">
                 <div class="sc-icon"><i class="fas fa-triangle-exclamation"></i></div>
                 <div class="sc-label">Stok Menipis</div>
                 <div class="sc-val">{{ $lowStockCount }}</div>
-                <div class="sc-sub">Item ≤ 6 unit</div>
-                <a href="{{ route('inventory.index') }}" class="sc-link">Cek inventory →</a>
+                <div class="sc-sub">Item â‰¤ 6 unit</div>
+                <a href="{{ route('inventory.index') }}" class="sc-link">Cek inventory â†’</a>
             </div>
         </div>
 
@@ -515,7 +518,7 @@
                             <div class="svc-item">
                                 <div class="svc-row">
                                     <span class="svc-name">{{ $svc->name }}</span>
-                                    <span class="svc-cnt">{{ $svc->total }}×</span>
+                                    <span class="svc-cnt">{{ $svc->total }}Ã—</span>
                                 </div>
                                 <div class="svc-track">
                                     <div class="svc-fill" style="width:{{ $pct }}%;"></div>
@@ -559,7 +562,7 @@
                                     {{ $cust->customer_whatsapp ?? '-' }}
                                 </div>
                             </div>
-                            <div class="tc-count">{{ $cust->total }}×</div>
+                            <div class="tc-count">{{ $cust->total }}Ã—</div>
                         </div>
                     @empty
                         <div class="empty-box"><i class="fas fa-users"></i><p>Belum ada data.</p></div>

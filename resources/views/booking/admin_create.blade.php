@@ -1,4 +1,7 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+@endpush
 
 @section('content')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -292,7 +295,7 @@
                 <i class="fas fa-circle-info mt-1"></i>
                 <div>
                     <strong>Info Antrian Hari Ini:</strong>
-                    Saat ini ada <strong>{{ $todayactive }}</strong> antrian aktif. Slot terbatas <strong>2 motor/jam</strong> — booking akan ditolak otomatis jika slot penuh.
+                    Saat ini ada <strong>{{ $todayactive }}</strong> antrian aktif. Slot terbatas <strong>2 motor/jam</strong> â€” booking akan ditolak otomatis jika slot penuh.
                 </div>
             </div>
 

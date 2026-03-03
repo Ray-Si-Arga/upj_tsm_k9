@@ -1,4 +1,7 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+@endpush
 
 @section('content')
 
@@ -280,7 +283,7 @@
     }
 
     /* Modal Tambah Keuangan */
-    /* ── Tombol Tambah Transaksi ── */
+    /* â”€â”€ Tombol Tambah Transaksi â”€â”€ */
 .btn-tambah-transaksi {
     display: inline-flex;
     align-items: center;
@@ -304,7 +307,7 @@
 }
 .btn-tambah-transaksi i { font-size: 0.9rem; }
 
-/* ── Modal Overlay ── */
+/* â”€â”€ Modal Overlay â”€â”€ */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -318,7 +321,7 @@
 }
 .modal-overlay.active { display: flex; }
 
-/* ── Modal Box ── */
+/* â”€â”€ Modal Box â”€â”€ */
 .modal-box {
     background: #fff;
     border-radius: 20px;
@@ -361,7 +364,7 @@
     margin-bottom: 24px;
 }
 
-/* ── Tipe Toggle ── */
+/* â”€â”€ Tipe Toggle â”€â”€ */
 .tipe-toggle {
     display: flex;
     gap: 8px;
@@ -397,7 +400,7 @@
     box-shadow: 0 2px 8px rgba(225,29,72,0.15);
 }
 
-/* ── Form Fields ── */
+/* â”€â”€ Form Fields â”€â”€ */
 .modal-label {
     display: block;
     font-size: 0.78rem;
@@ -457,7 +460,7 @@
 }
 .modal-form-group { margin-bottom: 16px; }
 
-/* ── Submit Button ── */
+/* â”€â”€ Submit Button â”€â”€ */
 .btn-submit-modal {
     width: 100%;
     padding: 13px;
@@ -640,7 +643,7 @@
     <div class="page-header animate-up">
         <div>
             <h1 class="page-title"><i class="fa-solid fa-wallet me-2" style="color: #e11d48;"></i>Keuangan</h1>
-            <p class="page-subtitle">Financial Transaction · {{ $labelPeriode }}</p>
+            <p class="page-subtitle">Financial Transaction Â· {{ $labelPeriode }}</p>
         </div>
 
         {{-- Filter Tabs --}}
@@ -724,7 +727,7 @@
             <div class="card-amount {{ $saldo < 0 ? 'negative' : '' }}">
                 {{ $saldo < 0 ? '-' : '' }}Rp {{ number_format(abs($saldo), 0, ',', '.') }}
             </div>
-            <div class="card-meta">Pemasukan – Pengeluaran pada periode ini</div>
+            <div class="card-meta">Pemasukan â€“ Pengeluaran pada periode ini</div>
             <div class="card-badge">
                 <i class="fa-solid fa-circle-dot" style="font-size:0.6rem; color: {{ $saldo >= 0 ? '#6ee7b7' : '#fca5a5' }};"></i>
                 {{ $saldo >= 0 ? 'Surplus' : 'Defisit' }}
@@ -1035,7 +1038,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 <script>
-    // ── Open / Close Modal ──
+    // â”€â”€ Open / Close Modal â”€â”€
     function openModalKeuangan() {
         document.getElementById('modalTambahTransaksi').classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -1062,7 +1065,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.key === 'Escape') closeModalKeuangan();
     });
 
-    // ── Toggle Tipe Pemasukan / Pengeluaran ──
+    // â”€â”€ Toggle Tipe Pemasukan / Pengeluaran â”€â”€
     function setTipe(tipe) {
         const btnMasuk   = document.getElementById('btnMasuk');
         const btnKeluar  = document.getElementById('btnKeluar');
@@ -1111,14 +1114,14 @@ document.addEventListener('DOMContentLoaded', function () {
 // Jalankan saat halaman pertama kali dimuat
 document.addEventListener('DOMContentLoaded', toggleFilterFields);
 
-    // ── Format Nominal Rupiah ──
+    // â”€â”€ Format Nominal Rupiah â”€â”€
     function formatNominal(el) {
         let angka = el.value.replace(/[^0-9]/g, '');
         document.getElementById('inputNominal').value = angka;
         el.value = angka ? new Intl.NumberFormat('id-ID').format(angka) : '';
     }
 
-    // ── Validasi sebelum submit ──
+    // â”€â”€ Validasi sebelum submit â”€â”€
     document.getElementById('formTambahTransaksi').addEventListener('submit', function(e) {
         const nominal = document.getElementById('inputNominal').value;
         if (!nominal || parseInt(nominal) < 1) {
@@ -1128,12 +1131,12 @@ document.addEventListener('DOMContentLoaded', toggleFilterFields);
         }
     });
 
-    // ── Auto-buka modal jika ada validasi error dari server ──
+    // â”€â”€ Auto-buka modal jika ada validasi error dari server â”€â”€
     @if($errors->any())
         document.addEventListener('DOMContentLoaded', () => openModalKeuangan());
     @endif
 
-    // ── Auto-close success message ──
+    // â”€â”€ Auto-close success message â”€â”€
     @if(session('success'))
         setTimeout(() => {
             const alert = document.querySelector('.alert-success');

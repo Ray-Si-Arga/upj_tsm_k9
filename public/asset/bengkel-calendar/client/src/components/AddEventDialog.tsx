@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -27,6 +28,9 @@ export default function AddEventDialog({
 }: AddEventDialogProps) {
   const [isClosed, setIsClosed] = useState<'yes' | 'no'>('yes');
   const [description, setDescription] = useState('');
+  const charCount = description.length;
+
+  const limitTo45Chars = (value: string): string => value.slice(0, 45);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +45,7 @@ export default function AddEventDialog({
     onAddEvent({
       date: selectedDate,
       title,
-      description: description.trim() || undefined,
+      description: limitTo45Chars(description).trim() || undefined,
       color,
       isClosed: isClosed === 'yes',
     });
@@ -64,15 +68,15 @@ export default function AddEventDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent showCloseButton={false} className="sm:max-w-[400px] overflow-hidden p-0 z-[1200]">
         <DialogHeader>
-          <DialogTitle>Jadwal Bengkel</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="px-6 pt-6">Jadwal Bengkel</DialogTitle>
+          <DialogDescription className="px-6">
             {selectedDate ? formatDate(selectedDate) : 'Pilih tanggal terlebih dahulu'}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6 py-2">
+        <form onSubmit={handleSubmit} className="space-y-6 px-6 pb-6">
           {/* Radio Is Closed */}
           <div className="space-y-4">
             <Label className="text-base">Bengkel Tutup?</Label>
@@ -82,12 +86,20 @@ export default function AddEventDialog({
               className="flex gap-6"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="yes" id="closed-yes" />
-                <Label htmlFor="closed-yes" className="text-red-600 font-medium cursor-pointer relative top-[1px]">Ya</Label>
+                <RadioGroupItem
+                  value="yes"
+                  id="closed-yes"
+                  className="border-red-600 text-white data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
+                />
+                <Label htmlFor="closed-yes" className="text-black font-medium cursor-pointer relative top-[1px]">Ya</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="no" id="closed-no" />
-                <Label htmlFor="closed-no" className="text-blue-600 font-medium cursor-pointer relative top-[1px]">Tidak</Label>
+                <RadioGroupItem
+                  value="no"
+                  id="closed-no"
+                  className="border-red-600 text-white data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
+                />
+                <Label htmlFor="closed-no" className="text-black font-medium cursor-pointer relative top-[1px]">Tidak</Label>
               </div>
             </RadioGroup>
           </div>
@@ -99,13 +111,20 @@ export default function AddEventDialog({
               id="description"
               placeholder={isClosed === 'yes' ? "Contoh: Libur Lebaran, atau Sedang Direnovasi" : "Contoh: Buka setengah hari"}
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => setDescription(limitTo45Chars(e.target.value))}
+              maxLength={45}
+              wrap="soft"
+              className="field-sizing-fixed resize-none [overflow-wrap:anywhere]"
               rows={3}
             />
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-slate-500">Maksimal 45 karakter.</p>
+              <p className="text-xs text-slate-500">{charCount}/45 karakter</p>
+            </div>
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-2 justify-end pt-2">
+          <DialogFooter className="-mx-6 -mb-6 mt-2 bg-gray-50 px-6 py-4">
             <Button
               type="button"
               variant="outline"
@@ -115,11 +134,11 @@ export default function AddEventDialog({
             </Button>
             <Button
               type="submit"
-              className={isClosed === 'yes' ? "bg-red-600 hover:bg-red-700" : "bg-blue-600 hover:bg-blue-700"}
+              className="bg-red-600 hover:bg-red-700"
             >
               Simpan
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

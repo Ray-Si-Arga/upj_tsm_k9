@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Loader2 } from 'lucide-react';
 
 interface Holiday {
@@ -24,35 +25,16 @@ interface HolidayCalendarProps {
 
 const WEEKDAYS = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
-const getHolidayColor = (holidayName: string): string => {
-  // Religious holidays - gold
-  if (
-    holidayName.includes('Isra') ||
-    holidayName.includes('Mikraj') ||
-    holidayName.includes('Idul') ||
-    holidayName.includes('Maulid') ||
-    holidayName.includes('Muharam') ||
-    holidayName.includes('Kristus') ||
-    holidayName.includes('Paskah') ||
-    holidayName.includes('Waisak')
-  ) {
-    return 'bg-amber-100 text-amber-900';
-  }
-  // National celebrations - red
-  if (
-    holidayName.includes('Kemerdekaan') ||
-    holidayName.includes('Pancasila') ||
-    holidayName.includes('Tahun Baru')
-  ) {
-    return 'bg-red-100 text-red-900';
-  }
-  // Cultural festivals - orange
-  if (holidayName.includes('Nyepi') || holidayName.includes('Imlek')) {
-    return 'bg-orange-100 text-orange-900';
-  }
-  // Other holidays - blue
-  return 'bg-blue-100 text-blue-900';
-};
+interface UserEvent {
+  id: string;
+  date: string;
+  title: string;
+  description: string;
+  status: string;
+  color: string;
+}
+
+
 
 export default function HolidayCalendar({
   currentDate,
@@ -60,7 +42,7 @@ export default function HolidayCalendar({
   selectedDate,
   onDateSelect,
   loading,
-  userEvents = [],
+  userEvents = [] as UserEvent[],
 }: HolidayCalendarProps) {
   const calendarDays = useMemo(() => {
     const year = currentDate.getFullYear();
@@ -132,46 +114,65 @@ export default function HolidayCalendar({
 
             const dateString = formatDateString(day);
             const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-            const isToday =
-              dateString === formatDateString(new Date());
+            const isToday = dateString === formatDateString(new Date());
             const isSelected = selectedDate === dateString;
             const dayHolidays = holidayMap.get(dateString) || [];
-            const dayUserEvents = userEvents.filter((e: any) => e.date === dateString);
+            const dayUserEvents = userEvents.filter((e) => e.date === dateString);
+            const bengkelTutupEvent = dayUserEvents.find((e) => e.title === 'Bengkel Tutup');
+            const catatanEvent = dayUserEvents.find((e) => e.title === 'Catatan Operasional' || e.title === 'Catatan');
 
             return (
-              <button
-                key={dateString}
-                onClick={() => onDateSelect(dateString)}
-                className={`
-                  aspect-square rounded-lg p-2 text-sm font-medium
-                  transition-all duration-200 relative
-                  flex flex-col items-center justify-center
-                  ${isCurrentMonth ? 'text-slate-900' : 'text-slate-300'}
-                  ${isToday ? 'ring-2 ring-red-500 bg-red-50' : ''}
-                  ${isSelected ? 'bg-red-100 ring-2 ring-red-500 shadow-md' : isCurrentMonth ? 'hover:bg-slate-100 hover:shadow-sm' : 'bg-slate-50'}
-                  ${!isCurrentMonth ? 'bg-slate-50' : 'bg-white'}
-                  cursor-pointer
-                `}
-              >
-                <span className="text-xs sm:text-sm">{day.getDate()}</span>
-                <div className="absolute bottom-1 flex gap-1">
-                  {dayHolidays.slice(0, 1).map((holiday, idx) => (
-                    <div
-                      key={`holiday-${idx}`}
-                      className={`w-1.5 h-1.5 rounded-full ${
-                        getHolidayColor(holiday.name).split(' ')[0]
-                      }`}
-                    />
-                  ))}
-                  {dayUserEvents.slice(0, 1).map((event: any, idx: number) => (
-                    <div
-                      key={`event-${idx}`}
-                      className="w-1.5 h-1.5 rounded-full"
-                      style={{ backgroundColor: event.color }}
-                    />
-                  ))}
-                </div>
-              </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    key={dateString}
+                    onClick={() => onDateSelect(dateString)}
+                    className={`
+                      aspect-square rounded-lg p-2 text-sm font-medium
+                      transition-all duration-200 relative
+                      flex flex-col items-center justify-center
+                      ${isCurrentMonth ? 'text-slate-900' : 'text-slate-300'}
+                      ${isToday ? 'ring-2 ring-red-500 bg-red-50' : ''}
+                      ${isSelected ? 'bg-red-100 ring-2 ring-red-500 shadow-md' : isCurrentMonth && dayHolidays.length === 0 ? 'hover:bg-slate-100 hover:shadow-sm' : !isCurrentMonth ? 'bg-slate-50' : ''}
+                      ${dayHolidays.length > 0 && isCurrentMonth && !isSelected && !isToday ? 'bg-red-500 !text-white hover:bg-red-700' : !isCurrentMonth ? 'bg-slate-50' : isSelected ? 'bg-red-100' : isToday ? 'bg-red-50' : 'bg-white'}
+                      cursor-pointer
+                    `}
+                  >
+                    {bengkelTutupEvent && (
+                      <div className="absolute top-0 left-0 bg-red-600 text-white text-[10px] px-1.5 py-1 rounded-br-lg rounded-tl-lg z-10">
+                        {bengkelTutupEvent.title}
+                      </div>
+                    )}
+                    {!bengkelTutupEvent && catatanEvent && (
+                      <div className="absolute top-0 left-0 bg-blue-600 text-white text-[10px] px-1.5 py-1 rounded-br-lg rounded-tl-lg z-10">
+                        Catatan
+                      </div>
+                    )}
+                    <span className="text-xs sm:text-sm">{day.getDate()}</span>
+                    <div className="absolute bottom-1 flex gap-1">
+                      {dayUserEvents.slice(0, 1).map((event, idx) => (
+                        <div
+                          key={`event-${idx}`}
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{ backgroundColor: event.color }}
+                        />
+                      ))}
+                    </div>
+                  </button>
+                </TooltipTrigger>
+                {dayUserEvents.length > 0 && (
+                  <TooltipContent className="bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm">
+                    {dayUserEvents.map((event, idx) => (
+                      <div key={idx} className="mb-1 last:mb-0">
+                        <p className="font-semibold text-gray-900">{event.title}</p>
+                        <p className="text-gray-700">Tanggal: {event.date}</p>
+                        <p className="text-gray-700">Status: {event.status}</p>
+                        {event.description && <p className="text-gray-700">{event.description}</p>}
+                      </div>
+                    ))}
+                  </TooltipContent>
+                )}
+              </Tooltip>
             );
           })}
         </div>
@@ -179,23 +180,11 @@ export default function HolidayCalendar({
 
       {/* Legend */}
       <div className="mt-6 pt-4 border-t border-slate-200">
-        <p className="text-xs font-semibold text-slate-600 mb-3">Jenis Libur:</p>
-        <div className="grid grid-cols-2 gap-3 text-xs">
+        <p className="text-xs font-semibold text-slate-600 mb-3">Keterangan:</p>
+        <div className="flex flex-wrap gap-4 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-amber-300" />
-            <span className="text-slate-600">Hari Raya</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-400" />
-            <span className="text-slate-600">Nasional</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-orange-400" />
-            <span className="text-slate-600">Budaya</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-400" />
-            <span className="text-slate-600">Lainnya</span>
+            <div className="w-4 h-4 rounded bg-red-500" />
+            <span className="text-slate-600">Hari Libur</span>
           </div>
         </div>
       </div>
