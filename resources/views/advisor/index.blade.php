@@ -249,9 +249,12 @@
             <div class="px-4 py-3 border-bottom d-flex justify-content-between align-items-center bg-white">
                 <h6 class="fw-bold mb-0">Riwayat Transaksi Terbaru</h6>
                 <div class="dropdown">
-                    <button class="btn btn-sm btn-light border dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        Filter Status
-                    </button>
+                    <form action="{{ route('advisor.index') }}" method="GET" class="d-flex gap-2">
+                        <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari plat, nama, atau mekanik..." value="{{ request('search') }}">
+                        <button type="submit" class="btn btn-sm btn-primary-custom">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
             
