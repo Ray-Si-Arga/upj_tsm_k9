@@ -19,15 +19,15 @@
         }
 
         /* ============================================================
-                                                                                                               PAGE WRAPPER
-                                                                                                            ============================================================ */
+                                                                                                                       PAGE WRAPPER
+                                                                                                                    ============================================================ */
         .lv-wrap {
             padding: 28px 0 56px;
         }
 
         /* ============================================================
-                                                                                                               PAGE HEADER  (dark gradient — sama seperti dashboard)
-                                                                                                            ============================================================ */
+                                                                                                                       PAGE HEADER  (dark gradient — sama seperti dashboard)
+                                                                                                                    ============================================================ */
         .page-header {
             background: linear-gradient(135deg, var(--navy) 0%, #16213e 50%, #0f172a 100%);
             border-radius: 20px;
@@ -100,8 +100,8 @@
         }
 
         /* ============================================================
-                                                                                                               STAT CARDS
-                                                                                                            ============================================================ */
+                                                                                                                       STAT CARDS
+                                                                                                                    ============================================================ */
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -196,8 +196,8 @@
         }
 
         /* ============================================================
-                                                                                                               SEARCH / FILTER BAR
-                                                                                                            ============================================================ */
+                                                                                                                       SEARCH / FILTER BAR
+                                                                                                                    ============================================================ */
         .filter-bar {
             background: #fff;
             border-radius: 14px;
@@ -269,8 +269,8 @@
         }
 
         /* ============================================================
-                                                                                                               PANEL (table container)
-                                                                                                            ============================================================ */
+                                                                                                                       PANEL (table container)
+                                                                                                                    ============================================================ */
         .panel {
             background: #fff;
             border-radius: 16px;
@@ -308,8 +308,8 @@
         }
 
         /* ============================================================
-                                                                                                               TABLE
-                                                                                                            ============================================================ */
+                                                                                                                       TABLE
+                                                                                                                    ============================================================ */
         .lv-table {
             width: 100%;
             border-collapse: collapse;
@@ -431,8 +431,8 @@
         }
 
         /* ============================================================
-                                                                                                               MOBILE CARDS
-                                                                                                            ============================================================ */
+                                                                                                                       MOBILE CARDS
+                                                                                                                    ============================================================ */
         .mobile-list {
             display: none;
         }
@@ -514,8 +514,8 @@
         }
 
         /* ============================================================
-                                                                                                               EMPTY STATE
-                                                                                                            ============================================================ */
+                                                                                                                       EMPTY STATE
+                                                                                                                    ============================================================ */
         .empty-state {
             text-align: center;
             padding: 56px 20px;
@@ -541,8 +541,8 @@
         }
 
         /* ============================================================
-                                                                                                               ALERT SUCCESS
-                                                                                                            ============================================================ */
+                                                                                                                       ALERT SUCCESS
+                                                                                                                    ============================================================ */
         .alert-custom {
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
@@ -558,8 +558,8 @@
         }
 
         /* ============================================================
-                                                                                                               ADD BUTTON
-                                                                                                            ============================================================ */
+                                                                                                                       ADD BUTTON
+                                                                                                                    ============================================================ */
         .btn-add {
             display: inline-flex;
             align-items: center;
@@ -602,7 +602,7 @@
             <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
                     <div class="header-eyebrow">
-                        <i class="fas fa-boxes-stacked"></i> Manajemen
+                        Manajemen
                     </div>
                     <h1 class="header-title">Paket &amp; Layanan</h1>
                     <p class="header-sub">Kelola seluruh paket servis dan layanan satuan yang tersedia</p>
@@ -705,7 +705,9 @@
                                     <span class="price-badge">Rp {{ number_format($service->price, 0, ',', '.') }}</span>
                                 </td>
                                 <td>
-                                    <span class="svc-desc">{{ Str::limit($service->description ?? '—', 55) }}</span>
+                                    @if ($service->type === 'paket')
+                                        <span class="svc-desc">{{ Str::limit($service->description ?? '—', 55) }}</span>
+                                    @endif
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
@@ -975,11 +977,11 @@
             document.getElementById('editDesc').value = el.dataset.description || '';
 
             // Ambil harga mentah, pastikan hanya angka, lalu format ulang
-            let rawPrice = el.dataset.price.toString().split('.')[0]; 
+            let rawPrice = el.dataset.price.toString().split('.')[0];
             let displayPrice = document.getElementById('price_display_edit');
             displayPrice.value = rawPrice;
             formatRupiah(displayPrice, 'price_actual_edit');
-            
+
             toggleDescription(document.getElementById('typeSelectEdit'), 'descriptionBoxEdit');
 
             new bootstrap.Modal(document.getElementById('editModal')).show();
