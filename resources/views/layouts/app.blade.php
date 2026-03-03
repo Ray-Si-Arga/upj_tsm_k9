@@ -405,6 +405,15 @@
                         </a>
                     </li>
 
+                    {{-- Jadwal Admin --}}
+                    <li class="sidebar-menu-item">
+                        <a href="{{ route('admin.jadwal') }}"
+                            class="sidebar-menu-link {{ request()->routeIs('admin.jadwal') ? 'active' : '' }}">
+                            <div class="sidebar-menu-icon"><i class="fa-solid fa-calendar-alt"></i></div>
+                            <span>Jadwal</span>
+                        </a>
+                    </li>
+
 
                     <li class="sidebar-divider"></li>
                     <!-- <li class="sidebar-label">Gudang</li> !-->
@@ -444,7 +453,7 @@
                     <li class="sidebar-divider"></li>
                     <li class="sidebar-label">Administrator</li>
 
-                    {{-- Registrasi Khusus Admin 
+                    {{-- Registrasi Khusus Admin
                     <li class="sidebar-menu-item">
                         <a href="{{ route('admin.register') }}"
                             class="sidebar-menu-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">

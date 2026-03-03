@@ -83,6 +83,7 @@ Route::middleware(['auth'])->group(function () {
     // ---------------- Dashboard Autentikasi -------------------- //
     // ----------------------------------------------------------- //
     Route::get('/dashboard', [BookingController::class, 'adminDashboard'])->name('admin.dashboard');
+    Route::get('/jadwal', [BookingController::class, 'jadwal'])->name('admin.jadwal');
 
     // ----------------------------------------------- //
     // ---------------- Inventory -------------------- //
@@ -128,7 +129,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [KeuanganController::class, 'index'])->name('index');
         Route::post('/store', [KeuanganController::class, 'store'])->name('store');
         Route::delete('/{id}', [KeuanganController::class, 'destroy'])->name('destroy');
-        Route::get('/cetak', [KeuanganController::class, 'cetak'])->name('cetak');    
+        Route::get('/cetak', [KeuanganController::class, 'cetak'])->name('cetak');
     });
 
     // ----------------------------------------------- //
