@@ -517,7 +517,7 @@
                             <div class="svc-item">
                                 <div class="svc-row">
                                     <span class="svc-name">{{ $svc->name }}</span>
-                                    <span class="svc-cnt">{{ $svc->total }}Ã—</span>
+                                    <span class="svc-cnt">{{ $svc->total }}</span>
                                 </div>
                                 <div class="svc-track">
                                     <div class="svc-fill" style="width:{{ $pct }}%;"></div>
@@ -561,7 +561,7 @@
                                     {{ $cust->customer_whatsapp ?? '-' }}
                                 </div>
                             </div>
-                            <div class="tc-count">{{ $cust->total }}Ã—</div>
+                            <div class="tc-count">{{ $cust->total }}</div>
                         </div>
                     @empty
                         <div class="empty-box"><i class="fas fa-users"></i><p>Belum ada data.</p></div>

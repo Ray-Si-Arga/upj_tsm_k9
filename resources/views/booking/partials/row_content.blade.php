@@ -95,8 +95,14 @@
     {{-- Kolom 5: Aksi --}}
     <td class="px-4 text-center">
         <div class="d-flex justify-content-center gap-2">
-            <a href="{{ route('booking.show', $booking->id) }}" class="btn-act btn-detail" title="Lihat Detail"><i
-                    class="fas fa-circle-info"></i></a>
+            {{-- GANTI Link <a> LAMA DENGAN BUTTON INI --}}
+            <button type="button" 
+                    class="btn-act btn-detail" 
+                    onclick='showDetail(@json($booking->services))' 
+                    title="Lihat Detail">
+                <i class="fas fa-search"></i>
+            </button>
+
             <form action="{{ route('booking.destroy', $booking->id) }}" method="POST" class="d-inline">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn-act btn-hapus" onclick="return confirm('Hapus data booking ini?')"

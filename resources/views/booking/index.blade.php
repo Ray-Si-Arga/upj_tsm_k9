@@ -18,82 +18,86 @@
 
     <style>
         /* ==============================
-               ROOT
+               ROOT & BASE (Updated to match Dashboard)
             ============================== */
         :root {
-            --honda-red: #B10000;
-            --honda-red-dark: #8B0000;
-            --honda-red-soft: rgba(177, 0, 0, 0.08);
-            --navy: #0f172a;
-            --navy-mid: #1e293b;
-            --emerald: #064e3b;
-            --emerald-mid: #047857;
-            --amber: #78350f;
-            --amber-mid: #b45309;
-            --bg: #f4f6f9;
-            --border: #e2e8f0;
-            --text: #1e293b;
+            --honda-red:       #B10000;
+            --honda-red-dark:  #8B0000;
+            --honda-red-soft:  rgba(177,0,0,.08);
+            --navy:            #0f172a;
+            --navy-mid:        #1e293b;
+            --emerald:         #064e3b;
+            --emerald-mid:     #047857;
+            --amber:           #78350f;
+            --amber-mid:       #b45309;
+            --bg:              #f0f2f5;
+            --border:          #e2e8f0;
+            --text:            #1e293b;
         }
 
         body {
             background: var(--bg);
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
             color: var(--text);
         }
 
-        .bk-wrap {
-            padding: 28px 0;
-        }
+        .bk-wrap { padding: 28px 0 48px; }
 
-        /* ==============================
-               PAGE HEADER
-            ============================== */
+        /* ============================================================
+           PAGE HEADER (Consistent with Dashboard)
+        ============================================================ */
         .page-header {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
+            background: linear-gradient(135deg, var(--navy) 0%, #16213e 50%, #0f172a 100%);
+            border-radius: 20px;
+            padding: 30px 36px;
+            color: white;
             margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute; top: -80px; right: -80px;
+            width: 300px; height: 300px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(177,0,0,.25) 0%, transparent 70%);
+        }
+        .page-header::after {
+            content: '';
+            position: absolute; bottom: -50px; left: 20%;
+            width: 200px; height: 200px; border-radius: 50%;
+            background: rgba(255,255,255,.03);
         }
 
-        .page-title {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: var(--text);
-            margin: 0 0 4px;
-            letter-spacing: -0.5px;
+        .header-eyebrow {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(177,0,0,.25); border: 1px solid rgba(177,0,0,.35);
+            color: #fca5a5; border-radius: 20px;
+            padding: 4px 14px; font-size: .72rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 1.2px;
+            margin-bottom: 10px; position: relative; z-index: 1;
         }
-
-        .page-subtitle {
-            font-size: 0.83rem;
-            color: #64748b;
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .btn-walkin {
-            background: linear-gradient(135deg, var(--honda-red) 0%, var(--honda-red-dark) 100%);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 9px 20px;
-            font-size: 0.88rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            transition: all .2s;
-            box-shadow: 0 4px 12px rgba(177, 0, 0, .25);
-        }
-
-        .btn-walkin:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(177, 0, 0, .3);
+        .header-title {
+            font-size: 1.75rem; font-weight: 800; margin: 0 0 5px;
+            letter-spacing: -.6px; position: relative; z-index: 1;
             color: #fff;
         }
+        .header-sub {
+            font-size: .85rem; color: rgba(255,255,255,.5);
+            margin: 0; font-weight: 500; position: relative; z-index: 1;
+        }
+        .header-actions {
+            display: flex; gap: 10px; flex-wrap: wrap;
+            position: relative; z-index: 1;
+        }
+        .btn-hdr-red {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 9px 18px; border-radius: 10px; font-size: .83rem; font-weight: 700;
+            text-decoration: none; transition: all .2s; border: none; cursor: pointer;
+            background: var(--honda-red); color: #fff; box-shadow: 0 4px 16px rgba(177,0,0,.35);
+        }
+        .btn-hdr-red:hover { background: var(--honda-red-dark); color: #fff; transform: translateY(-2px); }
 
+        /* Sisanya (Summary Cards, Table, dll) tetap seperti kode lama Anda */
         /* ==============================
                SUMMARY CARDS
             ============================== */
@@ -633,17 +637,22 @@
     <main class="bk-wrap">
         <div class="container-xl">
 
-            {{-- ==================== PAGE HEADER ==================== --}}
+            {{-- ==================== PAGE HEADER (Updated) ==================== --}}
             <div class="page-header au">
-                <div>
-                    <h1 class="page-title">
-                        Antrian Booking
-                    </h1>
-                    <p class="page-subtitle">Kelola jadwal servis â€” hari ini & mendatang.</p>
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-4">
+                    <div>
+                        <div class="header-eyebrow">
+                            Operational
+                        </div>
+                        <h1 class="header-title">Antrian Booking</h1>
+                        <p class="header-sub">Kelola jadwal servis — hari ini & mendatang secara real-time.</p>
+                    </div>
+                    <div class="header-actions align-self-center">
+                        <a href="{{ route('booking.walkin') }}" class="btn-hdr-red">
+                            <i class="fas fa-user-plus"></i> Booking Walk-In
+                        </a>
+                    </div>
                 </div>
-                <a href="{{ route('booking.walkin') }}" class="btn-walkin">
-                    <i class="fas fa-user-plus"></i> Booking Walk-In
-                </a>
             </div>
 
             {{-- ==================== SUMMARY CARDS ==================== --}}
@@ -842,6 +851,57 @@
         </div>
     </div>
 
+    {{-- ==================== MODAL DETAIL LAYANAN ==================== --}}
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius:16px; overflow:hidden;">
+                <div class="modal-header bg-white border-bottom-0 pt-4 px-4">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-danger rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                        <h5 class="fw-bold mb-0" style="color: #334155;">Detail Layanan Booking</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden; background: #f8fafc;">
+                        <div class="card-header bg-white py-3 border-bottom">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-list-ul text-danger me-2"></i>
+                                <span class="fw-bold text-secondary" style="font-size: 0.8rem;">RINCIAN PAKET / LAYANAN</span>
+                            </div>
+                        </div>
+                        <div class="card-body p-0 bg-white">
+                            <div class="table-responsive">
+                                <table class="table mb-0" id="detailTable">
+                                    <thead style="background-color: #f8fafc;">
+                                        <tr>
+                                            <th class="px-4 py-3 text-secondary fw-semibold" style="font-size: 0.75rem;">NAMA LAYANAN</th>
+                                            <th class="px-4 py-3 text-end text-secondary fw-semibold" style="font-size: 0.75rem;">HARGA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="serviceList">
+                                        {{-- Data akan diisi via JavaScript --}}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="background-color: #f8fafc;">
+                                            <td class="px-4 py-3 text-end fw-bold text-secondary">TOTAL ESTIMASI</td>
+                                            <td class="px-4 py-3 text-end fw-bold text-primary" id="totalPrice" style="font-size: 1.1rem;">
+                                                Rp 0
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-4 px-4">
+                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal" style="border-radius: 8px;">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- ==================== SCRIPTS ==================== --}}
     <script src="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.js"></script>
     <script>
@@ -869,5 +929,36 @@
                 });
             @endif
             });
+
+            function showDetail(services) {
+                const serviceList = document.getElementById('serviceList');
+                const totalPriceEl = document.getElementById('totalPrice');
+                let total = 0;
+                
+                serviceList.innerHTML = '';
+
+                services.forEach(service => {
+                    total += parseFloat(service.price);
+                    const row = `
+                        <tr>
+                            <td class="px-4 py-3">
+                                <div class="fw-bold text-dark">${service.name}</div>
+                                ${service.description ? `<div class="text-muted small mt-1">${service.description}</div>` : ''}
+                            </td>
+                            <td class="px-4 py-3 text-end align-middle fw-bold">
+                                Rp ${new Intl.NumberFormat('id-ID').format(service.price)}
+                            </td>
+                        </tr>
+                    `;
+                    serviceList.innerHTML += row;
+                });
+
+                totalPriceEl.innerText = `Rp ${new Intl.NumberFormat('id-ID').format(total)}`;
+
+                // Pemicu Modal Bootstrap
+                var myModal = new bootstrap.Modal(document.getElementById('detailModal'));
+                myModal.show();
+            }
+
     </script>
 @endsection

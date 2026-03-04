@@ -31,7 +31,8 @@ interface UserEvent {
   title: string;
   description: string;
   status: string;
-  color: string;
+  isClosed: boolean;
+  isOperational: boolean;
 }
 
 
@@ -118,8 +119,9 @@ export default function HolidayCalendar({
             const isSelected = selectedDate === dateString;
             const dayHolidays = holidayMap.get(dateString) || [];
             const dayUserEvents = userEvents.filter((e) => e.date === dateString);
-            const bengkelTutupEvent = dayUserEvents.find((e) => e.title === 'Bengkel Tutup');
-            const catatanEvent = dayUserEvents.find((e) => e.title === 'Catatan Operasional' || e.title === 'Catatan');
+            const firstEvent = dayUserEvents[0];
+            const isTutup = firstEvent?.isClosed === true;
+            const isCatatan = firstEvent?.isOperational === true;
 
             return (
               <Tooltip>
@@ -138,12 +140,12 @@ export default function HolidayCalendar({
                       cursor-pointer
                     `}
                   >
-                    {bengkelTutupEvent && (
+                    {isTutup && (
                       <div className="absolute top-0 left-0 bg-red-600 text-white text-[10px] px-1.5 py-1 rounded-br-lg rounded-tl-lg z-10">
-                        {bengkelTutupEvent.title}
+                        Tutup
                       </div>
                     )}
-                    {!bengkelTutupEvent && catatanEvent && (
+                    {!isTutup && isCatatan && (
                       <div className="absolute top-0 left-0 bg-blue-600 text-white text-[10px] px-1.5 py-1 rounded-br-lg rounded-tl-lg z-10">
                         Catatan
                       </div>
@@ -154,7 +156,7 @@ export default function HolidayCalendar({
                         <div
                           key={`event-${idx}`}
                           className="w-1.5 h-1.5 rounded-full"
-                          style={{ backgroundColor: event.color }}
+                          style={{ backgroundColor: firstEvent?.isClosed ? '#ef4444' : '#3b82f6' }}
                         />
                       ))}
                     </div>
