@@ -15,6 +15,7 @@
             --brand-secondary: #FF7A45;
             --bg-body: #f4f7f9;
         }
+
         :root {
             --brand-primary: #2A6E7F;
             --brand-primary-dark: #1D4F5D;
@@ -325,26 +326,30 @@
                                         <div class="input-group">
                                             <span class="input-group-text"><i
                                                     class="fas fa-calendar-day text-primary"></i></span>
-                                            <input type="datetime-local" name="booking_date" id="booking_date" 
-                       class="form-control form-control-lg shadow-sm" required
-                       value="{{ old('booking_date') }}">
+                                            <input type="datetime-local" name="booking_date" id="booking_date"
+                                                class="form-control form-control-lg shadow-sm" required
+                                                value="{{ old('booking_date') }}">
                                         </div>
                                         <div class="form-text small text-danger mt-1">
                                             <i class="fas fa-info-circle me-1"></i> Slot terbatas.
                                         </div>
                                     </div>
 
+                                    {{-- Pemberitahuan --}}
+                                    <div id="date_feedback" class="mt-2"></div>
+
                                     {{-- Keluhan --}}
                                     <div>
                                         <label class="form-label-custom">Keluhan / Catatan</label>
-                                        <textarea name="complaint" class="form-control" rows="0" placeholder="Contoh: Rem bunyi, Bocor alus, Rantai soak...."></textarea>
+                                        <textarea name="complaint" class="form-control" rows="0"
+                                            placeholder="Contoh: Rem bunyi, Bocor alus, Rantai soak...."></textarea>
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- 
-                                [DESKTOP ONLY] RINGKASAN PESANAN
-                                Muncul di kiri bawah hanya saat layar besar (Laptop/PC) 
+                            {{--
+                            [DESKTOP ONLY] RINGKASAN PESANAN
+                            Muncul di kiri bawah hanya saat layar besar (Laptop/PC)
                             --}}
                             <div class="d-none d-lg-block">
                                 <div class="summary-box">
@@ -428,10 +433,9 @@
                                 <div class="row g-3">
                                     @foreach ($services->where('type', 'non_paket') as $layanan)
                                         <div class="col-md-4 col-sm-6">
-                                            <input type="checkbox" class="btn-check service-checkbox"
-                                                name="service_ids[]" id="service_{{ $layanan->id }}"
-                                                value="{{ $layanan->id }}" data-name="{{ $layanan->name }}"
-                                                data-price="{{ $layanan->price }}">
+                                            <input type="checkbox" class="btn-check service-checkbox" name="service_ids[]"
+                                                id="service_{{ $layanan->id }}" value="{{ $layanan->id }}"
+                                                data-name="{{ $layanan->name }}" data-price="{{ $layanan->price }}">
 
                                             <label class="service-card-label" for="service_{{ $layanan->id }}">
                                                 <div class="d-flex justify-content-between align-items-start mb-2">
@@ -450,10 +454,10 @@
                             </div>
                         </div>
 
-                        {{-- 
-                            [MOBILE ONLY] RINGKASAN PESANAN
-                            Muncul di sini (Paling Bawah) hanya saat di HP.
-                            Ini menjawab keinginan layout Anda: Data -> Layanan -> Ringkasan.
+                        {{--
+                        [MOBILE ONLY] RINGKASAN PESANAN
+                        Muncul di sini (Paling Bawah) hanya saat di HP.
+                        Ini menjawab keinginan layout Anda: Data -> Layanan -> Ringkasan.
                         --}}
                         <div class="d-block d-lg-none">
                             <div class="summary-box">
@@ -492,7 +496,7 @@
 
     {{-- SCRIPT CALCULATOR --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const checkboxes = document.querySelectorAll('.service-checkbox');
 
             // Selector Class (untuk menangkap element di Desktop & Mobile sekaligus)
@@ -517,11 +521,11 @@
                         total += price;
 
                         html += `
-                            <li class="summary-item animate__animated animate__fadeInRight animate__faster">
-                                <div><i class="fas fa-check text-white-50 me-2 small"></i><span>${name}</span></div>
-                                <span class="badge-price">Rp ${formatRupiah(price)}</span>
-                            </li>
-                        `;
+                                                        <li class="summary-item animate__animated animate__fadeInRight animate__faster">
+                                                            <div><i class="fas fa-check text-white-50 me-2 small"></i><span>${name}</span></div>
+                                                            <span class="badge-price">Rp ${formatRupiah(price)}</span>
+                                                        </li>
+                                                    `;
                     }
                 });
 
@@ -545,9 +549,43 @@
             });
         });
     </script>
-<script src="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('booking_date').addEventListener('change', function () {
+            let dateVal = this.value;
+            let feedback = document.getElementById('date_feedback');
+            let inputEl = this;
+
+            if (!dateVal) return;
+
+            fetch(`/cek-jadwal?date=${dateVal}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        let isTutup = data.is_closed; // Sesuaikan dengan kolom database Anda
+                        let icon = isTutup ? 'fa-exclamation-triangle' : 'fa-info-circle';
+
+                        feedback.innerHTML = `
+                        <div class="alert ${isTutup ? 'alert-danger' : 'alert-info'} border-0 shadow-sm rounded-3 py-2 px-3 animate__animated animate__shakeX">
+                            <i class="fas ${icon} me-2"></i>
+                            <strong>${data.title}</strong>: ${data.description ?? ''}
+                        </div>`;
+
+                        // LOGIKA PENGUNCI: Jika bengkel tutup, kosongkan input
+                        if (isTutup) {
+                            showToast('error', 'Tanggal Tidak Tersedia', 'Maaf, bengkel kami tutup/libur pada tanggal tersebut.');
+                            inputEl.value = ''; // Reset tanggal agar tidak bisa di-submit
+                        }
+                    } else {
+                        feedback.innerHTML = '';
+                    }
+                });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
             const bookingDateInput = document.getElementById('booking_date');
 
             // 1. Fungsi Notifikasi
@@ -574,7 +612,7 @@
             @endif
 
             // 3. Validasi Real-time Hari Minggu
-            bookingDateInput.addEventListener('change', function() {
+            bookingDateInput.addEventListener('change', function () {
                 const date = new Date(this.value);
                 const day = date.getDay(); // 0 = Minggu
 
@@ -596,16 +634,16 @@
             const updateSummary = () => {
                 let total = 0;
                 let html = '';
-                
+
                 checkboxes.forEach(chk => {
                     if (chk.checked) {
                         const name = chk.getAttribute('data-name');
                         const price = parseFloat(chk.getAttribute('data-price'));
                         total += price;
                         html += `<li class="d-flex justify-content-between mb-2">
-                                    <span>${name}</span>
-                                    <strong>Rp ${formatRupiah(price)}</strong>
-                                 </li>`;
+                                                                <span>${name}</span>
+                                                                <strong>Rp ${formatRupiah(price)}</strong>
+                                                             </li>`;
                     }
                 });
 
@@ -616,4 +654,4 @@
             checkboxes.forEach(chk => chk.addEventListener('change', updateSummary));
         });
     </script>
-    @endsection
+@endsection

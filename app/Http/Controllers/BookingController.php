@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Jadwal;
 use App\Models\Service;
 use App\Models\Keuangan;
 use App\Models\User; // Digunakan untuk statistik
@@ -44,6 +45,24 @@ class BookingController extends Controller
                 'is_closed' => $data['isClosed'] ?? false,
             ]
         );
+    }
+
+    public function checkDate(Request $request)
+    {
+        // Ambil hanya tanggalnya saja (karena inputnya datetime-local)
+        $date = date('Y-m-d', strtotime($request->date));
+
+        $event = Jadwal::where('date', $date)->first();
+
+        if ($event) {
+            return response()->json([
+                'is_closed' => $event->is_closed,
+                'title' => $event->title,
+                'description' => $event->description
+            ]);
+        }
+
+        return response()->json(null);
     }
 
     public function deleteJadwal($eventId)
@@ -308,6 +327,19 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
+        $bookingDate = date('Y-m-d', strtotime($request->booking_date));
+
+        // 2. Cek apakah tanggal tersebut ada di tabel event dan statusnya tutup
+        $isLibur = Jadwal::where('date', $bookingDate)
+            ->where('is_closed', true)
+            ->exists();
+
+        if ($isLibur) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal Booking! Tanggal yang Anda pilih adalah hari libur bengkel.');
+        }
+
         // 1. Validasi Dasar
         $request->validate([
             'service_ids' => 'required|array|min:1',
@@ -339,11 +371,11 @@ class BookingController extends Controller
             'booking_date' => $request->booking_date,
             'customer_name' => $request->customer_name,
             'customer_whatsapp' => $request->customer_whatsapp,
-            'vehicle_type'      => $request->vehicle_type,
-            'plate_number'      => strtoupper($request->plate_number),
-            'queue_number'      => $newQueueNumber,
-            'status'            => 'pending',
-            'complaint'         => $request->complaint, // <-- TAMBAHKAN BARIS INI UNTUK MENYIMPAN KE DATABASE
+            'vehicle_type' => $request->vehicle_type,
+            'plate_number' => strtoupper($request->plate_number),
+            'queue_number' => $newQueueNumber,
+            'status' => 'pending',
+            'complaint' => $request->complaint, // <-- TAMBAHKAN BARIS INI UNTUK MENYIMPAN KE DATABASE
         ]);
 
         $booking->services()->attach($request->service_ids);
@@ -365,7 +397,11 @@ class BookingController extends Controller
             ->orderBy('booking_date', 'asc')
             ->get();
 
-        return view('pelanggan.dashboard', compact('activeBookings'));
+        $notifications = Jadwal::where('date', '>=', now()->toDateString())
+            ->orderBy('date', 'asc')
+            ->get();
+
+        return view('pelanggan.dashboard', compact('activeBookings', 'notifications'));
     }
 
     /**

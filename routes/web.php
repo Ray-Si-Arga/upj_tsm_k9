@@ -39,11 +39,11 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 // ---------------- Pelanggan/Customer -------------------- //
 // -------------------------------------------------------- //
 Route::get('/pelanggan/dashboard', [BookingController::class, 'pelangganDashboard'])->name('pelanggan.dashboard');
-// Menu Service (Dulu booking.create)
-// Kita ubah URL-nya jadi /pelanggan/service, tapi controllernya tetap pakai method create & store yang lama
 Route::get('/pelanggan/service', [BookingController::class, 'create'])->name('pelanggan.service'); // Pengganti booking.create
 Route::post('/pelanggan/service', [BookingController::class, 'store'])->name('customer.booking.store'); // Tetap pakai store yg sama
 Route::get('/pelanggan/history', [BookingController::class, 'pelangganHistory'])->name('pelanggan.history');
+
+Route::get('/cek-jadwal', [BookingController::class, 'checkDate'])->name('check.date');
 
 // ----------------------------------------------- //
 // ----------------- Advisor --------------------- //

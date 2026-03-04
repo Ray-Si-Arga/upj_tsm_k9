@@ -124,11 +124,31 @@
                     <p>Kendaraan Anda sedang tidak dalam antrian servis.</p>
                     <a href="{{ route('pelanggan.history') }}" class="text-decoration-none fw-bold">Cek Riwayat Servis</a>
                 </div>
+
+                {{-- Pemberitahuan masa libur bengkel --}}
+                @foreach($notifications as $note)
+                    <div class="card border-0 shadow-sm rounded-4 mb-3"
+                        style="border-left: 5px solid {{ $note->color }} !important;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="fw-bold mb-1">{{ $note->title }}</h6>
+                                    <p class="small text-muted mb-0">{{ $note->description }}</p>
+                                    <small
+                                        class="text-danger fw-bold">{{ \Carbon\Carbon::parse($note->date)->locale('id')->translatedFormat('d F Y') }}</small>
+                                </div>
+                                @if($note->is_closed)
+                                    <span class="badge bg-danger">Bengkel Tutup</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+
             @else
                 @foreach ($activeBookings as $booking)
                     <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden">
-                        <div
-                            class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+                        <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
                             <h6 class="mb-0 fw-bold text-dark">
                                 {{ \Carbon\Carbon::parse($booking->booking_date)->locale('id')->translatedFormat('l, d F Y') }}
                                 <span class="text-muted ms-2 fw-normal">Jam
@@ -167,8 +187,7 @@
                                     <div class="step-counter"><i class="fas fa-clock"></i></div>
                                     <div class="step-name">Menunggu</div>
                                 </div>
-                                <div
-                                    class="stepper-item {{ in_array($status, ['approved', 'on_progress']) ? 'completed' : '' }}">
+                                <div class="stepper-item {{ in_array($status, ['approved', 'on_progress']) ? 'completed' : '' }}">
                                     <div class="step-counter"><i class="fas fa-clipboard-check"></i></div>
                                     <div class="step-name">Diterima</div>
                                 </div>
@@ -189,8 +208,7 @@
                                     );
                                 @endphp
                                 <div class="alert alert-primary d-flex align-items-center mt-4 border-0 rounded-3">
-                                    <i
-                                        class="fas fa-hourglass-half fa-2x me-3 animate__animated animate__pulse animate__infinite"></i>
+                                    <i class="fas fa-hourglass-half fa-2x me-3 animate__animated animate__pulse animate__infinite"></i>
                                     <div>
                                         <h6 class="fw-bold mb-1">Sedang Dikerjakan Mekanik</h6>
                                         <p class="mb-0 small">Estimasi selesai pukul: <strong>{{ $estTime->format('H:i') }}
