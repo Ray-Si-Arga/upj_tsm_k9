@@ -134,7 +134,7 @@ export default function HolidayCalendar({
                       ${isCurrentMonth ? 'text-slate-900' : 'text-slate-300'}
                       ${isToday ? 'ring-2 ring-red-500 bg-red-50' : ''}
                       ${isSelected ? 'bg-red-100 ring-2 ring-red-500 shadow-md' : isCurrentMonth && dayHolidays.length === 0 ? 'hover:bg-slate-100 hover:shadow-sm' : !isCurrentMonth ? 'bg-slate-50' : ''}
-                      ${dayHolidays.length > 0 && isCurrentMonth && !isSelected && !isToday ? 'bg-red-500 !text-white hover:bg-red-700' : !isCurrentMonth ? 'bg-slate-50' : isSelected ? 'bg-red-100' : isToday ? 'bg-red-50' : 'bg-white'}
+                      ${dayHolidays.length > 0 && isCurrentMonth && !isSelected && !isToday ? 'bg-red-500 text-white! hover:bg-red-700' : !isCurrentMonth ? 'bg-slate-50' : isSelected ? 'bg-red-100' : isToday ? 'bg-red-50' : 'bg-white'}
                       cursor-pointer
                     `}
                   >
