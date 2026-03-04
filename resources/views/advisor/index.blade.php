@@ -242,7 +242,7 @@
                                 text-transform: uppercase;
                                 padding: 4px 12px;
                                 border-radius: 20px;
-                                margin-bottom: 10px;">Admin Panel</span>
+                                margin-bottom: 10px;">Advisor</span>
 
                     <h2 class="fw-bold mb-1">Service Advisor Dashboard</h2>
                     <p class="mb-0 text-white-50">Monitoring dan manajemen operasional bengkel secara real-time.</p>

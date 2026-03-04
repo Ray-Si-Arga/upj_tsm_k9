@@ -9,10 +9,55 @@
         /* ---- Google Font ---- */
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
 
+        :root {
+            --primary-dark: #1e293b;
+            --primary-blue: #3b82f6;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
+            --bg-body: #f8fafc;
+            --card-border: #e2e8f0;
+
+            --navy: #0f172a;
+
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--navy) 0%, #16213e 50%, #0f172a 100%);
+            border-radius: 20px;
+            padding: 28px 34px;
+            color: white;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(177, 0, 0, .25) 0%, transparent 70%);
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            pointer-events: none;
+            bottom: -50px;
+            left: 25%;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .03);
+        }
+
         .keuangan-wrap {
             font-family: 'Plus Jakarta Sans', sans-serif;
             padding: 28px 24px;
-            background: transparent;
+            background: #f8fafc;
             min-height: 100vh;
         }
 
@@ -27,29 +72,41 @@
         }
 
         .page-title {
-            font-size: 1.6rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(177, 0, 0, .35);
+            border: 1px solid rgba(177, 0, 0, .5);
+            color: #fca5a5;
+            font-size: .7rem;
             font-weight: 800;
-            color: #0f172a;
-            margin: 0;
-            letter-spacing: -0.5px;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
         }
 
         .page-subtitle {
-            font-size: 0.85rem;
-            color: #64748b;
+            font-size: 1.2rem;
+            color: #ffffff;
             margin-top: 4px;
-            font-weight: 500;
+            font-weight: 900;
+            letter-spacing: 1.1px;
         }
 
         /* ---- FILTER TABS ---- */
         .filter-tabs {
+            position: relative;
+            z-index: 10;
             display: flex;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             padding: 4px;
             gap: 2px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            width: fit-content;
         }
 
         .filter-tab {
@@ -57,10 +114,11 @@
             border-radius: 9px;
             font-size: 0.82rem;
             font-weight: 600;
-            color: #64748b;
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             transition: all 0.2s;
             white-space: nowrap;
+            margin: 0 auto;
         }
 
         .filter-tab:hover {
@@ -70,8 +128,8 @@
         }
 
         .filter-tab.active {
-            background: #0f172a;
-            color: #ffffff;
+            background: #ffffff;
+            color: #0f172a;
             box-shadow: 0 2px 8px rgba(15, 23, 42, 0.25);
         }
 
@@ -352,7 +410,7 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(177, 0, 0, .25);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
             text-decoration: none;
         }
 
@@ -366,6 +424,7 @@
             font-size: 0.9rem;
         }
 
+        /* â”€â”€ Modal Overlay â”€â”€ */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -752,9 +811,10 @@
 
         .btn-cet-pdf {
             background: linear-gradient(135deg, #B10000 0%, #8B0000 100%);
+            /* Warna merah elegan */
             color: white;
             border: none;
-            padding: 11px 12px;
+            padding: 11px 20px;
             border-radius: 10px;
             font-weight: 700;
             width: 100%;
@@ -765,41 +825,88 @@
         }
 
         .btn-cet-pdf:hover {
-            background: #820000;
-            
-            box-shadow: 0 8px 20px rgba(107, 0, 0, 0.3);
-            color: #fff;
+            background: #8B0000;
+            box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
         }
     </style>
 
     <div class="keuangan-wrap">
 
         {{-- ======================== PAGE HEADER ======================== --}}
-        <div class="page-header animate-up">
-            <div>
-                <h1 class="page-title">Keuangan</h1>
-                <p class="page-subtitle">Financial Transaction Â· {{ $labelPeriode }}</p>
+        <div class="hero-section">
+            <div class="page-header animate-up d-flex flex-wrap justify-content-between align-items-center">
+
+                <div>
+                    <h1 class="page-title">Keuangan</h1>
+                    <p class="page-subtitle">Financial Transaction {{ $labelPeriode }}</p>
+                </div>
+
+                <button class="btn-tambah-transaksi" onclick="openModalKeuangan()">
+                    <i class="fa-solid fa-plus"></i> Tambah Transaksi
+                </button>
+
+                <div style="flex-basis: 100%" class="d-flex justify-content-center mt-4">
+                    <div class="filter-tabs">
+                        @foreach(['harian' => 'Harian', 'mingguan' => 'Mingguan', 'bulanan' => 'Bulanan', 'tahunan' => 'Tahunan'] as $key => $label)
+                            <a href="{{ route('keuangan.index', ['periode' => $key]) }}"
+                                class="filter-tab {{ $periode === $key ? 'active' : '' }}">
+                                {{ $label }}
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        {{-- ======================== SUMMARY CARDS ======================== --}}
+        <div class="cards-grid">
+
+            {{-- SALDO --}}
+            <div class="summary-card card-saldo animate-up delay-1">
+                <div class="card-icon-wrap"><i class="fa-solid fa-scale-balanced"></i></div>
+                <div class="card-label">Saldo Bersih</div>
+                <div class="card-amount {{ $saldo < 0 ? 'negative' : '' }}">
+                    {{ $saldo < 0 ? '-' : '' }}Rp {{ number_format(abs($saldo), 0, ',', '.') }}
+                </div>
+                <div class="card-meta">Pemasukan â€“ Pengeluaran pada periode ini</div>
+                <div class="card-badge">
+                    <i class="fa-solid fa-circle-dot"
+                        style="font-size:0.6rem; color: {{ $saldo >= 0 ? '#6ee7b7' : '#fca5a5' }};"></i>
+                    {{ $saldo >= 0 ? 'Surplus' : 'Defisit' }}
+                </div>
             </div>
 
-            {{-- Filter Tabs --}}
-            <div class="filter-tabs">
-                @foreach(['harian' => 'Harian', 'mingguan' => 'Mingguan', 'bulanan' => 'Bulanan', 'tahunan' => 'Tahunan'] as $key => $label)
-                    <a href="{{ route('keuangan.index', ['periode' => $key]) }}"
-                        class="filter-tab {{ $periode === $key ? 'active' : '' }}">
-                        {{ $label }}
-                    </a>
-                @endforeach
+            {{-- PEMASUKAN --}}
+            <div class="summary-card card-pemasukan animate-up delay-2">
+                <div class="card-icon-wrap"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                <div class="card-label">Total Pemasukan</div>
+                <div class="card-amount">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</div>
+                <div class="card-meta">Dari hasil service kendaraan</div>
+                <div class="card-badge">
+                    <i class="fa-solid fa-wrench" style="font-size:0.65rem;"></i>
+                    {{ $jumlahTransaksiService }} transaksi service
+                </div>
             </div>
-            <button class="btn-tambah-transaksi" onclick="openModalKeuangan()">
-                <i class="fa-solid fa-plus"></i> Tambah Transaksi
-            </button>
+
+            {{-- PENGELUARAN --}}
+            <div class="summary-card card-pengeluaran animate-up delay-3">
+                <div class="card-icon-wrap"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                <div class="card-label">Total Pengeluaran</div>
+                <div class="card-amount">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</div>
+                <div class="card-meta">Estimasi nilai stok sparepart</div>
+                <div class="card-badge">
+                    <i class="fa-solid fa-boxes-stacked" style="font-size:0.65rem;"></i>
+                    {{ $jumlahItemInventory }} item inventory
+                </div>
+            </div>
         </div>
 
         <div class="card-filter-cetak mb-4">
             <form action="{{ route('keuangan.cetak') }}" method="GET" target="_blank">
                 <div class="filter-grid">
                     <div class="filter-group">
-                        <label><i class="fa-solid fa-calendar-day"></i> Mode Laporan</label>
+                        <label> Mode Laporan</label>
                         <select name="periode" id="periodeSelect" class="custom-select-finance"
                             onchange="toggleFilterFields()">
                             <option value="mingguan">Mingguan</option>
@@ -852,49 +959,6 @@
                     </div>
                 </div>
             </form>
-        </div>
-
-        {{-- ======================== SUMMARY CARDS ======================== --}}
-        <div class="cards-grid">
-
-            {{-- SALDO --}}
-            <div class="summary-card card-saldo animate-up delay-1">
-                <div class="card-icon-wrap"><i class="fa-solid fa-scale-balanced"></i></div>
-                <div class="card-label">Saldo Bersih</div>
-                <div class="card-amount {{ $saldo < 0 ? 'negative' : '' }}">
-                    {{ $saldo < 0 ? '-' : '' }}Rp {{ number_format(abs($saldo), 0, ',', '.') }}
-                </div>
-                <div class="card-meta">Pemasukan â€“ Pengeluaran pada periode ini</div>
-                <div class="card-badge">
-                    <i class="fa-solid fa-circle-dot"
-                        style="font-size:0.6rem; color: {{ $saldo >= 0 ? '#6ee7b7' : '#fca5a5' }};"></i>
-                    {{ $saldo >= 0 ? 'Surplus' : 'Defisit' }}
-                </div>
-            </div>
-
-            {{-- PEMASUKAN --}}
-            <div class="summary-card card-pemasukan animate-up delay-2">
-                <div class="card-icon-wrap"><i class="fa-solid fa-arrow-trend-up"></i></div>
-                <div class="card-label">Total Pemasukan</div>
-                <div class="card-amount">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</div>
-                <div class="card-meta">Dari hasil service kendaraan</div>
-                <div class="card-badge">
-                    <i class="fa-solid fa-wrench" style="font-size:0.65rem;"></i>
-                    {{ $jumlahTransaksiService }} transaksi service
-                </div>
-            </div>
-
-            {{-- PENGELUARAN --}}
-            <div class="summary-card card-pengeluaran animate-up delay-3">
-                <div class="card-icon-wrap"><i class="fa-solid fa-arrow-trend-down"></i></div>
-                <div class="card-label">Total Pengeluaran</div>
-                <div class="card-amount">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</div>
-                <div class="card-meta">Estimasi nilai stok sparepart</div>
-                <div class="card-badge">
-                    <i class="fa-solid fa-boxes-stacked" style="font-size:0.65rem;"></i>
-                    {{ $jumlahItemInventory }} item inventory
-                </div>
-            </div>
         </div>
 
         {{-- ======================== CHART ======================== --}}
@@ -1267,5 +1331,8 @@
             }, 3000);
         @endif
     </script>
+
+
+
 
 @endsection

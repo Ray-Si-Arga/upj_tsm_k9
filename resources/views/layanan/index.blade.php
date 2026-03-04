@@ -29,7 +29,7 @@
         }
 
         /* ============================================================
-                                                                                                                       PAGE HEADER  (dark gradient â€” sama seperti dashboard)
+                                                                                                                       PAGE HEADER  (dark gradient sama seperti dashboard)
                                                                                                                     ============================================================ */
         .page-header {
             background: linear-gradient(135deg, var(--navy) 0%, #16213e 50%, #0f172a 100%);

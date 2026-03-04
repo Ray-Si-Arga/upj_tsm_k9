@@ -295,7 +295,7 @@
                 <i class="fas fa-circle-info mt-1"></i>
                 <div>
                     <strong>Info Antrian Hari Ini:</strong>
-                    Saat ini ada <strong>{{ $todayactive }}</strong> antrian aktif. Slot terbatas <strong>2 motor/jam</strong> â€” booking akan ditolak otomatis jika slot penuh.
+                    Saat ini ada <strong>{{ $todayactive }}</strong> antrian aktif. Slot terbatas <strong>2 motor/jam</strong> booking akan ditolak otomatis jika slot penuh.
                 </div>
             </div>
 
