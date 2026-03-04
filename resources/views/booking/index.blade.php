@@ -18,82 +18,86 @@
 
     <style>
         /* ==============================
-               ROOT
+               ROOT & BASE (Updated to match Dashboard)
             ============================== */
         :root {
-            --honda-red: #B10000;
-            --honda-red-dark: #8B0000;
-            --honda-red-soft: rgba(177, 0, 0, 0.08);
-            --navy: #0f172a;
-            --navy-mid: #1e293b;
-            --emerald: #064e3b;
-            --emerald-mid: #047857;
-            --amber: #78350f;
-            --amber-mid: #b45309;
-            --bg: #f4f6f9;
-            --border: #e2e8f0;
-            --text: #1e293b;
+            --honda-red:       #B10000;
+            --honda-red-dark:  #8B0000;
+            --honda-red-soft:  rgba(177,0,0,.08);
+            --navy:            #0f172a;
+            --navy-mid:        #1e293b;
+            --emerald:         #064e3b;
+            --emerald-mid:     #047857;
+            --amber:           #78350f;
+            --amber-mid:       #b45309;
+            --bg:              #f0f2f5;
+            --border:          #e2e8f0;
+            --text:            #1e293b;
         }
 
         body {
             background: var(--bg);
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
             color: var(--text);
         }
 
-        .bk-wrap {
-            padding: 28px 0;
-        }
+        .bk-wrap { padding: 28px 0 48px; }
 
-        /* ==============================
-               PAGE HEADER
-            ============================== */
+        /* ============================================================
+           PAGE HEADER (Consistent with Dashboard)
+        ============================================================ */
         .page-header {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
+            background: linear-gradient(135deg, var(--navy) 0%, #16213e 50%, #0f172a 100%);
+            border-radius: 20px;
+            padding: 30px 36px;
+            color: white;
             margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute; top: -80px; right: -80px;
+            width: 300px; height: 300px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(177,0,0,.25) 0%, transparent 70%);
+        }
+        .page-header::after {
+            content: '';
+            position: absolute; bottom: -50px; left: 20%;
+            width: 200px; height: 200px; border-radius: 50%;
+            background: rgba(255,255,255,.03);
         }
 
-        .page-title {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: var(--text);
-            margin: 0 0 4px;
-            letter-spacing: -0.5px;
+        .header-eyebrow {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(177,0,0,.25); border: 1px solid rgba(177,0,0,.35);
+            color: #fca5a5; border-radius: 20px;
+            padding: 4px 14px; font-size: .72rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 1.2px;
+            margin-bottom: 10px; position: relative; z-index: 1;
         }
-
-        .page-subtitle {
-            font-size: 0.83rem;
-            color: #64748b;
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .btn-walkin {
-            background: linear-gradient(135deg, var(--honda-red) 0%, var(--honda-red-dark) 100%);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 9px 20px;
-            font-size: 0.88rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            transition: all .2s;
-            box-shadow: 0 4px 12px rgba(177, 0, 0, .25);
-        }
-
-        .btn-walkin:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(177, 0, 0, .3);
+        .header-title {
+            font-size: 1.75rem; font-weight: 800; margin: 0 0 5px;
+            letter-spacing: -.6px; position: relative; z-index: 1;
             color: #fff;
         }
+        .header-sub {
+            font-size: .85rem; color: rgba(255,255,255,.5);
+            margin: 0; font-weight: 500; position: relative; z-index: 1;
+        }
+        .header-actions {
+            display: flex; gap: 10px; flex-wrap: wrap;
+            position: relative; z-index: 1;
+        }
+        .btn-hdr-red {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 9px 18px; border-radius: 10px; font-size: .83rem; font-weight: 700;
+            text-decoration: none; transition: all .2s; border: none; cursor: pointer;
+            background: var(--honda-red); color: #fff; box-shadow: 0 4px 16px rgba(177,0,0,.35);
+        }
+        .btn-hdr-red:hover { background: var(--honda-red-dark); color: #fff; transform: translateY(-2px); }
 
+        /* Sisanya (Summary Cards, Table, dll) tetap seperti kode lama Anda */
         /* ==============================
                SUMMARY CARDS
             ============================== */
@@ -633,17 +637,22 @@
     <main class="bk-wrap">
         <div class="container-xl">
 
-            {{-- ==================== PAGE HEADER ==================== --}}
+            {{-- ==================== PAGE HEADER (Updated) ==================== --}}
             <div class="page-header au">
-                <div>
-                    <h1 class="page-title">
-                        Antrian Booking
-                    </h1>
-                    <p class="page-subtitle">Kelola jadwal servis â€” hari ini & mendatang.</p>
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-4">
+                    <div>
+                        <div class="header-eyebrow">
+                            Operational
+                        </div>
+                        <h1 class="header-title">Antrian Booking</h1>
+                        <p class="header-sub">Kelola jadwal servis — hari ini & mendatang secara real-time.</p>
+                    </div>
+                    <div class="header-actions align-self-center">
+                        <a href="{{ route('booking.walkin') }}" class="btn-hdr-red">
+                            <i class="fas fa-user-plus"></i> Booking Walk-In
+                        </a>
+                    </div>
                 </div>
-                <a href="{{ route('booking.walkin') }}" class="btn-walkin">
-                    <i class="fas fa-user-plus"></i> Booking Walk-In
-                </a>
             </div>
 
             {{-- ==================== SUMMARY CARDS ==================== --}}
