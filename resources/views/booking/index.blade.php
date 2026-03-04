@@ -842,6 +842,57 @@
         </div>
     </div>
 
+    {{-- ==================== MODAL DETAIL LAYANAN ==================== --}}
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius:16px; overflow:hidden;">
+                <div class="modal-header bg-white border-bottom-0 pt-4 px-4">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-danger rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                        <h5 class="fw-bold mb-0" style="color: #334155;">Detail Layanan Booking</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden; background: #f8fafc;">
+                        <div class="card-header bg-white py-3 border-bottom">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-list-ul text-danger me-2"></i>
+                                <span class="fw-bold text-secondary" style="font-size: 0.8rem;">RINCIAN PAKET / LAYANAN</span>
+                            </div>
+                        </div>
+                        <div class="card-body p-0 bg-white">
+                            <div class="table-responsive">
+                                <table class="table mb-0" id="detailTable">
+                                    <thead style="background-color: #f8fafc;">
+                                        <tr>
+                                            <th class="px-4 py-3 text-secondary fw-semibold" style="font-size: 0.75rem;">NAMA LAYANAN</th>
+                                            <th class="px-4 py-3 text-end text-secondary fw-semibold" style="font-size: 0.75rem;">HARGA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="serviceList">
+                                        {{-- Data akan diisi via JavaScript --}}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="background-color: #f8fafc;">
+                                            <td class="px-4 py-3 text-end fw-bold text-secondary">TOTAL ESTIMASI</td>
+                                            <td class="px-4 py-3 text-end fw-bold text-primary" id="totalPrice" style="font-size: 1.1rem;">
+                                                Rp 0
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-4 px-4">
+                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal" style="border-radius: 8px;">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- ==================== SCRIPTS ==================== --}}
     <script src="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.js"></script>
     <script>
@@ -869,5 +920,36 @@
                 });
             @endif
             });
+
+            function showDetail(services) {
+                const serviceList = document.getElementById('serviceList');
+                const totalPriceEl = document.getElementById('totalPrice');
+                let total = 0;
+                
+                serviceList.innerHTML = '';
+
+                services.forEach(service => {
+                    total += parseFloat(service.price);
+                    const row = `
+                        <tr>
+                            <td class="px-4 py-3">
+                                <div class="fw-bold text-dark">${service.name}</div>
+                                ${service.description ? `<div class="text-muted small mt-1">${service.description}</div>` : ''}
+                            </td>
+                            <td class="px-4 py-3 text-end align-middle fw-bold">
+                                Rp ${new Intl.NumberFormat('id-ID').format(service.price)}
+                            </td>
+                        </tr>
+                    `;
+                    serviceList.innerHTML += row;
+                });
+
+                totalPriceEl.innerText = `Rp ${new Intl.NumberFormat('id-ID').format(total)}`;
+
+                // Pemicu Modal Bootstrap
+                var myModal = new bootstrap.Modal(document.getElementById('detailModal'));
+                myModal.show();
+            }
+
     </script>
 @endsection
