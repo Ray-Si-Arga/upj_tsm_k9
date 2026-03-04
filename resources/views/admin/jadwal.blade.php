@@ -32,6 +32,17 @@
                 background: radial-gradient(circle, rgba(177, 0, 0, .25) 0%, transparent 70%);
             }
 
+            .page-header::after {
+                content: '';
+                position: absolute;
+                bottom: -50px;
+                left: 25%;
+                width: 180px;
+                height: 180px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, .03);
+            }
+
             .header-title {
                 font-size: 1.75rem;
                 font-weight: 800;
@@ -78,16 +89,16 @@
             }
         </style>
 
-    <div class="container-fluid">
-        {{-- PAGE HEADER --}}
-        <div class="page-header" style="animation: fadeUp .45s ease both;">
-            <div class="header-eyebrow">
-                <i class="fas fa-calendar-alt" style="font-size:.65rem;"></i>
-                Admin Panel
+        <div class="container-fluid">
+            {{-- PAGE HEADER --}}
+            <div class="page-header" style="animation: fadeUp .45s ease both;">
+                <div class="header-eyebrow">
+                    Admin Panel
+                </div>
+                <h1 class="header-title">Jadwal Bengkel</h1>
+                <p class="header-sub">Atur dan pantau jadwal libur/operasional bengkel melalui kalender interaktif berikut.
+                </p>
             </div>
-            <h1 class="header-title">Jadwal Bengkel</h1>
-            <p class="header-sub">Atur dan pantau jadwal libur/operasional bengkel melalui kalender interaktif berikut.</p>
-        </div>
 
             {{-- CALENDAR WIDGET CONTAINER --}}
             <div class="widget-panel" style="animation: fadeUp .45s ease both; animation-delay: .1s;">
