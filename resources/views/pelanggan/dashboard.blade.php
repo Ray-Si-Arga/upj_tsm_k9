@@ -103,7 +103,7 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-                    <h3 class="fw-bold text-dark">Halo, {{ Auth::user()->name }}! ðŸ‘‹</h3>
+                    <h3 class="fw-bold text-dark">Halo, {{ Auth::user()->name }}</h3>
                     <p class="text-muted mb-0">Pantau status servis kendaraan Anda.</p>
                 </div>
 

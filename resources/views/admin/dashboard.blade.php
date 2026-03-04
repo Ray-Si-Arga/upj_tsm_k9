@@ -376,8 +376,7 @@
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-4">
                 <div>
                     <div class="header-eyebrow">
-                        <i class="fas fa-shield-halved" style="font-size:.65rem;"></i>
-                        Admin Panel Â· AHASS Honda
+                        Admin Panel
                     </div>
                     <h1 class="header-title">Dashboard Operasional</h1>
                     <p class="header-sub">Pantau seluruh aktivitas bengkel secara real-time.</p>

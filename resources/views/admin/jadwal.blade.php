@@ -76,7 +76,7 @@
         <div class="page-header" style="animation: fadeUp .45s ease both;">
             <div class="header-eyebrow">
                 <i class="fas fa-calendar-alt" style="font-size:.65rem;"></i>
-                Admin Panel Â· Jadwal
+                Admin Panel
             </div>
             <h1 class="header-title">Jadwal Bengkel</h1>
             <p class="header-sub">Atur dan pantau jadwal libur/operasional bengkel melalui kalender interaktif berikut.</p>
