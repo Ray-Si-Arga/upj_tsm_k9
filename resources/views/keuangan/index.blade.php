@@ -95,6 +95,15 @@
             letter-spacing: 1.1px;
         }
 
+        .header-sub {
+            font-size: .85rem;
+            color: rgba(255, 255, 255, .5);
+            margin: 0;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
         /* ---- FILTER TABS ---- */
         .filter-tabs {
             position: relative;
@@ -839,6 +848,7 @@
                 <div>
                     <h1 class="page-title">Keuangan</h1>
                     <p class="page-subtitle">Financial Transaction {{ $labelPeriode }}</p>
+                    <span class="header-sub">Kelola transaksi dengan mudah dengan filter Harian, Mingguan, Bulanan dan Tahunan</span>
                 </div>
 
                 <button class="btn-tambah-transaksi" onclick="openModalKeuangan()">
