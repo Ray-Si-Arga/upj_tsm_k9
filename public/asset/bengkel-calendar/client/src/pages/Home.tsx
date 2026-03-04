@@ -76,9 +76,9 @@ export default function Home() {
   const monthName = currentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
 
   return (
-    <div className="min-h-fit bg-linear-to-br from-slate-50 via-white to-slate-50">
+    <div className="min-h-fit bg-white">
 
-      <main className="w-full max-w-6xl mx-auto px-4 py-8">
+      <main className="w-full max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Calendar Section */}
           <div className="lg:col-span-2">
