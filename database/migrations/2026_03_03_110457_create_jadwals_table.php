@@ -16,9 +16,6 @@ return new class extends Migration {
             $table->date('date');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->string('color')->default('#B10000');
-            $table->time('start_time')->nullable();
-            $table->time('end_time')->nullable();
             $table->boolean('is_closed')->default(false);
             $table->timestamps();
         });

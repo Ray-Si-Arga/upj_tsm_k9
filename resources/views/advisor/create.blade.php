@@ -736,21 +736,35 @@ function addJobRow(name = '', price = 0) {
     tbody.insertAdjacentHTML('beforeend', rowHtml);
 
     // Inisialisasi Tom Select dengan fitur "CREATE: TRUE"
-    const ts = new TomSelect(`#${selectId}`, {
-        create: true, // INI KUNCINYA: Mengizinkan input teks bebas jika tidak ada di saran!
-        sortField: {
-            field: "text",
-            direction: "asc"
-        },
-        placeholder: "Pilih / Ketik baru...",
-        createOnBlur: true // Jika user ngetik lalu klik di luar, otomatis dianggap sebagai input
-    });
-
-    // Jika parameter 'name' terisi (contoh: dipanggil otomatis dari Booking)
-    if (name) {
-        ts.addOption({value: name, text: name}); // Tambahkan ke opsi secara on-the-fly jika belum ada
-        ts.setValue(name); // Set nilainya
+    // Inisialisasi Tom Select dengan auto-fill harga dari data layanan
+const ts = new TomSelect(`#${selectId}`, {
+    create: true,
+    sortField: { field: "text", direction: "asc" },
+    placeholder: "Pilih / Ketik baru...",
+    createOnBlur: true,
+    onChange: function(val) {
+        // Cari layanan yang namanya cocok
+        const svc = servicesData.find(s => s.name === val);
+        const row = document.getElementById(rowId);
+        if (svc && svc.price) {
+            // Auto-fill harga jika layanan ada di database
+            row.querySelector('.job-price-display').value =
+                new Intl.NumberFormat('id-ID').format(svc.price);
+            row.querySelector('.job-price-raw').value = svc.price;
+        } else {
+            // Kosongkan harga jika teks bebas (custom / tidak ada di DB)
+            row.querySelector('.job-price-display').value = '';
+            row.querySelector('.job-price-raw').value = 0;
+        }
+        calcJobTotal();
     }
+});
+
+// Jika parameter 'name' terisi (contoh: dipanggil otomatis dari Booking)
+if (name) {
+    ts.addOption({value: name, text: name});
+    ts.setValue(name, true); // true = silent (tidak trigger onChange agar harga dari param tidak ditimpa)
+}
 
     jobRowIdx++;
     calcJobTotal();
