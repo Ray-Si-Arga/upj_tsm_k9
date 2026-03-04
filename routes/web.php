@@ -10,7 +10,7 @@ use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\CetakController;
 
 
-// --- Rute Dashboard ---
+//Rute Dashboard
 Route::get('/', function () {
     if (Auth::check()) {
         if (Auth::user()->role === 'admin') {
@@ -21,86 +21,57 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// ------------------------------------------------------------- //
-// ---------------- Otentikasi & Registrasi -------------------- //
-// ------------------------------------------------------------- //
+// Otentikasi & Registrasi
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginPost'])->name('login.post');
-
 Route::get('/register', [AuthController::class, 'publicRegister'])->name('public.register');
 Route::post('/register', [AuthController::class, 'publicRegisterPost'])->name('public.register.post');
-
-
 Route::get('/hapus/{id}', [AuthController::class, 'hapus'])->name('hapus');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-
-// -------------------------------------------------------- //
-// ---------------- Pelanggan/Customer -------------------- //
-// -------------------------------------------------------- //
-Route::get('/pelanggan/dashboard', [BookingController::class, 'pelangganDashboard'])->name('pelanggan.dashboard');
-Route::get('/pelanggan/service', [BookingController::class, 'create'])->name('pelanggan.service'); // Pengganti booking.create
-Route::post('/pelanggan/service', [BookingController::class, 'store'])->name('customer.booking.store'); // Tetap pakai store yg sama
-Route::get('/pelanggan/history', [BookingController::class, 'pelangganHistory'])->name('pelanggan.history');
-
-Route::get('/cek-jadwal', [BookingController::class, 'checkDate'])->name('check.date');
-
-// ----------------------------------------------- //
-// ----------------- Advisor --------------------- //
-// ----------------------------------------------- //
-Route::prefix('advisor')->name('advisor.')->group(function () {
-    Route::get('/index', [ServiceAdvisorController::class, 'index'])->name('index');
-    Route::get('/create', [ServiceAdvisorController::class, 'create'])->name('create');
-    Route::post('/store', [ServiceAdvisorController::class, 'store'])->name('store');
-    Route::get('/edit/{id}', [ServiceAdvisorController::class, 'edit'])->name('edit');
-    Route::put('/update/{id}', [ServiceAdvisorController::class, 'update'])->name('update');
-    Route::get('/print/{id}', [CetakController::class, 'print'])->name('print');
-});
-
-
-// ---------------------------------------------------------------------- //
-// ---------------- Rute Yang Diharuskan Autentikasi -------------------- //
-// ---------------------------------------------------------------------- //
-
+// Rute Yang Diharuskan Autentikasi
 Route::middleware(['auth'])->group(function () {
-    // ------------------------------------------------------ //
-    // ---------------- Service Layanan  -------------------- //
-    // ------------------------------------------------------ //
+    //Pelanggan / Customer
+    Route::get('/pelanggan/dashboard', [BookingController::class, 'pelangganDashboard'])->name('pelanggan.dashboard');
+    Route::get('/pelanggan/service', [BookingController::class, 'create'])->name('pelanggan.service');
+    Route::post('/pelanggan/service', [BookingController::class, 'store'])->name('customer.booking.store');
+    Route::get('/pelanggan/history', [BookingController::class, 'pelangganHistory'])->name('pelanggan.history');
+    Route::get('/cek-jadwal', [BookingController::class, 'checkDate'])->name('check.date');
+
+    //Advisor
+    Route::prefix('advisor')->name('advisor.')->group(function () {
+        Route::get('/index', [ServiceAdvisorController::class, 'index'])->name('index');
+        Route::get('/create', [ServiceAdvisorController::class, 'create'])->name('create');
+        Route::post('/store', [ServiceAdvisorController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [ServiceAdvisorController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [ServiceAdvisorController::class, 'update'])->name('update');
+        Route::get('/print/{id}', [CetakController::class, 'print'])->name('print');
+    });
+
+    //Service Layanan
     Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
     Route::post('/layanan/store', [LayananController::class, 'store'])->name('layanan.store');
     Route::put('/layanan/update/{id}', [LayananController::class, 'update'])->name('layanan.update');
     Route::delete('/layanan/delete/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy');
 
-
-    // ------------------------------------------------------------------------ //
-    // ---------------- Booking Admin jika customer gaptek -------------------- //
-    // ------------------------------------------------------------------------ //
+    //Booking Walk In
     Route::get('admin/booking/create', [BookingController::class, 'createWalkIn'])->name('booking.walkin');
     Route::post('admin/booking/store', [BookingController::class, 'storeWalkIn'])->name('booking.storeWalkIn');
 
-
-    // ----------------------------------------------------------- //
-    // ---------------- Dashboard Autentikasi -------------------- //
-    // ----------------------------------------------------------- //
+    //Dashboard Autentikasi
     Route::get('/dashboard', [BookingController::class, 'adminDashboard'])->name('admin.dashboard');
     Route::get('/jadwal', [BookingController::class, 'jadwal'])->name('admin.jadwal');
 
-    // ----------------------------------------------- //
-    // ---------------- Inventory -------------------- //
-    // ----------------------------------------------- //
+    //Inventory
     Route::prefix('inventory')->name('inventory.')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('index');
     });
 
-    // --------------------------------------------- //
-    // ---------------- Profile -------------------- //
-    // --------------------------------------------- //
+    //Profile
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile', [AuthController::class, 'profileUpdate'])->name('profile.update');
 
-    // --------------------------------------------- //
-    // ---------------- Booking -------------------- //
-    // --------------------------------------------- //
+    //Booking
     Route::prefix('booking')->name('booking.')->group(function () {
 
         // 1. Rute dengan Fixed Segment (Diutamakan)
@@ -122,9 +93,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/destroy/{id}', [BookingController::class, 'destroy'])->name('destroy');
     });
 
-    // --------------------------------------------- //
-    // ---------------- Keuangan -------------------- //
-    // --------------------------------------------- //
+    //Keuangan
     Route::prefix('keuangan')->name('keuangan.')->group(function () {
         Route::get('/', [KeuanganController::class, 'index'])->name('index');
         Route::post('/store', [KeuanganController::class, 'store'])->name('store');
@@ -132,9 +101,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/cetak', [KeuanganController::class, 'cetak'])->name('cetak');
     });
 
-    // ----------------------------------------------- //
-    // ---------------- Customers -------------------- //
-    // ----------------------------------------------- //
+    //Customers
     Route::prefix('customers')->name('customers.')->group(function () {
         Route::get('/', [BookingController::class, 'customers'])->name('index');
         Route::get('/{id}/bookings', [BookingController::class, 'customerBookings'])->name('bookings');

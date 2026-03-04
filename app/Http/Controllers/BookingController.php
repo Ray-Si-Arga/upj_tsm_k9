@@ -409,6 +409,7 @@ class BookingController extends Controller
             ->get();
 
         $notifications = Jadwal::where('date', '>=', now()->toDateString())
+            ->where('is_closed', true)
             ->orderBy('date', 'asc')
             ->get();
 

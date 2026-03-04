@@ -10,32 +10,34 @@
 
     <style>
         /* ============================================================
-           ROOT TOKENS  (selaras dengan halaman admin)
-        ============================================================ */
+               ROOT TOKENS  (selaras dengan halaman admin)
+            ============================================================ */
         :root {
-            --red:          #B10000;
-            --red-dark:     #8B0000;
-            --red-soft:     rgba(177,0,0,.08);
-            --red-border:   rgba(177,0,0,.18);
-            --navy:         #0f172a;
-            --navy-mid:     #1e293b;
-            --green:        #047857;
-            --green-soft:   rgba(4,120,87,.10);
-            --amber:        #b45309;
-            --amber-soft:   rgba(180,83,9,.10);
-            --bg:           #f0f2f5;
-            --surface:      #ffffff;
-            --border:       #e2e8f0;
-            --text:         #1e293b;
-            --muted:        #64748b;
-            --subtle:       #94a3b8;
-            --radius:       16px;
-            --radius-pill:  999px;
-            --shadow-sm:    0 2px 10px rgba(0,0,0,.06);
-            --shadow-md:    0 6px 24px rgba(0,0,0,.10);
+            --red: #B10000;
+            --red-dark: #8B0000;
+            --red-soft: rgba(177, 0, 0, .08);
+            --red-border: rgba(177, 0, 0, .18);
+            --navy: #0f172a;
+            --navy-mid: #1e293b;
+            --green: #047857;
+            --green-soft: rgba(4, 120, 87, .10);
+            --amber: #b45309;
+            --amber-soft: rgba(180, 83, 9, .10);
+            --bg: #f0f2f5;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --muted: #64748b;
+            --subtle: #94a3b8;
+            --radius: 16px;
+            --radius-pill: 999px;
+            --shadow-sm: 0 2px 10px rgba(0, 0, 0, .06);
+            --shadow-md: 0 6px 24px rgba(0, 0, 0, .10);
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             background: var(--bg);
@@ -44,15 +46,15 @@
         }
 
         /* ============================================================
-           PAGE WRAPPER
-        ============================================================ */
+               PAGE WRAPPER
+            ============================================================ */
         .pg-wrap {
             padding: 28px 0 60px;
         }
 
         /* ============================================================
-           HERO BANNER  (identik gaya admin)
-        ============================================================ */
+               HERO BANNER  (identik gaya admin)
+            ============================================================ */
         .page-header {
             background: linear-gradient(135deg, var(--navy) 0%, #16213e 55%, #0f172a 100%);
             border-radius: 20px;
@@ -66,27 +68,31 @@
         .page-header::before {
             content: '';
             position: absolute;
-            top: -80px; right: -80px;
-            width: 300px; height: 300px;
+            top: -80px;
+            right: -80px;
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(177,0,0,.28) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(177, 0, 0, .28) 0%, transparent 70%);
         }
 
         .page-header::after {
             content: '';
             position: absolute;
-            bottom: -50px; left: 20%;
-            width: 220px; height: 220px;
+            bottom: -50px;
+            left: 20%;
+            width: 220px;
+            height: 220px;
             border-radius: 50%;
-            background: rgba(255,255,255,.03);
+            background: rgba(255, 255, 255, .03);
         }
 
         .header-eyebrow {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(177,0,0,.30);
-            border: 1px solid rgba(177,0,0,.45);
+            background: rgba(177, 0, 0, .30);
+            border: 1px solid rgba(177, 0, 0, .45);
             color: #fca5a5;
             font-size: .68rem;
             font-weight: 800;
@@ -95,7 +101,8 @@
             padding: 4px 12px;
             border-radius: var(--radius-pill);
             margin-bottom: 10px;
-            position: relative; z-index: 1;
+            position: relative;
+            z-index: 1;
         }
 
         .header-title {
@@ -104,15 +111,17 @@
             color: #fff;
             letter-spacing: -.4px;
             margin: 0 0 4px;
-            position: relative; z-index: 1;
+            position: relative;
+            z-index: 1;
         }
 
         .header-sub {
             font-size: .83rem;
-            color: rgba(255,255,255,.5);
+            color: rgba(255, 255, 255, .5);
             font-weight: 500;
             margin: 0;
-            position: relative; z-index: 1;
+            position: relative;
+            z-index: 1;
         }
 
         .header-btn-row {
@@ -120,7 +129,8 @@
             gap: 10px;
             margin-top: 22px;
             flex-wrap: wrap;
-            position: relative; z-index: 1;
+            position: relative;
+            z-index: 1;
         }
 
         .btn-red {
@@ -137,23 +147,23 @@
             border: none;
             cursor: pointer;
             transition: background .18s, transform .15s, box-shadow .18s;
-            box-shadow: 0 4px 14px rgba(177,0,0,.40);
+            box-shadow: 0 4px 14px rgba(177, 0, 0, .40);
         }
 
         .btn-red:hover {
             background: var(--red-dark);
             transform: translateY(-2px);
             color: #fff;
-            box-shadow: 0 6px 20px rgba(177,0,0,.50);
+            box-shadow: 0 6px 20px rgba(177, 0, 0, .50);
         }
 
         .btn-ghost-white {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255,255,255,.10);
-            border: 1.5px solid rgba(255,255,255,.20);
-            color: rgba(255,255,255,.85);
+            background: rgba(255, 255, 255, .10);
+            border: 1.5px solid rgba(255, 255, 255, .20);
+            color: rgba(255, 255, 255, .85);
             font-weight: 600;
             font-size: .83rem;
             padding: 10px 20px;
@@ -163,70 +173,57 @@
         }
 
         .btn-ghost-white:hover {
-            background: rgba(255,255,255,.20);
+            background: rgba(255, 255, 255, .20);
             color: #fff;
             transform: translateY(-2px);
         }
 
         /* ============================================================
-           QUICK-ACTION CARDS (banner bawah hero)
-        ============================================================ */
-        .qa-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .qa-card {
+               SECTION WRAPPER
+            ============================================================ */
+        .section-wrapper {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 18px 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            text-decoration: none;
-            color: var(--text);
             box-shadow: var(--shadow-sm);
-            transition: transform .18s, box-shadow .18s, border-color .18s;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
-        .qa-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--red-border);
-            color: var(--text);
+        .section-wrapper>.panel:last-child,
+        .section-wrapper>.empty-panel:last-child {
+            margin-bottom: 0;
         }
 
-        .qa-icon {
-            width: 44px; height: 44px;
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.15rem;
-            flex-shrink: 0;
-        }
-
-        .qa-icon.red   { background: var(--red-soft);   color: var(--red); }
-        .qa-icon.green { background: var(--green-soft);  color: var(--green); }
-
-        .qa-label {
+        .btn-lainnya {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--red-soft);
+            border: 1.5px solid var(--red-border);
+            color: var(--red);
             font-size: .82rem;
-            font-weight: 800;
-            color: var(--text);
-            line-height: 1.2;
+            font-weight: 700;
+            padding: 9px 22px;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            transition: background .18s, transform .15s;
         }
 
-        .qa-desc {
-            font-size: .7rem;
-            color: var(--muted);
-            font-weight: 500;
-            margin-top: 2px;
+        .btn-lainnya:hover {
+            background: var(--red-border);
+            transform: translateY(-2px);
+        }
+
+        .btn-lainnya:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         /* ============================================================
-           SECTION LABEL
-        ============================================================ */
+               SECTION LABEL
+            ============================================================ */
         .sec-label {
             display: flex;
             align-items: center;
@@ -242,7 +239,8 @@
         .sec-label::before {
             content: '';
             display: block;
-            width: 4px; height: 14px;
+            width: 4px;
+            height: 14px;
             border-radius: 4px;
             background: var(--red);
         }
@@ -255,8 +253,8 @@
         }
 
         /* ============================================================
-           PANEL (white card identik admin)
-        ============================================================ */
+               PANEL (white card identik admin)
+            ============================================================ */
         .panel {
             background: var(--surface);
             border-radius: var(--radius);
@@ -267,7 +265,9 @@
             transition: box-shadow .2s;
         }
 
-        .panel:hover { box-shadow: var(--shadow-md); }
+        .panel:hover {
+            box-shadow: var(--shadow-md);
+        }
 
         .panel-hdr {
             display: flex;
@@ -298,17 +298,29 @@
             font-weight: 700;
         }
 
+        /*============================================================
+                                MODAL
+        ============================================================*/
+        .modal-content{
+            height: 75vh;
+        }
+
         /* ============================================================
-           BOOKING ITEM
-        ============================================================ */
+               BOOKING ITEM
+            ============================================================ */
         .booking-item {
             padding: 18px 20px;
             border-bottom: 1px solid #f8fafc;
             transition: background .15s;
         }
 
-        .booking-item:last-child { border-bottom: none; }
-        .booking-item:hover { background: #fafbfe; }
+        .booking-item:last-child {
+            border-bottom: none;
+        }
+
+        .booking-item:hover {
+            background: #fafbfe;
+        }
 
         .booking-meta-row {
             display: flex;
@@ -341,7 +353,7 @@
             padding: 5px 14px;
             border-radius: var(--radius-pill);
             white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(177,0,0,.30);
+            box-shadow: 0 2px 8px rgba(177, 0, 0, .30);
         }
 
         .vehicle-row {
@@ -360,7 +372,7 @@
 
         .plate-badge {
             background: var(--amber-soft);
-            border: 1.5px solid rgba(180,83,9,.25);
+            border: 1.5px solid rgba(180, 83, 9, .25);
             color: #7a4500;
             font-size: .72rem;
             font-weight: 800;
@@ -393,8 +405,8 @@
         }
 
         /* ============================================================
-           STEPPER
-        ============================================================ */
+               STEPPER
+            ============================================================ */
         .stepper-wrap {
             display: flex;
             justify-content: space-between;
@@ -407,7 +419,8 @@
             content: '';
             position: absolute;
             top: 22px;
-            left: 8%; width: 84%;
+            left: 8%;
+            width: 84%;
             height: 3px;
             background: var(--border);
             border-radius: 4px;
@@ -420,7 +433,7 @@
             height: 3px;
             background: linear-gradient(90deg, var(--green), #34d399);
             border-radius: 4px;
-            transition: width .6s cubic-bezier(.4,0,.2,1);
+            transition: width .6s cubic-bezier(.4, 0, .2, 1);
         }
 
         .step-item {
@@ -433,11 +446,14 @@
         }
 
         .step-icon {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: var(--surface);
             border: 2.5px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 7px;
             color: var(--subtle);
             font-size: .85rem;
@@ -465,8 +481,8 @@
         }
 
         /* ============================================================
-           ON-PROGRESS ALERT
-        ============================================================ */
+               ON-PROGRESS ALERT
+            ============================================================ */
         .progress-alert {
             display: flex;
             align-items: center;
@@ -479,11 +495,14 @@
         }
 
         .progress-alert-icon {
-            width: 40px; height: 40px;
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
             background: var(--red);
             color: #fff;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1rem;
             flex-shrink: 0;
         }
@@ -502,8 +521,8 @@
         }
 
         /* ============================================================
-           EMPTY STATE
-        ============================================================ */
+               EMPTY STATE
+            ============================================================ */
         .empty-panel {
             background: var(--surface);
             border-radius: var(--radius);
@@ -515,10 +534,13 @@
         }
 
         .empty-icon {
-            width: 80px; height: 80px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             background: var(--red-soft);
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin: 0 auto 20px;
             font-size: 2rem;
             color: var(--red);
@@ -539,8 +561,8 @@
         }
 
         /* ============================================================
-           NOTIFICATION CARDS
-        ============================================================ */
+               NOTIFICATION CARDS
+            ============================================================ */
         .notif-card {
             background: var(--surface);
             border-radius: var(--radius);
@@ -561,7 +583,9 @@
             min-height: 48px;
         }
 
-        .notif-body { flex: 1; }
+        .notif-body {
+            flex: 1;
+        }
 
         .notif-title {
             font-size: .88rem;
@@ -599,19 +623,26 @@
         }
 
         /* ============================================================
-           MOBILE RESPONSIVE
-        ============================================================ */
+               MOBILE RESPONSIVE
+            ============================================================ */
         @media (max-width: 575px) {
-            .pg-wrap { padding: 16px 0 80px; }
+            .pg-wrap {
+                padding: 16px 0 80px;
+            }
 
             .page-header {
                 border-radius: 14px;
                 padding: 20px 18px 22px;
             }
 
-            .header-title { font-size: 1.25rem; }
+            .header-title {
+                font-size: 1.25rem;
+            }
 
-            .header-btn-row { gap: 8px; margin-top: 16px; }
+            .header-btn-row {
+                gap: 8px;
+                margin-top: 16px;
+            }
 
             .btn-red,
             .btn-ghost-white {
@@ -621,21 +652,41 @@
                 justify-content: center;
             }
 
-            .qa-grid { gap: 10px; }
-            .qa-card { padding: 14px 12px; gap: 10px; }
-            .qa-icon { width: 38px; height: 38px; font-size: 1rem; border-radius: 10px; }
+            .booking-item {
+                padding: 14px 16px;
+            }
 
-            .booking-item { padding: 14px 16px; }
+            .step-icon {
+                width: 30px;
+                height: 30px;
+                font-size: .75rem;
+            }
 
-            .step-icon { width: 30px; height: 30px; font-size: .75rem; }
-            .step-lbl  { font-size: .56rem; }
-            .stepper-wrap::before { top: 19px; }
-            .step-progress        { top: 19px; }
+            .step-lbl {
+                font-size: .56rem;
+            }
 
-            .vehicle-name { font-size: .95rem; }
+            .stepper-wrap::before {
+                top: 19px;
+            }
 
-            .empty-panel { padding: 36px 16px; }
-            .empty-icon  { width: 68px; height: 68px; font-size: 1.7rem; }
+            .step-progress {
+                top: 19px;
+            }
+
+            .vehicle-name {
+                font-size: .95rem;
+            }
+
+            .empty-panel {
+                padding: 36px 16px;
+            }
+
+            .empty-icon {
+                width: 68px;
+                height: 68px;
+                font-size: 1.7rem;
+            }
         }
     </style>
 
@@ -643,17 +694,17 @@
         <div class="container pg-wrap">
 
             {{-- ============================================================
-                 HERO BANNER
+            HERO BANNER
             ============================================================ --}}
             <div class="page-header">
                 <div class="header-eyebrow">
-                    <i class="fas fa-motorcycle"></i> Dashboard Pelanggan
+                    Dashboard Pelanggan
                 </div>
                 <h1 class="header-title">Halo, {{ Auth::user()->name }} 👋</h1>
                 <p class="header-sub">Pantau status servis kendaraan Anda secara real-time.</p>
                 <div class="header-btn-row">
                     <a href="{{ route('pelanggan.service') }}" class="btn-red">
-                        <i class="fas fa-plus"></i> Booking Service
+                        <i class="fas fa-plus"></i> Booking
                     </a>
                     <a href="{{ route('pelanggan.history') }}" class="btn-ghost-white">
                         <i class="fas fa-history"></i> Riwayat
@@ -661,167 +712,187 @@
                 </div>
             </div>
 
-            {{-- ============================================================
-                 QUICK ACTION CARDS
-            ============================================================ --}}
-            <div class="qa-grid">
-                <a href="{{ route('pelanggan.service') }}" class="qa-card">
-                    <div class="qa-icon red"><i class="fas fa-calendar-plus"></i></div>
-                    <div>
-                        <div class="qa-label">Booking Baru</div>
-                        <div class="qa-desc">Jadwalkan servis</div>
-                    </div>
-                </a>
-                <a href="{{ route('pelanggan.history') }}" class="qa-card">
-                    <div class="qa-icon green"><i class="fas fa-clipboard-list"></i></div>
-                    <div>
-                        <div class="qa-label">Riwayat Servis</div>
-                        <div class="qa-desc">Lihat semua history</div>
-                    </div>
-                </a>
-            </div>
+
 
             {{-- ============================================================
-                 NOTIFIKASI / PENGUMUMAN
+            NOTIFIKASI / PENGUMUMAN
             ============================================================ --}}
             @if($notifications->isNotEmpty())
-                <div class="sec-label">
-                    <i class="fas fa-bell" style="color:var(--amber);"></i>
-                    Pengumuman
-                </div>
-                @foreach($notifications as $note)
-                    <div class="notif-card">
-                        <div class="notif-stripe" style="background:{{ $note->color }};"></div>
-                        <div class="notif-body">
-                            <div class="notif-title">{{ $note->title }}</div>
-                            <div class="notif-desc">{{ $note->description }}</div>
-                            <div class="notif-date">
-                                <i class="far fa-calendar me-1"></i>
-                                {{ \Carbon\Carbon::parse($note->date)->locale('id')->translatedFormat('d F Y') }}
-                            </div>
-                        </div>
-                        @if($note->is_closed)
-                            <div class="badge-tutup">Tutup</div>
-                        @endif
+                <div class="section-wrapper">
+                    <div class="sec-label">
+                        Pengumuman
                     </div>
-                @endforeach
+
+                    @foreach($notifications->take(5) as $note)
+                        <div class="notif-card">
+                            <div class="notif-stripe" style="background:{{ $note->color ?? 'var(--red)' }};"></div>
+                            <div class="notif-body">
+                                <div class="notif-title">{{ $note->title }}</div>
+                                @if($note->description)
+                                    <div class="notif-desc">{{ $note->description }}</div>
+                                @endif
+                                <div class="notif-date">
+                                    <i class="far fa-calendar me-1"></i>
+                                    {{ \Carbon\Carbon::parse($note->date)->locale('id')->translatedFormat('d F Y') }}
+                                </div>
+                            </div>
+                            <div class="badge-tutup">Tutup</div>
+                        </div>
+                    @endforeach
+
+                    @if($notifications->count() > 5)
+                        <div class="text-center mt-2">
+                            <button class="btn-lainnya" data-bs-toggle="modal" data-bs-target="#modalNotif">
+                                <i class="fas fa-ellipsis-h"></i>
+                                Lainnya ({{ $notifications->count() - 5 }} pengumuman)
+                            </button>
+                        </div>
+                    @endif
+                </div>
             @endif
 
             {{-- ============================================================
-                 SERVIS AKTIF
+            MODAL NOTIFIKASI (Livewire)
             ============================================================ --}}
-            <div class="sec-label mt-1">
-                <i class="fas fa-wrench" style="color:var(--red);"></i>
-                Servis Aktif
+            <div class="modal fade" id="modalNotif" tabindex="-1" data-bs-backdrop="true" data-bs-keyboard="true"
+                aria-labelledby="modalNotifLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                    <div class="modal-content " style="border-radius: var(--radius); border: 1px solid var(--border);">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title" id="modalNotifLabel"
+                                style="font-size: .92rem; font-weight: 800; color: var(--text);">
+                                Semua Pengumuman
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                        </div>
+                        <div class="modal-body pt-3">
+                            <livewire:notifikasi-modal />
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            @if ($activeBookings->isEmpty())
-
-                {{-- EMPTY STATE --}}
-                <div class="empty-panel">
-                    <div class="empty-icon">
-                        <i class="fas fa-motorcycle"></i>
-                    </div>
-                    <div class="empty-title">Tidak ada servis aktif</div>
-                    <div class="empty-sub">Kendaraan Anda sedang tidak dalam antrian servis.</div>
-                    <a href="{{ route('pelanggan.service') }}" class="btn-red" style="text-decoration:none;">
-                        <i class="fas fa-plus"></i> Booking Sekarang
-                    </a>
+            {{-- ============================================================
+            SERVIS AKTIF
+            ============================================================ --}}
+            <div class="section-wrapper">
+                <div class="sec-label mt-1">
+                    Servis Aktif
                 </div>
 
-            @else
+                @if ($activeBookings->isEmpty())
 
-                <div class="panel">
-                    <div class="panel-hdr">
-                        <div class="panel-title">
-                            <i class="fas fa-list-ol" style="color:var(--red);"></i>
-                            Antrian Anda
+                    {{-- EMPTY STATE --}}
+                    <div class="empty-panel">
+                        <div class="empty-icon">
+                            <i class="fas fa-motorcycle"></i>
                         </div>
-                        <span class="panel-badge">{{ $activeBookings->count() }} aktif</span>
+                        <div class="empty-title">Tidak ada servis aktif</div>
+                        <div class="empty-sub">Kendaraan Anda sedang tidak dalam antrian servis.</div>
+                        <a href="{{ route('pelanggan.service') }}" class="btn-red" style="text-decoration:none;">
+                            <i class="fas fa-plus"></i> Booking Sekarang
+                        </a>
                     </div>
 
-                    @foreach ($activeBookings as $booking)
-                        <div class="booking-item">
+                @else
 
-                            {{-- Meta: tanggal + nomor antrian --}}
-                            <div class="booking-meta-row">
-                                <div>
-                                    <div class="booking-date">
-                                        {{ \Carbon\Carbon::parse($booking->booking_date)->locale('id')->translatedFormat('l, d F Y') }}
-                                    </div>
-                                    <div class="booking-time">
-                                        Jam {{ \Carbon\Carbon::parse($booking->booking_date)->format('H:i') }} WIB
-                                    </div>
-                                </div>
-                                <span class="queue-badge">Antrian #{{ $booking->queue_number }}</span>
+                    <div class="panel">
+                        <div class="panel-hdr">
+                            <div class="panel-title">
+                                <i class="fas fa-list-ol" style="color:var(--red);"></i>
+                                Antrian Anda
                             </div>
+                            <span class="panel-badge">{{ $activeBookings->count() }} aktif</span>
+                        </div>
 
-                            {{-- Kendaraan --}}
-                            <div class="vehicle-row">
-                                <span class="vehicle-name">{{ $booking->vehicle_type }}</span>
-                                <span class="plate-badge">{{ $booking->plate_number }}</span>
-                            </div>
+                        @foreach ($activeBookings as $booking)
+                            <div class="booking-item">
 
-                            {{-- Layanan --}}
-                            <div class="service-row mb-0">
-                                <span class="service-key">Layanan</span>
-                                <span class="service-val">{{ $booking->service->name ?? 'Service Umum' }}</span>
-                            </div>
-
-                            {{-- STEPPER --}}
-                            @php
-                                $status = $booking->status;
-                                $progW  = '0%';
-                                if ($status === 'pending')     $progW = '0%';
-                                if ($status === 'approved')    $progW = '44%';
-                                if ($status === 'on_progress') $progW = '75%';
-                            @endphp
-
-                            <div class="stepper-wrap">
-                                <div class="step-progress" style="width:{{ $progW }};"></div>
-
-                                <div class="step-item {{ in_array($status, ['pending','approved','on_progress']) ? 'done' : '' }}">
-                                    <div class="step-icon"><i class="fas fa-clock"></i></div>
-                                    <div class="step-lbl">Menunggu</div>
-                                </div>
-                                <div class="step-item {{ in_array($status, ['approved','on_progress']) ? 'done' : '' }}">
-                                    <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
-                                    <div class="step-lbl">Diterima</div>
-                                </div>
-                                <div class="step-item {{ $status === 'on_progress' ? 'done' : '' }}">
-                                    <div class="step-icon"><i class="fas fa-wrench"></i></div>
-                                    <div class="step-lbl">Dikerjakan</div>
-                                </div>
-                                <div class="step-item">
-                                    <div class="step-icon"><i class="fas fa-flag-checkered"></i></div>
-                                    <div class="step-lbl">Selesai</div>
-                                </div>
-                            </div>
-
-                            {{-- On-Progress Alert --}}
-                            @if ($status === 'on_progress' && $booking->estimation_duration)
-                                @php
-                                    $estTime = \Carbon\Carbon::parse($booking->booking_date)
-                                        ->addMinutes($booking->estimation_duration);
-                                @endphp
-                                <div class="progress-alert">
-                                    <div class="progress-alert-icon">
-                                        <i class="fas fa-hourglass-half"></i>
-                                    </div>
+                                {{-- Meta: tanggal + nomor antrian --}}
+                                <div class="booking-meta-row">
                                     <div>
-                                        <div class="progress-alert-title">Sedang Dikerjakan Mekanik</div>
-                                        <div class="progress-alert-sub">
-                                            Estimasi selesai pukul <strong>{{ $estTime->format('H:i') }} WIB</strong>
+                                        <div class="booking-date">
+                                            {{ \Carbon\Carbon::parse($booking->booking_date)->locale('id')->translatedFormat('l, d F Y') }}
+                                        </div>
+                                        <div class="booking-time">
+                                            Jam {{ \Carbon\Carbon::parse($booking->booking_date)->format('H:i') }} WIB
                                         </div>
                                     </div>
+                                    <span class="queue-badge">Antrian #{{ $booking->queue_number }}</span>
                                 </div>
-                            @endif
 
-                        </div>
-                    @endforeach
-                </div>
+                                {{-- Kendaraan --}}
+                                <div class="vehicle-row">
+                                    <span class="vehicle-name">{{ $booking->vehicle_type }}</span>
+                                    <span class="plate-badge">{{ $booking->plate_number }}</span>
+                                </div>
 
-            @endif
+                                {{-- Layanan --}}
+                                <div class="service-row mb-0">
+                                    <span class="service-key">Layanan</span>
+                                    <span class="service-val">{{ $booking->service->name ?? 'Service Umum' }}</span>
+                                </div>
+
+                                {{-- STEPPER --}}
+                                @php
+                                    $status = $booking->status;
+                                    $progW = '0%';
+                                    if ($status === 'pending')
+                                        $progW = '0%';
+                                    if ($status === 'approved')
+                                        $progW = '44%';
+                                    if ($status === 'on_progress')
+                                        $progW = '75%';
+                                @endphp
+
+                                <div class="stepper-wrap">
+                                    <div class="step-progress" style="width:{{ $progW }};"></div>
+
+                                    <div
+                                        class="step-item {{ in_array($status, ['pending', 'approved', 'on_progress']) ? 'done' : '' }}">
+                                        <div class="step-icon"><i class="fas fa-clock"></i></div>
+                                        <div class="step-lbl">Menunggu</div>
+                                    </div>
+                                    <div class="step-item {{ in_array($status, ['approved', 'on_progress']) ? 'done' : '' }}">
+                                        <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
+                                        <div class="step-lbl">Diterima</div>
+                                    </div>
+                                    <div class="step-item {{ $status === 'on_progress' ? 'done' : '' }}">
+                                        <div class="step-icon"><i class="fas fa-wrench"></i></div>
+                                        <div class="step-lbl">Dikerjakan</div>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-icon"><i class="fas fa-flag-checkered"></i></div>
+                                        <div class="step-lbl">Selesai</div>
+                                    </div>
+                                </div>
+
+                                {{-- On-Progress Alert --}}
+                                @if ($status === 'on_progress' && $booking->estimation_duration)
+                                    @php
+                                        $estTime = \Carbon\Carbon::parse($booking->booking_date)
+                                            ->addMinutes($booking->estimation_duration);
+                                    @endphp
+                                    <div class="progress-alert">
+                                        <div class="progress-alert-icon">
+                                            <i class="fas fa-hourglass-half"></i>
+                                        </div>
+                                        <div>
+                                            <div class="progress-alert-title">Sedang Dikerjakan Mekanik</div>
+                                            <div class="progress-alert-sub">
+                                                Estimasi selesai pukul <strong>{{ $estTime->format('H:i') }} WIB</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                            </div>
+                        @endforeach
+                    </div>
+
+                @endif
+
+            </div>{{-- /section-wrapper servis aktif --}}
 
         </div>
     </main>
