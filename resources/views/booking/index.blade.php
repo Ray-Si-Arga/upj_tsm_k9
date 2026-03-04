@@ -639,7 +639,7 @@
                     <h1 class="page-title">
                         Antrian Booking
                     </h1>
-                    <p class="page-subtitle">Kelola jadwal servis â€” hari ini & mendatang.</p>
+                    <p class="page-subtitle">Kelola jadwal servis hari ini & mendatang.</p>
                 </div>
                 <a href="{{ route('booking.walkin') }}" class="btn-walkin">
                     <i class="fas fa-user-plus"></i> Booking Walk-In
