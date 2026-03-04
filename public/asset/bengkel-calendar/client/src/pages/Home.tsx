@@ -32,6 +32,11 @@ export default function Home() {
 
   const { events, addEvent, deleteEvent } = useUserEvents();
 
+  // Cari event yang sudah ada untuk tanggal yang dipilih (untuk pre-fill dialog)
+  const existingEventForSelected = selectedDate
+    ? events.find((e) => e.date === selectedDate) ?? null
+    : null;
+
   // Fetch holidays for the current year
   useEffect(() => {
     const fetchHolidays = async () => {
@@ -147,6 +152,8 @@ export default function Home() {
         onOpenChange={setIsAddEventOpen}
         selectedDate={selectedDate}
         onAddEvent={addEvent}
+        onDeleteEvent={deleteEvent}
+        existingEvent={existingEventForSelected}
       />
 
       {/* Modal Dialog for Event Details */}

@@ -725,7 +725,7 @@
                 <div class="card-icon-wrap"><i class="fas fa-arrow-trend-down"></i></div>
                 <div class="card-label">Nilai Modal</div>
                 <div class="card-amount sm">Rp {{ number_format($nilaiModal, 0, ',', '.') }}</div>
-                <div class="card-meta">Total harga beli Ã— stok</div>
+                <div class="card-meta">Total harga beli stok</div>
                 <div class="card-badge"><i class="fas fa-receipt" style="font-size:.6rem;"></i> Modal tersimpan</div>
             </div>
 
