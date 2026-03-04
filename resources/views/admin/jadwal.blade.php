@@ -72,7 +72,7 @@
             .widget-panel {
                 background: #fff;
                 border-radius: 20px;
-                padding: 30px;
+                padding: 25px;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
                 border: 1px solid #f1f5f9;
             }
