@@ -1,23 +1,19 @@
 <?php
 
 use Livewire\Component;
-use App\Http\Controllers\BookingController;
 use App\Models\Jadwal;
-use Livewire\Attributes\On;
 
 new class extends Component {
     public function with(): array
     {
         $jadwals = Jadwal::all()->map(function ($jadwal) {
             return [
-                'id' => $jadwal->event_id,
+                'id' => $jadwal->date,
                 'date' => $jadwal->date,
                 'title' => $jadwal->title,
                 'description' => $jadwal->description,
-                'color' => $jadwal->color,
-                'startTime' => $jadwal->start_time ? date('H:i', strtotime($jadwal->start_time)) : null,
-                'endTime' => $jadwal->end_time ? date('H:i', strtotime($jadwal->end_time)) : null,
                 'isClosed' => (bool) $jadwal->is_closed,
+                'isOperational' => (bool) $jadwal->is_operational,
             ];
         })->toArray();
 
@@ -28,17 +24,33 @@ new class extends Component {
 
     public function handleAddEvent($eventData)
     {
-        app(BookingController::class)->storeJadwal($eventData);
+        Jadwal::updateOrCreate(
+            ['date' => $eventData['date']],
+            [
+                'title' => $eventData['title'],
+                'description' => $eventData['description'] ?? null,
+                'is_closed' => $eventData['isClosed'] ?? false,
+                'is_operational' => $eventData['isOperational'] ?? false,
+            ]
+        );
     }
 
     public function handleUpdateEvent($eventData)
     {
-        app(BookingController::class)->storeJadwal($eventData);
+        Jadwal::updateOrCreate(
+            ['date' => $eventData['date']],
+            [
+                'title' => $eventData['title'],
+                'description' => $eventData['description'] ?? null,
+                'is_closed' => $eventData['isClosed'] ?? false,
+                'is_operational' => $eventData['isOperational'] ?? false,
+            ]
+        );
     }
 
     public function handleDeleteEvent($id)
     {
-        app(BookingController::class)->deleteJadwal($id);
+        Jadwal::where('date', $id)->delete();
     }
 };
 ?>
@@ -49,30 +61,27 @@ new class extends Component {
     @script
     <script>
         // Inject data awal ke widget React
-        window.BengkelCalendarInitialEvents = $wire.jadwals;
+        window.BengkelCalendarInitialEvents = @js($jadwals);
 
         // Render widget
         if (window.BengkelCalendar) {
             window.BengkelCalendar.render("kalender-container");
+        } else {
+            window.addEventListener('bengkel-calendar-ready', function () {
+                window.BengkelCalendar.render("kalender-container");
+            }, { once: true });
         }
 
         // Listener untuk event React widget
         window.addEventListener('bengkel-calendar-add', (e) => {
-            console.log('Received bengkel-calendar-add with detail: ', e.detail);
-            $wire.handleAddEvent(e.detail).then(() => {
-                console.log('Successfully saved to DB!');
-            }).catch(err => {
-                console.error('Failed to save to DB (HandleAddEvent)', err);
-            });
+            $wire.handleAddEvent(e.detail);
         });
 
         window.addEventListener('bengkel-calendar-update', (e) => {
-            console.log('Received bengkel-calendar-update with detail: ', e.detail);
             $wire.handleUpdateEvent(e.detail);
         });
 
         window.addEventListener('bengkel-calendar-delete', (e) => {
-            console.log('Received bengkel-calendar-delete with id: ', e.detail.id);
             $wire.handleDeleteEvent(e.detail.id);
         });
     </script>
