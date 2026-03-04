@@ -316,7 +316,7 @@
                             <th>Mekanik Bertugas</th>
                             <th>Pekerjaan</th>
                             <th class="text-end">Total Biaya</th>
-                            <th class="text-center">Dokumen</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
