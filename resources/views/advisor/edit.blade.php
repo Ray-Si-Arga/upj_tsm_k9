@@ -9,15 +9,12 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
 
     <style>
-        /* Modern & Soft UI */
-        body {
-            background-color: #f4f6f9;
-        }
+        body { background-color: #f4f6f9; }
 
         .form-card {
             border: none;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             background: white;
             overflow: hidden;
             margin-bottom: 24px;
@@ -51,18 +48,16 @@
             margin-bottom: 6px;
         }
 
-        .form-control,
-        .form-select {
+        .form-control, .form-select {
             border-radius: 8px;
             border: 1px solid #dee2e6;
             padding: 10px 15px;
             font-size: 0.95rem;
         }
 
-        .form-control:focus,
-        .form-select:focus {
+        .form-control:focus, .form-select:focus {
             border-color: #2c3e50;
-            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+            box-shadow: 0 0 0 3px rgba(44,62,80,0.1);
         }
 
         .input-readonly {
@@ -76,7 +71,7 @@
             background: #ffffff;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             margin-bottom: 25px;
             border-left: 5px solid #ffc107;
         }
@@ -88,7 +83,7 @@
             border-radius: 8px;
             font-weight: 600;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+            box-shadow: 0 4px 6px rgba(13,110,253,0.2);
             transition: all 0.3s;
         }
 
@@ -97,25 +92,13 @@
             transform: translateY(-2px);
         }
 
-        .table-responsive {
-            overflow: visible !important;
-        }
-        .ts-dropdown {
-            z-index: 9999;
-        }
-        .ts-control {
-            border-radius: 8px;
-            padding: 8px 12px;
-        }
+        .table-responsive { overflow: visible !important; }
+        .ts-dropdown { z-index: 9999; }
+        .ts-control { border-radius: 8px; padding: 8px 12px; }
 
         @media (max-width: 768px) {
-            .form-header-title {
-                font-size: 1rem;
-                padding: 12px 15px;
-            }
-            .form-card {
-                margin-bottom: 15px;
-            }
+            .form-header-title { font-size: 1rem; padding: 12px 15px; }
+            .form-card { margin-bottom: 15px; }
             .border-end-md {
                 border-right: none !important;
                 border-bottom: 1px dashed #dee2e6;
@@ -125,14 +108,14 @@
         }
 
         @media (min-width: 769px) {
-            .border-end-md {
-                border-right: 1px dashed #dee2e6;
-            }
+            .border-end-md { border-right: 1px dashed #dee2e6; }
         }
     </style>
 
     <main class="py-4">
         <div class="container">
+
+            {{-- HEADER --}}
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="fw-bold text-dark mb-1">Edit Service Advisor</h4>
@@ -155,17 +138,22 @@
                 @csrf
                 @method('PUT')
 
-                {{-- INFO BOOKING (READ ONLY) --}}
+                {{-- INFO ANTRIAN (READ ONLY — DI-KEEP) --}}
                 <div class="booking-selector-area">
                     <div class="row align-items-center">
                         <div class="col-md-8">
-                            <h6 class="fw-bold text-warning mb-1">Data Antrian #{{ $advisor->booking->queue_number }}</h6>
+                            <h6 class="fw-bold text-warning mb-1">
+                                Data Antrian #{{ $advisor->booking->queue_number }}
+                            </h6>
                             <p class="mb-0 text-dark">
-                                <strong>{{ $advisor->booking->customer_name }}</strong> ({{ strtoupper($advisor->booking->plate_number) }}) - {{ $advisor->booking->vehicle_type }}
+                                <strong>{{ $advisor->booking->customer_name }}</strong>
+                                ({{ strtoupper($advisor->booking->plate_number) }}) — {{ $advisor->booking->vehicle_type }}
                             </p>
                         </div>
                         <div class="col-md-4 text-md-end mt-2 mt-md-0">
-                            <span class="badge bg-light text-dark border">{{ \Carbon\Carbon::parse($advisor->booking->booking_date)->format('d M Y') }}</span>
+                            <span class="badge bg-light text-dark border">
+                                {{ \Carbon\Carbon::parse($advisor->booking->booking_date)->format('d M Y') }}
+                            </span>
                         </div>
                     </div>
                     <div class="mt-3 p-3 rounded-3 bg-light border border-warning" style="border-left-width: 4px !important;">
@@ -173,7 +161,9 @@
                             <i class="fas fa-comment-dots text-warning mt-1 me-3 fs-5"></i>
                             <div>
                                 <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem;">Keluhan Awal</small>
-                                <p class="mb-0 text-dark fw-bold fst-italic">"{{ $advisor->booking->complaint ?? 'Tidak ada keluhan.' }}"</p>
+                                <p class="mb-0 text-dark fw-bold fst-italic">
+                                    "{{ $advisor->booking->complaint ?? 'Tidak ada keluhan.' }}"
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -186,49 +176,92 @@
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-4">
+
+                            {{-- KIRI: Pembawa --}}
                             <div class="col-12 col-md-6 border-end-md">
-                                <div class="section-label text-primary">Data Pembawa</div>
+                                <div class="section-label text-primary">Data Pembawa (Saat Ini)</div>
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label-custom">Nama Pembawa</label>
-                                        <input type="text" name="carrier_name" value="{{ $advisor->carrier_name }}" class="form-control" required>
+                                        <input type="text" name="carrier_name" class="form-control" required
+                                            value="{{ $advisor->carrier_name }}" placeholder="Nama...">
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label-custom">No. HP</label>
-                                        <input type="text" name="carrier_phone" value="{{ $advisor->carrier_phone }}" class="form-control" required>
+                                        <input type="text" name="carrier_phone" class="form-control" required
+                                            value="{{ $advisor->carrier_phone }}" placeholder="08xxx">
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label-custom">Hubungan</label>
                                         <select name="relationship" class="form-select">
                                             <option value="Pemilik Sendiri" {{ $advisor->relationship == 'Pemilik Sendiri' ? 'selected' : '' }}>Pemilik</option>
-                                            <option value="Keluarga" {{ $advisor->relationship == 'Keluarga' ? 'selected' : '' }}>Keluarga</option>
-                                            <option value="Karyawan" {{ $advisor->relationship == 'Karyawan' ? 'selected' : '' }}>Karyawan</option>
-                                            <option value="Lainnya" {{ $advisor->relationship == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                            <option value="Keluarga"        {{ $advisor->relationship == 'Keluarga'        ? 'selected' : '' }}>Keluarga</option>
+                                            <option value="Karyawan"        {{ $advisor->relationship == 'Karyawan'        ? 'selected' : '' }}>Karyawan</option>
+                                            <option value="Lainnya"         {{ $advisor->relationship == 'Lainnya'         ? 'selected' : '' }}>Lainnya</option>
                                         </select>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label-custom">Alamat</label>
-                                        <input type="text" name="carrier_address" value="{{ $advisor->carrier_address }}" class="form-control">
+                                        <input type="text" name="carrier_address" class="form-control"
+                                            value="{{ $advisor->carrier_address }}" placeholder="Domisili">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label-custom">Kel/Kec</label>
+                                        <input type="text" name="carrier_area" class="form-control"
+                                            value="{{ $advisor->carrier_area }}">
                                     </div>
                                 </div>
                             </div>
+
+                            {{-- KANAN: Pemilik --}}
                             <div class="col-12 col-md-6">
-                                <div class="section-label text-success">Data Pemilik</div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="section-label text-success mb-0">Data Pemilik (STNK)</div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="copyDataCheck"
+                                            onchange="copyCarrierToOwner()">
+                                        <label class="form-check-label small" for="copyDataCheck">Sama Dengan Pembawa</label>
+                                    </div>
+                                </div>
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label-custom">Nama Pemilik</label>
-                                        <input type="text" name="owner_name" value="{{ $advisor->owner_name }}" class="form-control" required>
+                                        <input type="text" name="owner_name" id="owner_name" class="form-control" required
+                                            value="{{ $advisor->owner_name }}">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label-custom">No. HP</label>
+                                        <input type="text" name="owner_phone" id="owner_phone" class="form-control"
+                                            value="{{ $advisor->owner_phone }}">
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label-custom">Dari Dealer Sendiri</label>
+                                        <div class="d-flex gap-2 mt-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="is_own_dealer"
+                                                    id="dYes" value="1" {{ $advisor->is_own_dealer ? 'checked' : '' }}>
+                                                <label class="form-check-label small" for="dYes">Ya</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="is_own_dealer"
+                                                    id="dNo" value="0" {{ !$advisor->is_own_dealer ? 'checked' : '' }}>
+                                                <label class="form-check-label small" for="dNo">Tidak</label>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label-custom">No. HP Pemilik</label>
-                                        <input type="text" name="owner_phone" value="{{ $advisor->owner_phone }}" class="form-control">
+                                        <label class="form-label-custom">Alamat</label>
+                                        <input type="text" name="owner_address" id="owner_address" class="form-control"
+                                            value="{{ $advisor->owner_address }}">
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label-custom">Alamat Pemilik</label>
-                                        <input type="text" name="owner_address" value="{{ $advisor->owner_address }}" class="form-control">
+                                        <label class="form-label-custom">Kel/Kec</label>
+                                        <input type="text" name="owner_area" id="owner_area" class="form-control"
+                                            value="{{ $advisor->owner_area }}">
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -239,71 +272,146 @@
                         <i class="fas fa-motorcycle me-2"></i> Data Kendaraan
                     </div>
                     <div class="card-body p-4">
+
+                        {{-- Readonly dari booking --}}
+                        <div class="p-3 mb-4 rounded-3" style="background-color: #f8f9fa;">
+                            <div class="row g-3">
+                                <div class="col-6 col-md-3">
+                                    <label class="form-label-custom">Antrian</label>
+                                    <input type="text" class="form-control input-readonly" readonly
+                                        value="{{ $advisor->booking->queue_number }}">
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="form-label-custom">Tgl Booking</label>
+                                    <input type="text" class="form-control input-readonly" readonly
+                                        value="{{ \Carbon\Carbon::parse($advisor->booking->booking_date)->format('d M Y') }}">
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="form-label-custom">No. Polisi</label>
+                                    <input type="text" class="form-control input-readonly" readonly
+                                        value="{{ strtoupper($advisor->booking->plate_number) }}">
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <label class="form-label-custom">Tipe Motor</label>
+                                    <input type="text" class="form-control input-readonly" readonly
+                                        value="{{ $advisor->booking->vehicle_type }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Input manual --}}
+                        <div class="section-label">Pengecekan Fisik</div>
                         <div class="row g-3">
-                            <div class="col-md-3">
-                                <label class="form-label-custom">Odometer (KM)</label>
-                                <input type="text" id="odometer_display" class="form-control fw-bold text-primary" value="{{ number_format($advisor->odometer, 0, ',', '.') }}" required>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label-custom text-danger">KM (Saat ini)*</label>
+                                <input type="text" id="odometer_display" class="form-control fw-bold"
+                                    value="{{ number_format($advisor->odometer, 0, ',', '.') }}" required>
                                 <input type="hidden" name="odometer" id="odometer_real" value="{{ $advisor->odometer }}">
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label-custom">Tahun Kendaraan</label>
-                                <input type="number" name="vehicle_year" value="{{ $advisor->vehicle_year }}" class="form-control">
+                            <div class="col-6 col-md-3">
+                                <label class="form-label-custom">Tahun</label>
+                                <input type="number" name="vehicle_year" class="form-control"
+                                    value="{{ $advisor->vehicle_year }}" placeholder="20xx">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-6 col-md-3">
                                 <label class="form-label-custom">No. Mesin</label>
-                                <input type="text" name="engine_number" value="{{ $advisor->engine_number }}" class="form-control">
+                                <input type="text" name="engine_number" class="form-control"
+                                    value="{{ $advisor->engine_number }}" placeholder="Opsional">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-6 col-md-3">
                                 <label class="form-label-custom">No. Rangka</label>
-                                <input type="text" name="chassis_number" value="{{ $advisor->chassis_number }}" class="form-control">
+                                <input type="text" name="chassis_number" class="form-control"
+                                    value="{{ $advisor->chassis_number }}" placeholder="Opsional">
+                            </div>
+                        </div>
+
+                        <div class="section-label mt-4">Data Tambahan</div>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label-custom">Alasan Ke Ahass</label>
+                                <select name="visit_reason" class="form-control">
+                                    <option value="">Pilih...</option>
+                                    @foreach(['Inisiatif Sendiri','SMS Reminder','Telp Reminder','Sticker Reminder','Lainnya'] as $reason)
+                                        <option value="{{ $reason }}" {{ $advisor->visit_reason == $reason ? 'selected' : '' }}>
+                                            {{ $reason }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label-custom">Email</label>
+                                <input type="email" name="customer_email" class="form-control"
+                                    value="{{ $advisor->customer_email }}">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label-custom">Sosmed</label>
+                                <input type="text" name="customer_social" class="form-control"
+                                    value="{{ $advisor->customer_social }}" placeholder="@ig">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label-custom text-danger fw-bold">Nama Mekanik*</label>
+                                <input type="text" name="nama_mekanik" class="form-control border-danger" required
+                                    value="{{ $advisor->nama_mekanik }}" placeholder="Wajib diisi">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label-custom">Keluhan Konsumen</label>
+                                <textarea name="customer_complaint" class="form-control" rows="2"
+                                    placeholder="Keluhan dari konsumen...">{{ $advisor->customer_complaint }}</textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label-custom">Catatan SA</label>
+                                <textarea name="advisor_notes" class="form-control" rows="2"
+                                    placeholder="Catatan fisik motor...">{{ $advisor->advisor_notes }}</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- CARD 3: PENGECEKAN --}}
+                {{-- CARD 3: PERSETUJUAN --}}
                 <div class="form-card">
-                    <div class="form-header-title">
-                        <i class="fas fa-clipboard-check me-2"></i> Hasil Pengecekan
+                    <div class="form-header-title bg-warning text-dark">
+                        <i class="fas fa-handshake me-2"></i> Persetujuan
                     </div>
                     <div class="card-body p-4">
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label class="form-label-custom">Nama Mekanik</label>
-                                <input type="text" name="nama_mekanik" value="{{ $advisor->nama_mekanik }}" class="form-control" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label-custom">Level Bahan Bakar</label>
-                                <div class="d-flex gap-3 mt-2">
-                                    @foreach(['0' => 'E', '25' => '1/4', '50' => '1/2', '75' => '3/4', '100' => 'F'] as $val => $lbl)
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="fuel_level" value="{{ $val }}" id="fuel_{{ $val }}" {{ $advisor->fuel_level == $val ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="fuel_{{ $val }}">{{ $lbl }}</label>
-                                        </div>
-                                    @endforeach
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6 border-end-md">
+                                <label class="form-label-custom fw-bold">Pekerjaan Tambahan:</label>
+                                <div class="d-flex flex-column gap-2 mt-1">
+                                    <div class="form-check p-3 border rounded bg-light position-relative">
+                                        <input class="form-check-input" type="radio" name="pkb_approval"
+                                            id="approval_call" value="hubungi" checked>
+                                        <label class="form-check-label w-100 stretched-link" for="approval_call">
+                                            <i class="fas fa-phone-alt me-2 text-primary"></i> Konfirmasi / Telp
+                                        </label>
+                                    </div>
+                                    <div class="form-check p-3 border rounded bg-light position-relative">
+                                        <input class="form-check-input" type="radio" name="pkb_approval"
+                                            id="approval_direct" value="langsung">
+                                        <label class="form-check-label w-100 stretched-link" for="approval_direct">
+                                            <i class="fas fa-tools me-2 text-success"></i> Langsung Kerja
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <label class="form-label-custom">Keluhan Konsumen</label>
-                                <textarea name="customer_complaint" class="form-control" rows="2">{{ $advisor->customer_complaint }}</textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label-custom">Catatan Advisor</label>
-                                <textarea name="advisor_notes" class="form-control" rows="2">{{ $advisor->advisor_notes }}</textarea>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label-custom">Persetujuan PKB</label>
-                                <select name="pkb_approval" class="form-select">
-                                    <option value="Ya" {{ $advisor->pkb_approval == 'Ya' ? 'selected' : '' }}>Ya</option>
-                                    <option value="Tidak" {{ $advisor->pkb_approval == 'Tidak' ? 'selected' : '' }}>Tidak</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label-custom">Part Bekas Dibawa?</label>
-                                <select name="part_bekas_dibawa" class="form-select">
-                                    <option value="Ya" {{ $advisor->part_bekas_dibawa == 'Ya' ? 'selected' : '' }}>Ya</option>
-                                    <option value="Tidak" {{ $advisor->part_bekas_dibawa == 'Tidak' ? 'selected' : '' }}>Tidak</option>
-                                </select>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label-custom fw-bold">Part Bekas:</label>
+                                <div class="d-flex gap-2 mt-1">
+                                    <div
+                                        class="form-check flex-fill p-3 border rounded bg-light text-center position-relative">
+                                        <input class="form-check-input float-none me-1" type="radio"
+                                            name="part_bekas_dibawa" id="part_yes" value="1">
+                                        <label class="form-check-label fw-bold stretched-link"
+                                            for="part_yes">DIBAWA</label>
+                                    </div>
+                                    <div
+                                        class="form-check flex-fill p-3 border rounded bg-light text-center position-relative">
+                                        <input class="form-check-input float-none me-1" type="radio"
+                                            name="part_bekas_dibawa" id="part_no" value="0" checked>
+                                        <label class="form-check-label fw-bold stretched-link"
+                                            for="part_no">DITINGGAL</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -311,17 +419,17 @@
 
                 {{-- CARD 4: DAFTAR PEKERJAAN --}}
                 <div class="form-card">
-                    <div class="form-header-title" style="background-color: #0d6efd;">
-                        <i class="fas fa-tools me-2"></i> Daftar Pekerjaan (Jasa)
+                    <div class="form-header-title">
+                        <i class="fas fa-tools me-2"></i> Daftar Pekerjaan
                     </div>
                     <div class="card-body p-4">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover align-middle mb-0" id="jobTable">
+                            <table class="table table-bordered table-hover align-middle mb-0" id="jobTable" style="min-width: 400px;">
                                 <thead class="table-light text-center">
                                     <tr>
-                                        <th style="width: 65%">Nama Pekerjaan</th>
-                                        <th style="width: 30%">Biaya (Rp)</th>
-                                        <th style="width: 5%">x</th>
+                                        <th style="width: 45%">Jenis Pekerjaan</th>
+                                        <th style="width: 35%">Estimasi Biaya</th>
+                                        <th style="width: 20%">x</th>
                                     </tr>
                                 </thead>
                                 <tbody id="jobListBody"></tbody>
@@ -340,6 +448,10 @@
                                 </tfoot>
                             </table>
                         </div>
+                        <div id="emptyJobState" class="text-center py-4 text-muted border rounded mt-0 bg-light"
+                            style="border-top: none !important; display: none;">
+                            <p class="small mb-0">Belum ada pekerjaan.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -350,7 +462,8 @@
                     </div>
                     <div class="card-body p-4">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover align-middle mb-0" id="sparepartTable">
+                            <table class="table table-bordered table-hover align-middle mb-0" id="sparepartTable"
+                                style="min-width: 500px;">
                                 <thead class="table-light text-center">
                                     <tr>
                                         <th style="width: 40%">Barang</th>
@@ -364,7 +477,8 @@
                                 <tfoot>
                                     <tr>
                                         <td colspan="5" class="p-2">
-                                            <button type="button" class="btn btn-outline-success btn-sm fw-bold w-100" onclick="addSparepartRow()">
+                                            <button type="button" class="btn btn-outline-success btn-sm fw-bold w-100"
+                                                onclick="addSparepartRow()">
                                                 <i class="fas fa-plus me-1"></i> Tambah Barang
                                             </button>
                                         </td>
@@ -376,61 +490,123 @@
                                 </tfoot>
                             </table>
                         </div>
+                        <div id="emptyPartState" class="text-center py-4 text-muted border rounded mt-0 bg-light"
+                            style="border-top: none !important;">
+                            <p class="small mb-0">Belum ada sparepart.</p>
+                        </div>
                     </div>
                 </div>
+                
 
                 <div class="d-grid mt-5 mb-5">
                     <button type="submit" class="btn btn-primary-custom btn-lg shadow">
                         <i class="fas fa-save me-2"></i> PERBARUI DATA
                     </button>
                 </div>
+
             </form>
         </div>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script>
-        const servicesData = @json($services);
-        const sparepartsData = @json($spareparts);
-        const existingJobs = @json($advisor->jobs);
-        const existingParts = @json($advisor->spareparts);
+        document.addEventListener('DOMContentLoaded', function () {
 
-        let jobRowIdx = 0;
-        let partRowIdx = 0;
+            @if (session('success'))
+                new Notify({
+                    status: 'success',
+                    title: 'Berhasil',
+                    text: '{{ session('success') }}',
+                    effect: 'slide',
+                    autotimeout: 3000
+                });
+            @endif
 
-        document.addEventListener("DOMContentLoaded", function() {
-            // Odometer Logic
+            // Odometer format
             const display = document.getElementById('odometer_display');
-            const real = document.getElementById('odometer_real');
-            display.addEventListener('input', function() {
+            const real    = document.getElementById('odometer_real');
+            display.addEventListener('input', function () {
                 let angka = this.value.replace(/\D/g, '');
                 this.value = angka.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                 real.value = angka;
             });
 
-            // Load Existing Jobs
+            // Load existing jobs
             if (Array.isArray(existingJobs)) {
-                existingJobs.forEach(job => addJobRow(job.name, job.price));
+                existingJobs.forEach(job => addJobRow(job.name || '', parseInt(job.price) || 0));
+            }
+            if (document.getElementById('jobListBody').children.length === 0) {
+                document.getElementById('emptyJobState').style.display = 'block';
             }
 
-            // Load Existing Parts
+            // Load existing spareparts
             if (Array.isArray(existingParts)) {
                 existingParts.forEach(part => addSparepartRow(part.id, part.qty, part.price));
+            }
+            if (document.getElementById('sparepartTableBody').children.length === 0) {
+                document.getElementById('emptyPartState').style.display = 'block';
             }
 
             calcJobTotal();
             calcPartTotal();
         });
 
+        // Copy Pembawa → Pemilik
+        function copyCarrierToOwner() {
+            const checked = document.getElementById('copyDataCheck').checked;
+            if (checked) {
+                document.getElementById('owner_name').value    = document.querySelector('[name=carrier_name]').value;
+                document.getElementById('owner_address').value = document.querySelector('[name=carrier_address]').value;
+                document.getElementById('owner_area').value    = document.querySelector('[name=carrier_area]').value;
+                document.getElementById('owner_phone').value   = document.querySelector('[name=carrier_phone]').value;
+            } else {
+                ['owner_name','owner_address','owner_area','owner_phone'].forEach(id => {
+                    document.getElementById(id).value = '';
+                });
+            }
+        }
+
+        // ── DATA ──────────────────────────────────────────────────────────────
+        const servicesData  = @json($services);
+        const sparepartsData = @json($spareparts);
+        const existingJobs  = @json($advisor->jobs ?? []);
+        const existingParts = @json($advisor->spareparts ?? []);
+
+        let jobRowIdx  = 0;
+        let partRowIdx = 0;
+
+        // ── JOB LOGIC ─────────────────────────────────────────────────────────
+        function fillJobPrice(rowId, val) {
+            const svc = servicesData.find(s => s.name === val);
+            const row = document.getElementById(rowId);
+            if (!row) return;
+
+            const displayInput = row.querySelector('.job-price-display');
+            const rawInput     = row.querySelector('.job-price-raw');
+
+            if (svc && svc.price) {
+                displayInput.value = new Intl.NumberFormat('id-ID').format(svc.price);
+                rawInput.value     = svc.price;
+            } else {
+                // Custom — clear harga, fokus ke input agar user isi manual
+                displayInput.value = '';
+                rawInput.value     = 0;
+                setTimeout(() => displayInput.focus(), 100);
+            }
+            calcJobTotal();
+        }
+
         function addJobRow(name = '', price = 0) {
-            const tbody = document.getElementById('jobListBody');
-            const rowId = `job-row-${jobRowIdx}`;
+            document.getElementById('emptyJobState').style.display = 'none';
+            const tbody    = document.getElementById('jobListBody');
+            const rowId    = `job-row-${jobRowIdx}`;
             const selectId = `job-select-${jobRowIdx}`;
             const priceFormatted = price ? new Intl.NumberFormat('id-ID').format(price) : '';
 
             let optionsHtml = '<option value="">Pilih / Ketik Pekerjaan...</option>';
             servicesData.forEach(svc => {
-                optionsHtml += `<option value="${svc.name}" ${svc.name === name ? 'selected' : ''}>${svc.name}</option>`;
+                optionsHtml += `<option value="${svc.name}">${svc.name}</option>`;
             });
 
             const rowHtml = `
@@ -438,7 +614,6 @@
                     <td>
                         <select name="jobs_name[]" id="${selectId}" class="form-select form-select-sm" required>
                             ${optionsHtml}
-                            ${name && !servicesData.find(s => s.name === name) ? `<option value="${name}" selected>${name}</option>` : ''}
                         </select>
                     </td>
                     <td>
@@ -446,7 +621,8 @@
                             <span class="input-group-text">Rp</span>
                             <input type="text" class="form-control form-control-sm job-price-display text-end"
                                 placeholder="0" value="${priceFormatted}"
-                                oninput="syncJobPrice('${rowId}', this)">
+                                oninput="syncJobPrice('${rowId}', this)"
+                                onkeyup="syncJobPrice('${rowId}', this)">
                             <input type="hidden" name="jobs_price[]" class="job-price-raw" value="${price}">
                         </div>
                     </td>
@@ -456,37 +632,44 @@
                         </button>
                     </td>
                 </tr>`;
-            
+
             tbody.insertAdjacentHTML('beforeend', rowHtml);
 
-            new TomSelect(`#${selectId}`, {
-                create: true,
-                onChange: function(val) {
-                    const svc = servicesData.find(s => s.name === val);
-                    if (svc) {
-                        const row = document.getElementById(rowId);
-                        const displayInput = row.querySelector('.job-price-display');
-                        const rawInput = row.querySelector('.job-price-raw');
-                        displayInput.value = new Intl.NumberFormat('id-ID').format(svc.price);
-                        rawInput.value = svc.price;
-                        calcJobTotal();
-                    }
+            const ts = new TomSelect(`#${selectId}`, {
+                create       : true,
+                createOnBlur : true,
+                sortField    : { field: 'text', direction: 'asc' },
+                placeholder  : 'Pilih / Ketik baru...',
+                onChange: function (val) {
+                    fillJobPrice(rowId, val);
                 }
             });
 
+            if (name) {
+                if (!servicesData.find(s => s.name === name)) {
+                    ts.addOption({ value: name, text: name });
+                }
+                // Jika price sudah ada → silent (tidak timpa), jika tidak → trigger onChange
+                ts.setValue(name, price > 0);
+            }
+
             jobRowIdx++;
+            calcJobTotal();
         }
 
         function syncJobPrice(rowId, input) {
-            let val = input.value.replace(/\D/g, '');
-            input.value = val.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-            document.getElementById(rowId).querySelector('.job-price-raw').value = val;
+            let angka = input.value.replace(/\D/g, '');
+            input.value = angka ? new Intl.NumberFormat('id-ID').format(parseInt(angka)) : '';
+            document.getElementById(rowId).querySelector('.job-price-raw').value = angka || 0;
             calcJobTotal();
         }
 
-        function removeJobRow(id) {
-            document.getElementById(id).remove();
+        function removeJobRow(rowId) {
+            document.getElementById(rowId).remove();
             calcJobTotal();
+            if (document.getElementById('jobListBody').children.length === 0) {
+                document.getElementById('emptyJobState').style.display = 'block';
+            }
         }
 
         function calcJobTotal() {
@@ -497,34 +680,39 @@
             document.getElementById('totalJobCost').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
         }
 
+        // ── SPAREPART LOGIC ───────────────────────────────────────────────────
         function addSparepartRow(id = '', qty = 1, price = 0) {
-            const tbody = document.getElementById('sparepartTableBody');
-            const rowId = `part-row-${partRowIdx}`;
+            document.getElementById('emptyPartState').style.display = 'none';
+            const tbody    = document.getElementById('sparepartTableBody');
+            const rowId    = `part-row-${partRowIdx}`;
             const selectId = `part-select-${partRowIdx}`;
             const subtotal = qty * price;
 
-            let optionsHtml = '<option value="">Pilih Barang...</option>';
+            let optionsHtml = '<option value="">Cari & Pilih Barang...</option>';
             sparepartsData.forEach(p => {
-                optionsHtml += `<option value="${p.id}" data-price="${p.harga_jual}" ${p.id == id ? 'selected' : ''}>${p.nama_barang} (Stok: ${p.jumlah_barang})</option>`;
+                optionsHtml += `<option value="${p.id}" data-price="${p.harga_jual}"
+                    ${p.id == id ? 'selected' : ''}>${p.nama_barang} (Stok: ${p.jumlah_barang})</option>`;
             });
 
             const rowHtml = `
                 <tr id="${rowId}">
-                    <td>
+                    <td style="min-width: 250px;">
                         <select name="parts_id[]" id="${selectId}" class="form-select form-select-sm" required>
                             ${optionsHtml}
                         </select>
                     </td>
-                    <td>
-                        <input type="number" name="parts_qty[]" class="form-control form-control-sm part-qty" 
-                            value="${qty}" min="1" oninput="updatePartRow('${rowId}')">
+                    <td style="min-width: 70px;">
+                        <input type="number" name="parts_qty[]" class="form-control form-control-sm text-center part-qty"
+                            value="${qty}" min="1" oninput="updatePartRow('${rowId}')" required>
                     </td>
-                    <td class="text-end">
-                        <span class="part-price-text">Rp ${new Intl.NumberFormat('id-ID').format(price)}</span>
-                        <input type="hidden" class="part-price-raw" value="${price}">
+                    <td style="min-width: 100px;">
+                        <input type="text" class="form-control form-control-sm bg-light text-end part-price-display" readonly
+                            value="${price ? new Intl.NumberFormat('id-ID').format(price) : '0'}">
+                        <input type="hidden" name="parts_price[]" class="part-price-raw" value="${price}">
                     </td>
-                    <td class="text-end fw-bold">
-                        <span class="part-subtotal-text">Rp ${new Intl.NumberFormat('id-ID').format(subtotal)}</span>
+                    <td style="min-width: 100px;">
+                        <input type="text" class="form-control form-control-sm bg-light text-end fw-bold part-subtotal-display" readonly
+                            value="${new Intl.NumberFormat('id-ID').format(subtotal)}">
                         <input type="hidden" class="part-subtotal-raw" value="${subtotal}">
                     </td>
                     <td class="text-center">
@@ -537,34 +725,41 @@
             tbody.insertAdjacentHTML('beforeend', rowHtml);
 
             new TomSelect(`#${selectId}`, {
-                onChange: function(val) {
-                    const option = this.options[val];
+                create      : false,
+                sortField   : { field: 'text', direction: 'asc' },
+                placeholder : 'Ketik nama barang...',
+                onChange: function (val) {
+                    const option = sparepartsData.find(p => p.id == val);
                     if (option) {
-                        const price = parseInt(option.price);
+                        const p = parseInt(option.harga_jual) || 0;
                         const row = document.getElementById(rowId);
-                        row.querySelector('.part-price-raw').value = price;
-                        row.querySelector('.part-price-text').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(price);
+                        row.querySelector('.part-price-raw').value     = p;
+                        row.querySelector('.part-price-display').value = new Intl.NumberFormat('id-ID').format(p);
                         updatePartRow(rowId);
                     }
                 }
             });
 
             partRowIdx++;
+            calcPartTotal();
         }
 
         function updatePartRow(rowId) {
-            const row = document.getElementById(rowId);
-            const qty = parseInt(row.querySelector('.part-qty').value) || 0;
-            const price = parseInt(row.querySelector('.part-price-raw').value) || 0;
+            const row      = document.getElementById(rowId);
+            const qty      = parseInt(row.querySelector('.part-qty').value) || 0;
+            const price    = parseInt(row.querySelector('.part-price-raw').value) || 0;
             const subtotal = qty * price;
-            row.querySelector('.part-subtotal-raw').value = subtotal;
-            row.querySelector('.part-subtotal-text').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(subtotal);
+            row.querySelector('.part-subtotal-raw').value          = subtotal;
+            row.querySelector('.part-subtotal-display').value      = new Intl.NumberFormat('id-ID').format(subtotal);
             calcPartTotal();
         }
 
-        function removePartRow(id) {
-            document.getElementById(id).remove();
+        function removePartRow(rowId) {
+            document.getElementById(rowId).remove();
             calcPartTotal();
+            if (document.getElementById('sparepartTableBody').children.length === 0) {
+                document.getElementById('emptyPartState').style.display = 'block';
+            }
         }
 
         function calcPartTotal() {

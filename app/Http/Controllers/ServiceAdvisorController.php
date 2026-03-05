@@ -67,7 +67,7 @@ class ServiceAdvisorController extends Controller
             'odometer'          => 'required',
             'parts_id'          => 'nullable|array',
             'parts_qty'         => 'nullable|array',
-            'fuel_level'        => 'required|string',
+            
             'pkb_approval'      => 'required',
             'part_bekas_dibawa' => 'required',
         ]);
@@ -149,7 +149,7 @@ class ServiceAdvisorController extends Controller
                 'chassis_number'    => $request->chassis_number,
                 'customer_email'    => $request->customer_email,
                 'customer_social'   => $request->customer_social,
-                'fuel_level'        => $request->fuel_level,
+                //'fuel_level'        => $request->fuel_level,
                 'pkb_approval'      => $request->pkb_approval,
                 'part_bekas_dibawa' => $request->part_bekas_dibawa,
             ]);
@@ -208,7 +208,7 @@ class ServiceAdvisorController extends Controller
             'odometer'          => 'required',
             'parts_id'          => 'nullable|array',
             'parts_qty'         => 'nullable|array',
-            'fuel_level'        => 'required|string',
+            //'fuel_level'        => 'required|string',
             'pkb_approval'      => 'required',
             'part_bekas_dibawa' => 'required',
         ]);
@@ -300,7 +300,7 @@ class ServiceAdvisorController extends Controller
                 'chassis_number'    => $request->chassis_number,
                 'customer_email'    => $request->customer_email,
                 'customer_social'   => $request->customer_social,
-                'fuel_level'        => $request->fuel_level,
+                //'fuel_level'        => $request->fuel_level,
                 'pkb_approval'      => $request->pkb_approval,
                 'part_bekas_dibawa' => $request->part_bekas_dibawa,
             ]);
