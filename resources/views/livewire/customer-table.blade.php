@@ -80,10 +80,14 @@
                                             <i class="fas fa-ban"></i>
                                         </button>
                                     @endif
-                                    <a href="{{ route('hapus', $customer->id) }}"
-                                        onclick="return confirm('Hapus data ini?')" class="btn-act btn-hapus" title="Hapus">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
+                                    <form action="{{ route('hapus', $customer->id) }}" method="POST"
+      onsubmit="return confirm('Yakin ingin menghapus pengguna ini? Semua data booking akan ikut terhapus.')">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn-act btn-hapus" title="Hapus">
+        <i class="fas fa-trash-alt"></i>
+    </button>
+</form>
                                 </div>
                             </td>
                         </tr>

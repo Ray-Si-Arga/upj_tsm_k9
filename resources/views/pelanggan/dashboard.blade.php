@@ -711,117 +711,13 @@
                  SERVIS AKTIF
             ============================================================ --}}
             <div class="sec-label mt-1">
-                <i class="fas fa-wrench" style="color:var(--red);"></i>
-                Servis Aktif
-            </div>
-
-            @if ($activeBookings->isEmpty())
-
-                {{-- EMPTY STATE --}}
-                <div class="empty-panel">
-                    <div class="empty-icon">
-                        <i class="fas fa-motorcycle"></i>
-                    </div>
-                    <div class="empty-title">Tidak ada servis aktif</div>
-                    <div class="empty-sub">Kendaraan Anda sedang tidak dalam antrian servis.</div>
-                    <a href="{{ route('pelanggan.service') }}" class="btn-red" style="text-decoration:none;">
-                        <i class="fas fa-plus"></i> Booking Sekarang
-                    </a>
+    <i class="fas fa-wrench" style="color:var(--red);"></i>
+    Servis Aktif
+</div>
+@livewire('booking-status-tracker')
                 </div>
 
-            @else
-
-                <div class="panel">
-                    <div class="panel-hdr">
-                        <div class="panel-title">
-                            <i class="fas fa-list-ol" style="color:var(--red);"></i>
-                            Antrian Anda
-                        </div>
-                        <span class="panel-badge">{{ $activeBookings->count() }} aktif</span>
-                    </div>
-
-                    @foreach ($activeBookings as $booking)
-                        <div class="booking-item">
-
-                            {{-- Meta: tanggal + nomor antrian --}}
-                            <div class="booking-meta-row">
-                                <div>
-                                    <div class="booking-date">
-                                        {{ \Carbon\Carbon::parse($booking->booking_date)->locale('id')->translatedFormat('l, d F Y') }}
-                                    </div>
-                                    <div class="booking-time">
-                                        Jam {{ \Carbon\Carbon::parse($booking->booking_date)->format('H:i') }} WIB
-                                    </div>
-                                </div>
-                                <span class="queue-badge">Antrian #{{ $booking->queue_number }}</span>
-                            </div>
-
-                            {{-- Kendaraan --}}
-                            <div class="vehicle-row">
-                                <span class="vehicle-name">{{ $booking->vehicle_type }}</span>
-                                <span class="plate-badge">{{ $booking->plate_number }}</span>
-                            </div>
-
-                            {{-- Layanan --}}
-                            <div class="service-row mb-0">
-                                <span class="service-key">Layanan</span>
-                                <span class="service-val">{{ $booking->service->name ?? 'Service Umum' }}</span>
-                            </div>
-
-                            {{-- STEPPER --}}
-                            @php
-                                $status = $booking->status;
-                                $progW  = '0%';
-                                if ($status === 'pending')     $progW = '0%';
-                                if ($status === 'approved')    $progW = '44%';
-                                if ($status === 'on_progress') $progW = '75%';
-                            @endphp
-
-                            <div class="stepper-wrap">
-                                <div class="step-progress" style="width:{{ $progW }};"></div>
-
-                                <div class="step-item {{ in_array($status, ['pending','approved','on_progress']) ? 'done' : '' }}">
-                                    <div class="step-icon"><i class="fas fa-clock"></i></div>
-                                    <div class="step-lbl">Menunggu</div>
-                                </div>
-                                <div class="step-item {{ in_array($status, ['approved','on_progress']) ? 'done' : '' }}">
-                                    <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
-                                    <div class="step-lbl">Diterima</div>
-                                </div>
-                                <div class="step-item {{ $status === 'on_progress' ? 'done' : '' }}">
-                                    <div class="step-icon"><i class="fas fa-wrench"></i></div>
-                                    <div class="step-lbl">Dikerjakan</div>
-                                </div>
-                                <div class="step-item">
-                                    <div class="step-icon"><i class="fas fa-flag-checkered"></i></div>
-                                    <div class="step-lbl">Selesai</div>
-                                </div>
-                            </div>
-
-                            {{-- On-Progress Alert --}}
-                            @if ($status === 'on_progress' && $booking->estimation_duration)
-                                @php
-                                    $estTime = \Carbon\Carbon::parse($booking->booking_date)
-                                        ->addMinutes($booking->estimation_duration);
-                                @endphp
-                                <div class="progress-alert">
-                                    <div class="progress-alert-icon">
-                                        <i class="fas fa-hourglass-half"></i>
-                                    </div>
-                                    <div>
-                                        <div class="progress-alert-title">Sedang Dikerjakan Mekanik</div>
-                                        <div class="progress-alert-sub">
-                                            Estimasi selesai pukul <strong>{{ $estTime->format('H:i') }} WIB</strong>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-
-                        </div>
-                    @endforeach
-                </div>
-
-            @endif
+            
 
         </div>
     </main>

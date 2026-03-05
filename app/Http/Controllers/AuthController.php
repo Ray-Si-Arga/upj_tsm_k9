@@ -7,43 +7,20 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Unique;
+use Illuminate\Validation\Rules\Password; // [PERBAIKAN #5] Import Password rules
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-
-    // public function index(Request $request)
-    // {
-    //     $query = User::where('role', 'customer')->withCount('bookings')->with('bookings');
-
-    //     if ($request->has('search') && $request->search != '') {
-    //         $search = $request->search;
-    //         $query->where(function ($q) use ($search) {
-    //             $q->where('name', 'like', "%{$search}%")
-    //                 ->orWhere('email', 'like', "%{$search}%")
-    //                 ->orWhereHas('bookings', function ($q) use ($search) {
-    //                     $q->where('customer_whatsapp', 'like', "%{$search}%");
-    //                 });
-    //         });
-    //     }
-
-    //     $customers = $query->orderBy('created_at', 'desc')->paginate(10);
-
-    //     return view('customers.index', compact('customers'));
-    // }
-
     /**
      * Halaman login
      */
     public function login()
     {
         if (Auth::check()) {
-            $user = Auth::user();
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-            return redirect()->route('pelanggan.dashboard');
+            return Auth::user()->role === 'admin'
+                ? redirect()->route('admin.dashboard')
+                : redirect()->route('pelanggan.dashboard');
         }
 
         return view('auth.login');
@@ -51,44 +28,37 @@ class AuthController extends Controller
 
     /**
      * Proses login (Web)
+     * [PERBAIKAN #3] Rate limiting sudah diterapkan di routes/web.php (throttle:5,1)
      */
     public function loginPost(Request $request)
     {
-        // 1. Validasi format input
-        $credentials = $request->validate([
-            'login' => 'required|string',
+        $request->validate([
+            'login'    => 'required|string',
             'password' => 'required',
         ]);
 
-        $login = $request->login;
+        $login    = $request->login;
         $password = $request->password;
-
-        // Ambil nilai checkbox 'remember' (true/false)
         $remember = $request->has('remember');
 
         $fieldtype = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
 
-        // Masukkan $remember sebagai parameter kedua di Auth::attempt
         if (Auth::attempt([$fieldtype => $login, 'password' => $password], $remember)) {
             $request->session()->regenerate();
 
-            $user = Auth::user();
-
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard')->with('success', 'Selamat Datang Admin ' . Auth::user()->name);
-            }
-
-            // Ganti route ini sesuai route dashboard pelanggan kamu
-            return redirect()->route('pelanggan.dashboard')->with('success', 'Selamat Datang ' . Auth::user()->name);
+            return Auth::user()->role === 'admin'
+                ? redirect()->route('admin.dashboard')->with('success', 'Selamat Datang Admin ' . Auth::user()->name)
+                : redirect()->route('pelanggan.dashboard')->with('success', 'Selamat Datang ' . Auth::user()->name);
         }
 
+        // Pesan error yang generik (tidak membedakan "email salah" vs "password salah")
         throw ValidationException::withMessages([
-            'login' => ['Nama / Email Salah'],
+            'login' => ['Kredensial yang Anda masukkan tidak valid.'],
         ]);
     }
 
     /**
-     * Halaman registrasi PUBLIK (Tanpa Login)
+     * Halaman registrasi PUBLIK
      */
     public function publicRegister()
     {
@@ -97,29 +67,33 @@ class AuthController extends Controller
 
     /**
      * Proses registrasi PUBLIK
+     * [PERBAIKAN #5] Password minimum 8 karakter, harus ada huruf dan angka
+     * [PERBAIKAN #3] Rate limiting sudah diterapkan di routes/web.php (throttle:3,1)
      */
     public function publicRegisterPost(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:users,name'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'phone' => ['required', 'string', 'max:20'],
-            'password' => ['required', 'min:6', 'confirmed'],
-        ], 
-        [
-            'name' => 'Nama Diperlukan',
-            'email' => 'Email Diperlukan',
-            'phone' => 'Nomor Telepon Diperlukan',
-            'password.min' => 'Password minimal 6 karakter',
-            'password.confirmed' => 'Konfirmasi password tidak cocok',
+            'name'     => ['required', 'string', 'max:255', 'unique:users,name'],
+            'email'    => ['required', 'email', 'unique:users,email'],
+            'phone'    => ['required', 'string', 'max:20'],
+            // [PERBAIKAN #5] Naik dari min:6 → min:8 + wajib ada huruf + angka
+            'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()],
+        ], [
+            'name.required'      => 'Nama wajib diisi.',
+            'email.required'     => 'Email wajib diisi.',
+            'phone.required'     => 'Nomor telepon wajib diisi.',
+            'password.min'       => 'Password minimal 8 karakter.',
+            'password.letters'   => 'Password harus mengandung huruf.',
+            'password.numbers'   => 'Password harus mengandung angka.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
 
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'phone'    => $request->phone,
             'password' => Hash::make($request->password),
-            'role' => 'customer', // Paksa role jadi Customer
+            'role'     => 'customer',
         ]);
 
         return redirect()->route('login')
@@ -127,7 +101,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Halaman registrasi
+     * Halaman & form registrasi oleh Admin
      */
     public function register()
     {
@@ -135,34 +109,59 @@ class AuthController extends Controller
     }
 
     /**
-     * Proses registrasi (Web)
+     * Proses registrasi oleh Admin
+     * [PERBAIKAN #5] Password minimum 8 karakter
      */
     public function registerPost(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'unique:users,name', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'role' => ['required', 'in:admin,customer'], // Pastikan role valid
-
-            // Validasi: Phone wajib diisi HANYA JIKA role = customer
-            'phone' => ['required_if:role,customer', 'nullable', 'string', 'max:20'],
-
-            'password' => ['required', 'min:6', 'confirmed'],
+            'name'     => ['required', 'string', 'unique:users,name', 'max:255'],
+            'email'    => ['required', 'email', 'unique:users,email'],
+            'role'     => ['required', 'in:admin,customer'],
+            'phone'    => ['required_if:role,customer', 'nullable', 'string', 'max:20'],
+            // [PERBAIKAN #5] Password lebih kuat
+            'password' => ['required', 'confirmed', Password::min(8)->letters()->numbers()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+        User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'phone' => $request->phone, // Simpan No WA
+            'role'     => $request->role,
+            'phone'    => $request->phone,
         ]);
 
         return redirect()->route('admin.dashboard')->with('success', 'Registrasi berhasil!');
     }
 
     /**
-     * Menampilkan halaman profil pengguna
+     * Hapus pengguna
+     * [PERBAIKAN #1] Sekarang hanya bisa diakses admin (middleware 'admin' di routes)
+     * [PERBAIKAN #1] Method sekarang DELETE (bukan GET) agar tidak bisa dipanggil via URL langsung
+     * [PERBAIKAN #4] Admin tidak bisa menghapus akun dirinya sendiri
+     */
+    public function hapus($id)
+    {
+        $user = User::findOrFail($id);
+
+        // [PERBAIKAN #4] Cegah admin menghapus akunnya sendiri
+        if ($user->id === Auth::id()) {
+            return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        // Hapus semua data relasi
+        foreach ($user->bookings as $booking) {
+            $booking->serviceAdvisors()->delete();
+            $booking->delete();
+        }
+
+        $user->delete();
+
+        return redirect()->back()->with('success', 'Pengguna dan semua data relasi berhasil dihapus.');
+    }
+
+    /**
+     * Halaman profil pengguna
      */
     public function profile()
     {
@@ -171,19 +170,20 @@ class AuthController extends Controller
     }
 
     /**
-     * Memperbarui profil pengguna
+     * Update profil pengguna
+     * [PERBAIKAN #5] Password minimum 8 karakter saat update
      */
     public function profileUpdate(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            // Validasi unik email, kecuali untuk email pengguna saat ini
-            'email' => ['required', 'email', 'unique:users,email,' . Auth::user()->id],
-            'password' => ['nullable', 'min:6', 'confirmed'],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'email', 'unique:users,email,' . Auth::id()],
+            // [PERBAIKAN #5] Password nullable tapi kalau diisi harus kuat
+            'password' => ['nullable', 'confirmed', Password::min(8)->letters()->numbers()],
         ]);
 
         $updateData = [
-            'name' => $request->name,
+            'name'  => $request->name,
             'email' => $request->email,
         ];
 
@@ -197,28 +197,8 @@ class AuthController extends Controller
     }
 
     /**
-     * Hapus pengguna beserta semua data relasi
-     */
-    public function hapus($id)
-    {
-        $user = User::findOrFail($id);
-
-        // Hapus semua booking yang terkait dengan user
-        foreach ($user->bookings as $booking) {
-            // Hapus service advisor yang terkait dengan booking
-            $booking->serviceAdvisors()->delete();
-            // Hapus booking
-            $booking->delete();
-        }
-
-        // Hapus user
-        $user->delete();
-
-        return redirect()->back()->with('success', 'Pengguna dan semua data relasi berhasil dihapus.');
-    }
-
-    /**
-     * Logout pengguna (Web)
+     * Logout pengguna
+     * [PERBAIKAN #2] Sekarang via POST (bukan GET) — sudah diatur di routes/web.php
      */
     public function logout(Request $request)
     {

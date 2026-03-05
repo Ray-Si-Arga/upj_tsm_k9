@@ -4,7 +4,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
-use App\Http\Middleware\CheckUserRole; // <<< PENTING: IMPORT MIDDELWARE BARU ANDA
+use App\Http\Middleware\CheckUserRole;
+use App\Http\Middleware\AdminOnly;                   // [PERBAIKAN #6] Middleware role admin
+use App\Http\Middleware\SecurityHeaders;             // [PERBAIKAN #9] Security headers
+use App\Http\Middleware\PreventDuplicateSubmission;  // Anti double submit
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,18 +18,24 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
 
-        $middleware->api(prepend: [
-             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        // [PERBAIKAN #9] Tambahkan SecurityHeaders ke semua request web
+        $middleware->web(append: [
+            SecurityHeaders::class,
         ]);
 
+        $middleware->api(prepend: [
+            EnsureFrontendRequestsAreStateful::class,
+        ]);
 
         $middleware->alias([
-            // Tambahkan alias 'role' di sini
-            'role' => CheckUserRole::class,
+            'role'         => CheckUserRole::class,
+            'admin'        => AdminOnly::class,
+            'no_duplicate' => PreventDuplicateSubmission::class, // Anti double submit
         ]);
+
+        // [PERBAIKAN #3] Rate limiting sudah dikonfigurasi di routes/web.php
+        // Laravel sudah punya throttle middleware bawaan
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
-
-    

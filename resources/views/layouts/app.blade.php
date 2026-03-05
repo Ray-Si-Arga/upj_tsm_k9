@@ -505,14 +505,14 @@
         </div>
 
         <div class="sidebar-logout">
-            <a class="logout-btn" href="{{ route('logout') }}"
-                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Keluar</span>
-            </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="GET" class="d-none">
-                @csrf
-            </form>
+            
+            <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+    @csrf
+    <button type="submit" class="logout-btn">
+        <i class="fas fa-right-from-bracket me-2"></i>Logout
+    </button>
+</form>
+
         </div>
     </aside>
 
@@ -617,6 +617,88 @@
             });
         });
     </script>
+
+    <script>
+/**
+ * ANTI DOUBLE SUBMIT — Global
+ * Berlaku otomatis untuk SEMUA form di seluruh aplikasi.
+ * Tidak perlu ubah blade lain satu-persatu.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('form').forEach(function (form) {
+
+        form.addEventListener('submit', function (e) {
+
+            // Cari tombol submit yang aktif di form ini
+            const submitBtns = form.querySelectorAll('button[type="submit"], input[type="submit"]');
+
+            // Jika form sudah pernah di-submit sebelumnya, blokir
+            if (form.dataset.submitting === 'true') {
+                e.preventDefault();
+                return false;
+            }
+
+            // Tandai form sedang diproses
+            form.dataset.submitting = 'true';
+
+            submitBtns.forEach(function (btn) {
+                // Simpan teks asli tombol untuk dikembalikan jika gagal
+                btn.dataset.originalHtml = btn.innerHTML;
+                btn.dataset.originalText = btn.textContent.trim();
+
+                // Tampilkan loading state
+                btn.disabled = true;
+                btn.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>' +
+                    'Memproses...';
+                btn.style.opacity = '0.75';
+                btn.style.cursor  = 'not-allowed';
+            });
+
+            // Fallback keamanan: reset tombol setelah 15 detik
+            // (jika server timeout atau koneksi putus, tombol tidak terkunci selamanya)
+            setTimeout(function () {
+                if (form.dataset.submitting === 'true') {
+                    resetForm(form, submitBtns);
+                }
+            }, 15000);
+        });
+    });
+
+    /**
+     * Reset form ke kondisi awal
+     * Dipanggil saat timeout atau jika ada error validasi Laravel (halaman di-reload)
+     */
+    function resetForm(form, btns) {
+        form.dataset.submitting = 'false';
+        btns.forEach(function (btn) {
+            btn.disabled  = false;
+            btn.innerHTML = btn.dataset.originalHtml || btn.dataset.originalText || 'Submit';
+            btn.style.opacity = '';
+            btn.style.cursor  = '';
+        });
+    }
+
+    // Jika Laravel redirect balik karena validasi error,
+    // pastikan tombol tidak dalam kondisi disabled (page sudah baru)
+    window.addEventListener('pageshow', function (e) {
+        // pageshow dengan persisted=true artinya halaman dari browser cache (back button)
+        if (e.persisted) {
+            document.querySelectorAll('form').forEach(function (form) {
+                form.dataset.submitting = 'false';
+                form.querySelectorAll('button[type="submit"]').forEach(function (btn) {
+                    btn.disabled  = false;
+                    btn.innerHTML = btn.dataset.originalHtml || btn.innerHTML;
+                    btn.style.opacity = '';
+                    btn.style.cursor  = '';
+                });
+            });
+        }
+    });
+
+});
+</script>
 
     @yield('scripts')
 </body>
