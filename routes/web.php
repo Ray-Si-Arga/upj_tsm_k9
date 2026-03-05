@@ -10,144 +10,118 @@ use App\Http\Controllers\ServiceAdvisorController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\CetakController;
 
-// ---------------------------------------------------------------- //
-// ---------------- Halaman Publik --------------------------------- //
-// ---------------------------------------------------------------- //
+// Rute Dashboard
 Route::get('/', function () {
     if (Auth::check()) {
-        return Auth::user()->role === 'admin'
-            ? redirect()->route('admin.dashboard')
-            : redirect()->route('pelanggan.dashboard');
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('pelanggan.dashboard');
     }
     return view('welcome');
 });
 
-// ---------------------------------------------------------------- //
-// ---------------- Autentikasi & Registrasi ---------------------- //
-// ---------------------------------------------------------------- //
-
-// [PERBAIKAN #3] Rate limiting: login max 5x/menit, register max 3x/menit
+// ── Otentikasi & Registrasi ───────────────────────────────────────
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginPost'])
     ->name('login.post')
-    ->middleware('throttle:5,1');
+    ->middleware('throttle:5,1');                   // [+] max 5x login/menit
 
 Route::get('/register', [AuthController::class, 'publicRegister'])->name('public.register');
 Route::post('/register', [AuthController::class, 'publicRegisterPost'])
     ->name('public.register.post')
-    ->middleware('throttle:3,1');
+    ->middleware('throttle:3,1');                   // [+] max 3x register/menit
 
-// [PERBAIKAN #2] Logout sekarang menggunakan POST (bukan GET)
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+// [+] logout via POST (bukan GET)
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// ---------------------------------------------------------------- //
-// ---------------- Route Pelanggan (Wajib Login) ----------------- //
-// ---------------------------------------------------------------- //
-
-// [PERBAIKAN #1] Semua route pelanggan sekarang dilindungi middleware auth
+// ── Rute Yang Diharuskan Autentikasi ─────────────────────────────
 Route::middleware(['auth'])->group(function () {
 
+    // ── Pelanggan / Customer ──────────────────────────────────
     Route::get('/pelanggan/dashboard', [BookingController::class, 'pelangganDashboard'])->name('pelanggan.dashboard');
     Route::get('/pelanggan/service', [BookingController::class, 'create'])->name('pelanggan.service');
     Route::post('/pelanggan/service', [BookingController::class, 'store'])
         ->name('customer.booking.store')
-        ->middleware('no_duplicate'); // Anti double submit
+        ->middleware('no_duplicate');               // [+] anti double submit
     Route::get('/pelanggan/history', [BookingController::class, 'pelangganHistory'])->name('pelanggan.history');
     Route::get('/cek-jadwal', [BookingController::class, 'checkDate'])->name('check.date');
 
-    // ----------------------------------------- //
-    // ---------------- Profile ---------------- //
-    // ----------------------------------------- //
-    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-    Route::post('/profile', [AuthController::class, 'profileUpdate'])->name('profile.update');
-});
+    // ── Advisor ───────────────────────────────────────────────
+    Route::prefix('advisor')->name('advisor.')->group(function () {
+        Route::get('/index', [ServiceAdvisorController::class, 'index'])->name('index');
+        Route::get('/create', [ServiceAdvisorController::class, 'create'])->name('create');
+        Route::post('/store', [ServiceAdvisorController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [ServiceAdvisorController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [ServiceAdvisorController::class, 'update'])->name('update');
+        Route::get('/print/{id}', [CetakController::class, 'print'])->name('print');
+    });
 
-// ---------------------------------------------------------------- //
-// -------- Route Advisor (tanpa auth — akses internal) ----------- //
-// ---------------------------------------------------------------- //
-Route::prefix('advisor')->name('advisor.')->group(function () {
-    Route::get('/index', [ServiceAdvisorController::class, 'index'])->name('index');
-    Route::get('/create', [ServiceAdvisorController::class, 'create'])->name('create');
-    Route::post('/store', [ServiceAdvisorController::class, 'store'])->name('store');
-    Route::get('/edit/{id}', [ServiceAdvisorController::class, 'edit'])->name('edit');
-    Route::put('/update/{id}', [ServiceAdvisorController::class, 'update'])->name('update');
-    Route::get('/print/{id}', [CetakController::class, 'print'])->name('print');
-});
+    // ── Service Layanan (admin only) ──────────────────────────
+    Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index')->middleware('admin');
+    Route::post('/layanan/store', [LayananController::class, 'store'])->name('layanan.store')->middleware('admin');
+    Route::put('/layanan/update/{id}', [LayananController::class, 'update'])->name('layanan.update')->middleware('admin');
+    Route::delete('/layanan/delete/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy')->middleware('admin');
 
-// ---------------------------------------------------------------- //
-// ---------------- Route Admin (Wajib Login + Admin Role) -------- //
-// ---------------------------------------------------------------- //
-
-// [PERBAIKAN #1] Hapus user sekarang hanya bisa diakses admin yang sudah login
-// [PERBAIKAN #1] Route hapus dipindahkan ke dalam middleware auth + admin
-Route::middleware(['auth', 'admin'])->group(function () {
-
-    // Hapus pengguna — sekarang aman (hanya admin, POST bukan GET)
-    Route::delete('/hapus/{id}', [AuthController::class, 'hapus'])->name('hapus');
-
-    // ----------------------------------------- //
-    // ---------------- Layanan --------------- //
-    // ----------------------------------------- //
-    Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
-    Route::post('/layanan/store', [LayananController::class, 'store'])->name('layanan.store');
-    Route::put('/layanan/update/{id}', [LayananController::class, 'update'])->name('layanan.update');
-    Route::delete('/layanan/delete/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy');
-
-    // ----------------------------------------- //
-    // --- Booking Walk-in (Admin Input) ------- //
-    // ----------------------------------------- //
-    Route::get('admin/booking/create', [BookingController::class, 'createWalkIn'])->name('booking.walkin');
+    // ── Booking Walk In (admin only) ──────────────────────────
+    Route::get('admin/booking/create', [BookingController::class, 'createWalkIn'])->name('booking.walkin')->middleware('admin');
     Route::post('admin/booking/store', [BookingController::class, 'storeWalkIn'])
         ->name('booking.storeWalkIn')
-        ->middleware('no_duplicate'); // Anti double submit
+        ->middleware(['admin', 'no_duplicate']);    // [+] admin + anti double submit
 
-    // ----------------------------------------- //
-    // ---- Dashboard & Jadwal Admin ----------- //
-    // ----------------------------------------- //
-    Route::get('/dashboard', [BookingController::class, 'adminDashboard'])->name('admin.dashboard');
-    Route::get('/jadwal', [BookingController::class, 'jadwal'])->name('admin.jadwal');
-    Route::post('/jadwal/store', [BookingController::class, 'storeJadwal'])->name('jadwal.store');
-    Route::delete('/jadwal/{date}', [BookingController::class, 'deleteJadwal'])->name('jadwal.delete');
+    // ── Dashboard & Jadwal (admin only) ───────────────────────
+    Route::get('/dashboard', [BookingController::class, 'adminDashboard'])->name('admin.dashboard')->middleware('admin');
+    Route::get('/jadwal', [BookingController::class, 'jadwal'])->name('admin.jadwal')->middleware('admin');
+    Route::post('/jadwal/store', [BookingController::class, 'storeJadwal'])->name('jadwal.store')->middleware('admin');
+    Route::delete('/jadwal/{date}', [BookingController::class, 'deleteJadwal'])->name('jadwal.delete')->middleware('admin');
 
-    // ----------------------------------------- //
-    // ---------------- Inventory -------------- //
-    // ----------------------------------------- //
-    Route::prefix('inventory')->name('inventory.')->group(function () {
+    // ── Inventory (admin only) ────────────────────────────────
+    Route::prefix('inventory')->name('inventory.')->middleware('admin')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('index');
     });
 
-    // ----------------------------------------- //
-    // ---------------- Booking ---------------- //
-    // ----------------------------------------- //
+    // ── Profile ───────────────────────────────────────────────
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::post('/profile', [AuthController::class, 'profileUpdate'])->name('profile.update');
+
+    // ── Booking ───────────────────────────────────────────────
     Route::prefix('booking')->name('booking.')->group(function () {
-        Route::get('/queue', [BookingController::class, 'queueList'])->name('queue');
+
+        // Fixed segment (harus di atas {id})
+        Route::get('/queue', [BookingController::class, 'queueList'])->name('queue')->middleware('admin');
         Route::get('/create', [BookingController::class, 'create'])->name('create');
+
+        // Halaman sukses — diakses customer setelah submit, TANPA middleware admin
         Route::get('/success/{id}', [BookingController::class, 'success'])->name('success');
-        Route::get('/', [BookingController::class, 'index'])->name('index');
-        Route::post('/store', [BookingController::class, 'store'])->name('store');
+
+        // Index & Store
+        Route::get('/', [BookingController::class, 'index'])->name('index')->middleware('admin');
+        Route::post('/store', [BookingController::class, 'store'])->name('store')->middleware('admin');
+
+        // Wildcard {id} — di paling bawah
         Route::get('/{id}', [BookingController::class, 'show'])->name('show');
-        Route::post('/{id}/update-status', [BookingController::class, 'updateStatus'])->name('updateStatus');
+        Route::post('/{id}/update-status', [BookingController::class, 'updateStatus'])->name('updateStatus')->middleware('admin');
         Route::get('/{id}/history', [BookingController::class, 'historyDetail'])->name('history.detail');
-        Route::delete('/destroy/{id}', [BookingController::class, 'destroy'])->name('destroy');
+
+        Route::delete('/destroy/{id}', [BookingController::class, 'destroy'])->name('destroy')->middleware('admin');
     });
 
-    // ----------------------------------------- //
-    // ---------------- Keuangan --------------- //
-    // ----------------------------------------- //
-    Route::prefix('keuangan')->name('keuangan.')->group(function () {
+    // ── Keuangan (admin only) ─────────────────────────────────
+    Route::prefix('keuangan')->name('keuangan.')->middleware('admin')->group(function () {
         Route::get('/', [KeuanganController::class, 'index'])->name('index');
         Route::post('/store', [KeuanganController::class, 'store'])->name('store');
         Route::delete('/{id}', [KeuanganController::class, 'destroy'])->name('destroy');
         Route::get('/cetak', [KeuanganController::class, 'cetak'])->name('cetak');
     });
 
-    // ----------------------------------------- //
-    // ---------------- Customers -------------- //
-    // ----------------------------------------- //
-    Route::prefix('customers')->name('customers.')->group(function () {
+    // ── Customers (admin only) ────────────────────────────────
+    Route::prefix('customers')->name('customers.')->middleware('admin')->group(function () {
         Route::get('/', [BookingController::class, 'customers'])->name('index');
         Route::get('/{id}/bookings', [BookingController::class, 'customerBookings'])->name('bookings');
         Route::get('/new-count', [BookingController::class, 'getNewCustomersCount'])->name('new-count');
         Route::post('/mark-checked', [BookingController::class, 'markCustomersChecked'])->name('mark-checked');
     });
+
+    // ── Hapus user (admin only) ───────────────────────────────
+    Route::delete('/hapus/{id}', [AuthController::class, 'hapus'])->name('hapus')->middleware('admin');
 });

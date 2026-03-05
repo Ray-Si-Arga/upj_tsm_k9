@@ -266,7 +266,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('booking.store') }}" id="bookingForm">
+            <form method="POST" action="{{ route('customer.booking.store') }}" id="bookingForm">
                 @csrf
 
                 <div class="row g-4">
