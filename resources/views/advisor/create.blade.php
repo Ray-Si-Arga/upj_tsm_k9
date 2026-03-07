@@ -759,33 +759,21 @@ function addJobRow(name = '', price = 0) {
 
     tbody.insertAdjacentHTML('beforeend', rowHtml);
 
-    // Inisialisasi Tom Select
+    // Inisialisasi Tom Select dengan fitur "CREATE: TRUE"
     const ts = new TomSelect(`#${selectId}`, {
-        create       : true,          // Boleh ketik bebas di luar pilihan DB
-        createOnBlur : true,
-        sortField    : { field: 'text', direction: 'asc' },
-        placeholder  : 'Pilih / Ketik baru...',
-        onChange: function(val) {
-            // [FIX] Gunakan fillJobPrice agar konsisten dengan setValue manual
-            fillJobPrice(rowId, val);
-        }
+        create: true, // INI KUNCINYA: Mengizinkan input teks bebas jika tidak ada di saran!
+        sortField: {
+            field: "text",
+            direction: "asc"
+        },
+        placeholder: "Pilih / Ketik baru...",
+        createOnBlur: true // Jika user ngetik lalu klik di luar, otomatis dianggap sebagai input
     });
 
+    // Jika parameter 'name' terisi (contoh: dipanggil otomatis dari Booking)
     if (name) {
-        // Tambahkan sebagai opsi jika belum ada (misal nama custom dari booking lama)
-        if (!servicesData.find(s => s.name === name)) {
-            ts.addOption({ value: name, text: name });
-        }
-
-        // [FIX] Set value tanpa silent (false) agar onChange terpicu
-        // TAPI: jika price sudah disuplai dari parameter booking, jangan timpa
-        if (price && price > 0) {
-            // Price sudah ada dari parameter → set value silent, harga sudah benar
-            ts.setValue(name, true); // silent=true, harga dari param sudah terisi di HTML
-        } else {
-            // Price belum ada → set value NOT silent agar onChange auto-fill dari DB
-            ts.setValue(name, false); // false = trigger onChange → fillJobPrice()
-        }
+        ts.addOption({value: name, text: name}); // Tambahkan ke opsi secara on-the-fly jika belum ada
+        ts.setValue(name); // Set nilainya
     }
 
     jobRowIdx++;

@@ -29,7 +29,7 @@
         }
 
         /* ============================================================
-                                                                                                                       PAGE HEADER  (dark gradient â€” sama seperti dashboard)
+                                                                                                                       PAGE HEADER  (dark gradient sama seperti dashboard)
                                                                                                                     ============================================================ */
         .page-header {
             background: linear-gradient(135deg, var(--navy) 0%, #16213e 50%, #0f172a 100%);
@@ -659,7 +659,7 @@
             <div class="filter-bar">
                 <div class="search-wrap">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Cari nama layananâ€¦">
+                    <input type="text" id="searchInput" placeholder="Cari nama layanan...">
                 </div>
                 <div class="filter-tab">
                     <button class="active" data-filter="all">Semua</button>
@@ -709,7 +709,7 @@
                                 </td>
                                 <td>
                                     @if ($service->type === 'paket')
-                                        <span class="svc-desc">{{ Str::limit($service->description ?? 'â€”', 55) }}</span>
+                                        <span class="svc-desc">{{ Str::limit($service->description ?? '-', 55) }}</span>
                                     @endif
                                 </td>
                                 <td class="text-center">

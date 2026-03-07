@@ -6,12 +6,10 @@ use App\Models\Booking;
 use App\Models\Jadwal;
 use App\Models\Service;
 use App\Models\Keuangan;
-use App\Models\User; // Digunakan untuk statistik
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Carbon\Carbon;
-use App\Models\ServiceAdvisor;
 use App\Models\Inventory;
 use Illuminate\Support\Facades\DB;
 
@@ -31,20 +29,28 @@ class BookingController extends Controller
         return view('admin.jadwal');
     }
 
-    public function storeJadwal($data)
+    public function storeJadwal(Request $request)
     {
-        return \App\Models\Jadwal::updateOrCreate(
-            ['event_id' => $data['id'] ?? $data['event_id']],
-            [
-                'date' => $data['date'],
-                'title' => $data['title'],
-                'description' => $data['description'] ?? null,
-                'color' => $data['color'] ?? '#B10000',
-                'start_time' => $data['startTime'] ?? null,
-                'end_time' => $data['endTime'] ?? null,
-                'is_closed' => $data['isClosed'] ?? false,
-            ]
-        );
+        $request->validate([
+            'date' => 'required|date',
+            'title' => 'required|string',
+            'description' => 'nullable|string|max:45',
+            'is_closed' => 'required|boolean',
+            'is_operational' => 'required|boolean',
+        ]);
+        try {
+            Jadwal::updateOrCreate(
+                ['date' => $request->date],
+                [
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'is_closed' => $request->is_closed,
+                    'is_operational' => $request->is_operational,
+                ]
+            );
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menyimpan jadwal: ' . $e->getMessage());
+        }
     }
 
     public function checkDate(Request $request)
@@ -65,9 +71,14 @@ class BookingController extends Controller
         return response()->json(null);
     }
 
-    public function deleteJadwal($eventId)
+    public function deleteJadwal($date)
     {
-        return \App\Models\Jadwal::where('event_id', $eventId)->delete();
+        try {
+            Jadwal::where('date', $date)->delete();
+            return redirect()->back()->with('success', 'Jadwal berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus jadwal: ' . $e->getMessage());
+        }
     }
 
     public function adminDashboard()
@@ -218,7 +229,7 @@ class BookingController extends Controller
         }
 
         try {
-            $bookingTime = \Carbon\Carbon::parse($request->booking_date);
+            $bookingTime = Carbon::parse($request->booking_date);
 
             // Cek slot (maks 2 motor per jam)
             $existBooking = Booking::whereBetween('booking_date', [
@@ -398,6 +409,7 @@ class BookingController extends Controller
             ->get();
 
         $notifications = Jadwal::where('date', '>=', now()->toDateString())
+            ->where('is_closed', true)
             ->orderBy('date', 'asc')
             ->get();
 

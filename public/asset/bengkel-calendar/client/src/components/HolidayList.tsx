@@ -157,7 +157,11 @@ export default function HolidayList({
                   className="p-3 hover:shadow-md transition-all cursor-pointer"
                   style={{
                     borderLeftWidth: '4px',
-                    borderLeftColor: event.color,
+                    borderLeftColor: event.isClosed
+                      ? '#ef4444'
+                      : event.isOperational
+                      ? '#3b82f6'
+                      : '#e2e8f0',
                   }}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -169,12 +173,6 @@ export default function HolidayList({
                         <span className="font-medium bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">
                           {formatDate(event.date)}
                         </span>
-                        {event.startTime && (
-                          <span>
-                            • {event.startTime}
-                            {event.endTime && ` - ${event.endTime}`}
-                          </span>
-                        )}
                       </p>
                     </div>
                     {onDeleteEvent && (

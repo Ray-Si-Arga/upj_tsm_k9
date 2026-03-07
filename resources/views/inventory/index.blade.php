@@ -45,30 +45,83 @@
         /* ==============================
                            PAGE HEADER
                         ============================== */
-        .page-header {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 28px;
-        }
+        /* Update Header Style agar konsisten dengan Dashboard */
+.page-header {
+    background: linear-gradient(135deg, var(--navy) 0%, #16213e 50%, #0f172a 100%);
+    border-radius: 20px;
+    padding: 30px 36px;
+    color: white;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border: none; /* Menghilangkan border default jika ada */
+}
 
-        .page-title {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: var(--text);
-            margin: 0 0 4px;
-            letter-spacing: -0.5px;
-        }
+.page-header::before {
+    content: '';
+    position: absolute; top: -80px; right: -80px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(177,0,0,.25) 0%, transparent 70%);
+}
 
-        .page-subtitle {
-            font-size: 0.83rem;
-            color: #64748b;
-            margin: 0;
-            font-weight: 500;
-        }
+.page-header::after {
+    content: '';
+    position: absolute; bottom: -50px; left: 20%;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,.03);
+}
 
+.header-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(177,0,0,.25); border: 1px solid rgba(177,0,0,.35);
+    color: #fca5a5; border-radius: 20px;
+    padding: 4px 14px; font-size: .72rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    margin-bottom: 10px; position: relative; z-index: 1;
+}
+
+.page-title {
+    font-size: 1.75rem !important; 
+    font-weight: 800; 
+    color: #fff !important; 
+    margin: 0 0 5px;
+    letter-spacing: -.6px; 
+    position: relative; 
+    z-index: 1;
+}
+
+.page-subtitle {
+    font-size: .85rem !important; 
+    color: rgba(255,255,255,.5) !important;
+    margin: 0; 
+    font-weight: 500; 
+    position: relative; 
+    z-index: 1;
+}
+
+.btn-add {
+    position: relative;
+    z-index: 2;
+    background: var(--honda-red);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(177,0,0,.35);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 700;
+    transition: all .2s;
+}
+
+.btn-add:hover {
+    background: var(--honda-red-dark);
+    transform: translateY(-2px);
+    color: #fff;
+}
         /* ==============================
                            SUMMARY CARDS
                         ============================== */
@@ -634,17 +687,25 @@
             </div>
         @endif
 
-        {{-- ==================== PAGE HEADER ==================== --}}
-        <div class="page-header au">
-            <div>
-                <h1 class="page-title"></i>Inventori Spare-Part</h1>
-                <p class="page-subtitle">Kelola stok, harga beli, dan potensi keuntungan bengkel.</p>
-            </div>
-            <button onclick="window.dispatchEvent(new CustomEvent('open-create-modal'))" data-bs-toggle="modal"
-                data-bs-target="#formModal" class="btn-add">
-                <i class="fas fa-plus"></i> Tambah Barang
-            </button>
+        {{-- ==================== PAGE HEADER (Konsisten dengan Dashboard) ==================== --}}
+<div class="page-header au">
+    <div>
+        <div class="header-eyebrow">
+            Inventory System
         </div>
+        <h1 class="page-title">Inventori Spare-Part</h1>
+        <p class="page-subtitle">Kelola stok, harga beli, dan potensi keuntungan bengkel.</p>
+    </div>
+    
+    <div>
+        <button onclick="window.dispatchEvent(new CustomEvent('open-create-modal'))" 
+            data-bs-toggle="modal"
+            data-bs-target="#formModal" 
+            class="btn-add">
+            <i class="fas fa-plus me-2"></i> Tambah Barang
+        </button>
+    </div>
+</div>
 
         {{-- ==================== SUMMARY CARDS ==================== --}}
         <div class="cards-grid">
@@ -664,7 +725,7 @@
                 <div class="card-icon-wrap"><i class="fas fa-arrow-trend-down"></i></div>
                 <div class="card-label">Nilai Modal</div>
                 <div class="card-amount sm">Rp {{ number_format($nilaiModal, 0, ',', '.') }}</div>
-                <div class="card-meta">Total harga beli Ã— stok</div>
+                <div class="card-meta">Total harga beli stok</div>
                 <div class="card-badge"><i class="fas fa-receipt" style="font-size:.6rem;"></i> Modal tersimpan</div>
             </div>
 

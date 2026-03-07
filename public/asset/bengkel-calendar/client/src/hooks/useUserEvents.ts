@@ -5,65 +5,50 @@ export interface UserEvent {
   date: string;
   title: string;
   description?: string;
-  color: string;
-  startTime?: string;
-  endTime?: string;
-  isClosed?: boolean;
+  isClosed: boolean;
+  isOperational: boolean;
 }
-
-const STORAGE_KEY = 'bengkel-calendar-events';
 
 export function useUserEvents() {
   const [events, setEvents] = useState<UserEvent[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load events from window global object or localStorage on mount
+  // Load events ONLY from window global object (injected by Livewire from DB)
   useEffect(() => {
+    localStorage.removeItem('bengkel-calendar-events');
     const initial = (window as any).BengkelCalendarInitialEvents;
     if (initial && Array.isArray(initial)) {
       setEvents(initial);
-    } else {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        try {
-          setEvents(JSON.parse(stored));
-        } catch (error) {
-          console.error('Failed to parse stored events:', error);
-        }
-      }
     }
-    setIsLoaded(true);
   }, []);
 
-  // Save events to localStorage whenever they change
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
-    }
-  }, [events, isLoaded]);
-
+  // Upsert by date: jika sudah ada event di tanggal yang sama, update; jika belum, buat baru
+  // id selalu sama dengan date (date sebagai natural identifier)
   const addEvent = (event: Omit<UserEvent, 'id'>): UserEvent => {
-    const newEvent: UserEvent = {
-      ...event,
-      id: Date.now().toString(),
-    };
-    setEvents((prev) => [...prev, newEvent]);
-    window.dispatchEvent(new CustomEvent('bengkel-calendar-add', { detail: newEvent }));
-    return newEvent;
-  };
+    let resultEvent: UserEvent;
 
-  const updateEvent = (id: string, updates: Partial<UserEvent>): void => {
     setEvents((prev) => {
-      const newEvents = prev.map((event) => (event.id === id ? { ...event, ...updates } : event));
-      const updatedEvent = newEvents.find((event) => event.id === id);
-      if (updatedEvent) {
-        window.dispatchEvent(new CustomEvent('bengkel-calendar-update', { detail: updatedEvent }));
+      const existing = prev.find((e) => e.date === event.date);
+
+      if (existing) {
+        // Update event yang sudah ada di tanggal ini
+        const updated: UserEvent = { ...existing, ...event };
+        resultEvent = updated;
+        window.dispatchEvent(new CustomEvent('bengkel-calendar-update', { detail: updated }));
+        return prev.map((e) => (e.date === event.date ? updated : e));
+      } else {
+        // Buat event baru — id = date sebagai natural key
+        const newEvent: UserEvent = { ...event, id: event.date };
+        resultEvent = newEvent;
+        window.dispatchEvent(new CustomEvent('bengkel-calendar-add', { detail: newEvent }));
+        return [...prev, newEvent];
       }
-      return newEvents;
     });
+
+    return resultEvent!;
   };
 
   const deleteEvent = (id: string): void => {
+    // id adalah date, hapus berdasarkan date
     setEvents((prev) => prev.filter((event) => event.id !== id));
     window.dispatchEvent(new CustomEvent('bengkel-calendar-delete', { detail: { id } }));
   };
@@ -83,10 +68,8 @@ export function useUserEvents() {
   return {
     events,
     addEvent,
-    updateEvent,
     deleteEvent,
     getEventsByDate,
     getEventsByMonth,
-    isLoaded,
   };
 }

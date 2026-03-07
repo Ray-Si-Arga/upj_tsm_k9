@@ -1,4 +1,4 @@
-import { Trash2, Clock } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import type { UserEvent } from '@/hooks/useUserEvents';
@@ -30,7 +30,11 @@ export default function UserEventsList({
           className="p-3 hover:shadow-md transition-all"
           style={{
             borderLeftWidth: '4px',
-            borderLeftColor: event.color,
+            borderLeftColor: event.isClosed
+              ? '#ef4444'
+              : event.isOperational
+              ? '#3b82f6'
+              : '#e2e8f0',
           }}
         >
           <div className="flex items-start justify-between gap-2">
@@ -43,15 +47,7 @@ export default function UserEventsList({
                   {event.description}
                 </p>
               )}
-              {event.startTime && (
-                <div className="flex items-center gap-1 mt-2 text-xs text-slate-500">
-                  <Clock className="w-3 h-3" />
-                  <span>
-                    {event.startTime}
-                    {event.endTime && ` - ${event.endTime}`}
-                  </span>
-                </div>
-              )}
+
             </div>
             <Button
               variant="ghost"

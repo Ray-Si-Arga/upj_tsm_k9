@@ -8,22 +8,21 @@
 
     <style>
         :root {
-            --primary-dark: #1e293b;
-            --primary-blue: #3b82f6;
-            --success-green: #10b981;
-            --danger-red: #ef4444;
-            --bg-body: #f8fafc;
-            --card-border: #e2e8f0;
+        /* Tambahkan variabel Honda agar konsisten */
+        --honda-red:       #B10000;
+        --honda-red-dark:  #8B0000;
+        --navy:            #0f172a;
+        --navy-mid:        #1e293b;
+        --bg-body:         #f0f2f5;
+        --card-border:     #e2e8f0;
+        --text:            #1e293b;
+    }
 
-            --navy: #0f172a;
-
-        }
-
-        body {
-            background-color: var(--bg-body);
-            color: var(--primary-dark);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
+    body {
+        background-color: var(--bg-body);
+        color: var(--text);
+        font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
+    }
 
         /* Hero Section - Clean Modern */
         .hero-section {
@@ -58,51 +57,49 @@
             background: rgba(255, 255, 255, .03);
         }
 
-        /* Stats Cards - Minimalist */
-        .stats-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            border: 1px solid var(--card-border);
-            transition: all 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
+        /* Stats Cards - Mengikuti konsep Dashboard */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+    @media(max-width:768px) { .stats-grid { grid-template-columns: 1fr; } }
 
-        .stats-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-            border-color: var(--primary-blue);
-        }
+    .stats-card {
+        border-radius: 16px; 
+        padding: 22px;
+        color: #fff; 
+        position: relative; 
+        overflow: hidden;
+        transition: transform .22s, box-shadow .22s;
+        border: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .stats-card:hover { transform: translateY(-4px); }
+    
+    /* Dekorasi Lingkaran */
+    .stats-card::before {
+        content:''; position:absolute; top:-40px; right:-40px;
+        width:140px; height:140px; border-radius:50%;
+        background:rgba(255,255,255,.07);
+    }
 
-        .stats-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
+    /* Warna Gradasi */
+    .bg-navy-grad  { background: linear-gradient(140deg, #0f172a 0%, #1e293b 100%); box-shadow: 0 6px 20px rgba(15,23,42,.2); }
+    .bg-green-grad { background: linear-gradient(140deg, #064e3b 0%, #047857 100%); box-shadow: 0 6px 20px rgba(6,78,59,.2); }
+    .bg-red-grad   { background: linear-gradient(140deg, #4c0519 0%, #B10000 100%); box-shadow: 0 6px 20px rgba(177,0,0,.25); }
 
-        /* Action & Info Cards */
-        .action-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            border: 1px solid var(--card-border);
-            margin-bottom: 1.5rem;
-        }
-
-        .info-box {
-            background: #f0f9ff;
-            border: 1px solid #bae6fd;
-            border-left: 4px solid var(--primary-blue);
-            border-radius: 12px;
-            padding: 1.25rem;
-            margin-bottom: 2rem;
-        }
+    .stats-icon-new { 
+        width: 40px; height: 40px; border-radius: 10px; 
+        background: rgba(255,255,255,.15); 
+        display: flex; align-items: center; justify-content: center; 
+        font-size: 1.1rem; margin-bottom: 12px;
+    }
+    .stats-label { font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.1px; color: rgba(255,255,255,.6); margin-bottom: 4px; }
+    .stats-value { font-size: 1.75rem; font-weight: 800; color: #fff; letter-spacing: -1px; line-height: 1; }
 
         /* Buttons - Professional Flat */
         .btn-custom {
@@ -196,6 +193,35 @@
                 margin-bottom: 0.5rem;
             }
         }
+        .action-card {
+    background: #fff;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    margin-bottom: 20px;
+}
+.btn-action-honda {
+    background: var(--honda-red);
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    transition: all 0.2s;
+    border: none;
+    box-shadow: 0 4px 12px rgba(177, 0, 0, 0.2);
+}
+.btn-action-honda:hover {
+    background: var(--honda-red-dark);
+    transform: translateY(-2px);
+}
+.btn-action-outline {
+    background: white;
+    color: var(--navy) !important;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    border: 1.5px solid var(--card-border);
+}
     </style>
 
     <div class="container py-5">
@@ -216,7 +242,7 @@
                                 text-transform: uppercase;
                                 padding: 4px 12px;
                                 border-radius: 20px;
-                                margin-bottom: 10px;">Admin Panel</span>
+                                margin-bottom: 10px;">Advisor</span>
 
                     <h2 class="fw-bold mb-1">Service Advisor Dashboard</h2>
                     <p class="mb-0 text-white-50">Monitoring dan manajemen operasional bengkel secara real-time.</p>
@@ -229,59 +255,54 @@
         </div>
 
         {{-- Stats Cards --}}
-        <div class="row g-4 mb-5">
-            <div class="col-md-4">
-                <div class="stats-card">
-                    <div class="stats-icon bg-primary text-white">
-                        <i class="fas fa-layer-group"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small fw-medium">Total Akumulasi Service</div>
-                        <div class="fs-4 fw-bold">{{ $histories->total() }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stats-card">
-                    <div class="stats-icon bg-success text-white">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small fw-medium">Service Bulan Ini</div>
-                        <div class="fs-4 fw-bold">{{ $histories->count() }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stats-card">
-                    <div class="stats-icon bg-danger text-white">
-                        <i class="fas fa-wrench"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small fw-medium">Service Hari Ini</div>
-                        <div class="fs-4 fw-bold">-</div>
-                    </div>
-                </div>
-            </div>
+<div class="stats-grid">
+    <div class="stats-card bg-navy-grad">
+        <div class="stats-icon-new">
+            <i class="fas fa-layer-group"></i>
         </div>
+        <div>
+            <div class="stats-label">Total Akumulasi Service</div>
+            <div class="stats-value">{{ $histories->total() }}</div>
+        </div>
+    </div>
 
+    <div class="stats-card bg-green-grad">
+        <div class="stats-icon-new">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <div>
+            <div class="stats-label">Service Bulan Ini</div>
+            <div class="stats-value">{{ $histories->count() }}</div>
+        </div>
+    </div>
+
+    <div class="stats-card bg-red-grad">
+        <div class="stats-icon-new">
+            <i class="fas fa-wrench"></i>
+        </div>
+        <div>
+            <div class="stats-label">Service Hari Ini</div>
+            <div class="stats-value">-</div>
+        </div>
+    </div>
+</div>
         {{-- Action Section --}}
         <div class="action-card">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div>
-                    <h5 class="fw-bold mb-1">Manajemen Operasional</h5>
-                    <p class="text-muted small mb-0">Klik tombol di samping untuk memproses pendaftaran servis.</p>
-                </div>
-                <div class="d-flex gap-2">
-                    <a href="{{ route('booking.walkin') }}" class="btn btn-custom border text-dark">
-                        <i class="fas fa-user-plus me-2 text-muted"></i>Booking Walk-In
-                    </a>
-                    <a href="{{ route('advisor.create') }}" class="btn btn-custom btn-primary-custom">
-                        <i class="fas fa-plus me-2"></i>Service dari Booking
-                    </a>
-                </div>
-            </div>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h5 class="fw-bold mb-1" style="color: var(--navy);">Manajemen Operasional</h5>
+            <p class="text-muted small mb-0">Proses pendaftaran servis atau kelola antrean pelanggan.</p>
         </div>
+        <div class="d-flex gap-2">
+            <a href="{{ route('booking.walkin') }}" class="btn-action-outline text-decoration-none">
+                <i class="fas fa-user-plus me-2"></i> Booking Walk-In
+            </a>
+            <a href="{{ route('advisor.create') }}" class="btn-action-honda text-decoration-none">
+                <i class="fas fa-wrench me-2"></i> Service dari Booking
+            </a>
+        </div>
+    </div>
+</div>
 
         {{-- Info Box --}}
         <div class="info-box d-flex align-items-start gap-3">
