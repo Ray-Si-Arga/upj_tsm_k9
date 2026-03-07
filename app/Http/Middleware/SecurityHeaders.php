@@ -12,41 +12,24 @@ class SecurityHeaders
     {
         $response = $next($request);
 
-        // Cegah clickjacking - halaman tidak boleh dimuat dalam iframe
+        // Cegah clickjacking — halaman tidak bisa dibuka dalam iframe oleh site lain
         $response->headers->set('X-Frame-Options', 'DENY');
 
-        // Cegah browser menebak-nebak tipe konten (MIME sniffing)
+        // Cegah browser menebak tipe file (MIME sniffing)
         $response->headers->set('X-Content-Type-Options', 'nosniff');
 
-        // Kontrol informasi referrer yang dikirim
+        // Kontrol informasi URL yang dikirim saat klik link keluar
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
-        // Paksa HTTPS di browser selama 1 tahun (hanya aktif di production)
+        // Paksa HTTPS selama 1 tahun (hanya aktif di production)
         if (app()->environment('production')) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
 
-        // Nonaktifkan fitur browser yang tidak perlu
+        // Nonaktifkan fitur browser yang tidak dipakai (kamera, mikrofon, GPS, payment)
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
 
-        // Content Security Policy — sesuaikan dengan CDN yang dipakai project ini
-        $response->headers->set('Content-Security-Policy',
-            "default-src 'self'; " .
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' " .
-                "https://cdn.jsdelivr.net " .
-                "https://cdnjs.cloudflare.com " .
-                "https://fonts.googleapis.com; " .
-            "style-src 'self' 'unsafe-inline' " .
-                "https://cdn.jsdelivr.net " .
-                "https://cdnjs.cloudflare.com " .
-                "https://fonts.googleapis.com; " .
-            "font-src 'self' " .
-                "https://fonts.gstatic.com " .
-                "https://cdnjs.cloudflare.com; " .
-            "img-src 'self' data: https:; " .
-            "connect-src 'self'; " .
-            "frame-ancestors 'none';"
-        );
+        // CSP (Content-Security-Policy) SENGAJA DIHAPUS:
 
         // Hapus header yang mengungkap teknologi server
         $response->headers->remove('X-Powered-By');
