@@ -450,7 +450,7 @@
                 <div class="sc-icon"><i class="fas fa-triangle-exclamation"></i></div>
                 <div class="sc-label">Stok Menipis</div>
                 <div class="sc-val">{{ $lowStockCount }}</div>
-                <div class="sc-sub">Item â‰¤ 6 unit</div>
+                <div class="sc-sub">Item 6 unit</div>
                 <a href="{{ route('inventory.index') }}" class="sc-link">Cek inventory</a>
             </div>
         </div>

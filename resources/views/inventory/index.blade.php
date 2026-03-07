@@ -743,7 +743,7 @@
                 <div class="card-icon-wrap"><i class="fas fa-triangle-exclamation"></i></div>
                 <div class="card-label">Stok Menipis</div>
                 <div class="card-amount">{{ $stokMenipis }}</div>
-                <div class="card-meta">Item â‰¤ 6 unit tersisa</div>
+                <div class="card-meta">Item 6 unit tersisa</div>
                 <div class="card-badge"><i class="fas fa-bell" style="font-size:.6rem;"></i> Perlu restock</div>
             </div>
         </div>
