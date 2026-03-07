@@ -561,24 +561,33 @@
             fetch(`/cek-jadwal?date=${dateVal}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data) {
-                        let isTutup = data.is_closed; // Sesuaikan dengan kolom database Anda
+                    // PERBAIKAN: Pastikan 'data' tidak null DAN properti 'title' tersedia
+                    if (data && data.title) {
+                        let isTutup = data.is_closed; 
                         let icon = isTutup ? 'fa-exclamation-triangle' : 'fa-info-circle';
+                        
+                        // Buat format deskripsi lebih rapi jika kosong
+                        let desc = data.description ? `: ${data.description}` : '';
 
                         feedback.innerHTML = `
                         <div class="alert ${isTutup ? 'alert-danger' : 'alert-info'} border-0 shadow-sm rounded-3 py-2 px-3 animate__animated animate__shakeX">
                             <i class="fas ${icon} me-2"></i>
-                            <strong>${data.title}</strong>: ${data.description ?? ''}
+                            <strong>${data.title}</strong>${desc}
                         </div>`;
 
-                        // LOGIKA PENGUNCI: Jika bengkel tutup, kosongkan input
                         if (isTutup) {
                             showToast('error', 'Tanggal Tidak Tersedia', 'Maaf, bengkel kami tutup/libur pada tanggal tersebut.');
-                            inputEl.value = ''; // Reset tanggal agar tidak bisa di-submit
+                            inputEl.value = ''; 
                         }
                     } else {
+                        // Jika tidak ada data event (tanggal tersedia), kosongkan area feedback
                         feedback.innerHTML = '';
                     }
+                })
+                .catch(error => {
+                    // Tambahan pengaman jika terjadi error koneksi ke backend
+                    console.error('Error fetching jadwal:', error);
+                    feedback.innerHTML = '';
                 });
         });
     </script>
