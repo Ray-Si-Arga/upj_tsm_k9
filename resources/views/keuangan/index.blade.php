@@ -879,7 +879,7 @@
                 <div class="card-amount {{ $saldo < 0 ? 'negative' : '' }}">
                     {{ $saldo < 0 ? '-' : '' }}Rp {{ number_format(abs($saldo), 0, ',', '.') }}
                 </div>
-                <div class="card-meta">Pemasukan â€“ Pengeluaran pada periode ini</div>
+                <div class="card-meta">Pemasukan - Pengeluaran pada periode ini</div>
                 <div class="card-badge">
                     <i class="fa-solid fa-circle-dot"
                         style="font-size:0.6rem; color: {{ $saldo >= 0 ? '#6ee7b7' : '#fca5a5' }};"></i>
