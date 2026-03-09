@@ -483,7 +483,7 @@
             <div class="d-flex align-items-center justify-content-between mb-1"
                 style="border-bottom: 2px solid #000; padding: 5px 15px;">
                 <div>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Honda_Logo.svg/960px-Honda_Logo.svg.png"
+                    <img src="public/images/honda_logo.png"
                         alt="Honda Logo" style="height: 60px;">
                 </div>
                 <div style="width: 60%; text-align: center;">
@@ -492,7 +492,7 @@
                     <div class="fw-bold">BOOKING SERVICE : 087701704, 08780330487</div>
                 </div>
                 <div>
-                    <img src="https://astramotorpurwokerto.wordpress.com/wp-content/uploads/2020/08/ahass-logo2-1.png"
+                    <img src="public/images/ahass_logo.png"
                         alt="AHASS Logo" style="height: 50px;">
                 </div>
             </div>
@@ -638,7 +638,7 @@
                             <div class="section-header py-1">Kondisi Awal SMH</div>
                             <div class="p-2 text-center">
                                 <div class="mb-2">
-                                    <img src="https://github.com/ubaid777/Gambar/blob/main/Bengkel/Group%201.png?raw=true"
+                                    <img src="public/images/fuel_icon.png"
                                         alt="Fuel Icon" style="height: 80px;">
                                 </div>
                                 <div class="text-start fw-bold mt-3">Catatan Lain :</div>
