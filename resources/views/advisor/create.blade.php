@@ -253,7 +253,7 @@
                                     <div class="col-12">
                                         <label class="form-label-custom">Nama Pemilik</label>
                                         <input type="text" name="owner_name" id="owner_name" class="form-control"
-                                            required>
+                                            >
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label-custom">No. HP</label>

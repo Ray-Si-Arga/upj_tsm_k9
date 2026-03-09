@@ -226,7 +226,7 @@
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label-custom">Nama Pemilik</label>
-                                        <input type="text" name="owner_name" id="owner_name" class="form-control" required
+                                        <input type="text" name="owner_name" id="owner_name" class="form-control" 
                                             value="{{ $advisor->owner_name }}">
                                     </div>
                                     <div class="col-6">
@@ -353,11 +353,7 @@
                                 <input type="text" name="nama_mekanik" class="form-control border-danger" required
                                     value="{{ $advisor->nama_mekanik }}" placeholder="Wajib diisi">
                             </div>
-                            <div class="col-12">
-                                <label class="form-label-custom">Keluhan Konsumen</label>
-                                <textarea name="customer_complaint" class="form-control" rows="2"
-                                    placeholder="Keluhan dari konsumen...">{{ $advisor->customer_complaint }}</textarea>
-                            </div>
+                            
                             <div class="col-12">
                                 <label class="form-label-custom">Catatan SA</label>
                                 <textarea name="advisor_notes" class="form-control" rows="2"
