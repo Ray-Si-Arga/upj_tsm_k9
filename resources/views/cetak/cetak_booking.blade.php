@@ -483,8 +483,7 @@
             <div class="d-flex align-items-center justify-content-between mb-1"
                 style="border-bottom: 2px solid #000; padding: 5px 15px;">
                 <div>
-                    <img src="public/images/honda_logo.png"
-                        alt="Honda Logo" style="height: 60px;">
+                    <img src="{{ asset('images/honda_logo.png') }}" alt="Honda Logo" style="height: 60px;">
                 </div>
                 <div style="width: 60%; text-align: center;">
                     <div style="font-size: 16px; font-weight: 900;">AHASS 00126 - CV. SINAR BARU</div>
@@ -492,8 +491,7 @@
                     <div class="fw-bold">BOOKING SERVICE : 087701704, 08780330487</div>
                 </div>
                 <div>
-                    <img src="public/images/ahass_logo.png"
-                        alt="AHASS Logo" style="height: 50px;">
+                    <img src="{{ asset('images/ahass_logo.png') }}" alt="AHASS Logo" style="height: 50px;">
                 </div>
             </div>
 
@@ -617,7 +615,8 @@
                         Lainnya
                         @if($isLainnya && $advisor->visit_reason)
                             <div class="dotted-fill text-start" style="padding-left: 5px; font-weight: bold;">
-                                {{ $advisor->visit_reason }}</div>
+                                {{ $advisor->visit_reason }}
+                            </div>
                         @else
                             <div class="dotted-fill"></div>
                         @endif
@@ -638,8 +637,7 @@
                             <div class="section-header py-1">Kondisi Awal SMH</div>
                             <div class="p-2 text-center">
                                 <div class="mb-2">
-                                    <img src="public/images/fuel_icon.png"
-                                        alt="Fuel Icon" style="height: 80px;">
+                                    <img src="{{ asset('images/fuel_icon.png') }}" alt="Fuel Icon" style="height: 80px;">
                                 </div>
                                 <div class="text-start fw-bold mt-3">Catatan Lain :</div>
                                 <div style="height: 120px; width: 100%;"></div>
@@ -654,45 +652,47 @@
                                 <div class="col-5 py-1">Estimasi Biaya</div>
                             </div>
                             <!-- List Pekerjaan -->
-@php
-    // Ambil jobs: bisa array (JSON baru) atau string lama
-    $rawJobs = $advisor->jobs;
+                            @php
+                                // Ambil jobs: bisa array (JSON baru) atau string lama
+                                $rawJobs = $advisor->jobs;
 
-    if (is_array($rawJobs) && count($rawJobs) > 0) {
-        // Format BARU: JSON array [['name'=>'...','price'=>...], ...]
-        $jobsArray = $rawJobs;
-    } elseif (is_string($rawJobs) && $rawJobs !== '') {
-        // Format LAMA: string "Ganti Oli, Tune Up" (backward compatible)
-        $names = array_values(array_filter(array_map('trim', explode(',', $rawJobs))));
-        $jobsArray = array_map(fn($n) => ['name' => $n, 'price' => null], $names);
-    } else {
-        $jobsArray = [];
-    }
+                                if (is_array($rawJobs) && count($rawJobs) > 0) {
+                                    // Format BARU: JSON array [['name'=>'...','price'=>...], ...]
+                                    $jobsArray = $rawJobs;
+                                } elseif (is_string($rawJobs) && $rawJobs !== '') {
+                                    // Format LAMA: string "Ganti Oli, Tune Up" (backward compatible)
+                                    $names = array_values(array_filter(array_map('trim', explode(',', $rawJobs))));
+                                    $jobsArray = array_map(fn($n) => ['name' => $n, 'price' => null], $names);
+                                } else {
+                                    $jobsArray = [];
+                                }
 
-    // Tentukan jumlah baris minimum (6 agar form tidak terlihat kosong)
-    $totalJobRows = max(6, count($jobsArray));
-@endphp
+                                // Tentukan jumlah baris minimum (6 agar form tidak terlihat kosong)
+                                $totalJobRows = max(6, count($jobsArray));
+                            @endphp
 
-@for ($j = 0; $j < $totalJobRows; $j++)
-    @php
-        $job      = $jobsArray[$j] ?? null;
-        $jobName  = $job ? data_get($job, 'name', '') : '';
-        $jobPrice = $job ? data_get($job, 'price', null) : null;
-    @endphp
-    <div class="row g-0">
-        <div class="col-7 border-end border-dark p-1 d-flex border-2">
-            {{ $j + 1 }}. <span class="{{ $job ? 'value-fill' : 'dotted-fill' }}">{{ $jobName }}</span>
-        </div>
-        <div class="col-5 p-1 d-flex">
-            Rp
-            <span class="{{ $job && $jobPrice !== null ? 'value-fill' : 'dotted-fill' }} text-end">
-                @if($job && $jobPrice !== null)
-                    {{ number_format((int) $jobPrice, 0, ',', '.') }}
-                @endif
-            </span>
-        </div>
-    </div>
-@endfor
+                            @for ($j = 0; $j < $totalJobRows; $j++)
+                                @php
+                                    $job = $jobsArray[$j] ?? null;
+                                    $jobName = $job ? data_get($job, 'name', '') : '';
+                                    $jobPrice = $job ? data_get($job, 'price', null) : null;
+                                @endphp
+                                <div class="row g-0">
+                                    <div class="col-7 border-end border-dark p-1 d-flex border-2">
+                                        {{ $j + 1 }}. <span
+                                            class="{{ $job ? 'value-fill' : 'dotted-fill' }}">{{ $jobName }}</span>
+                                    </div>
+                                    <div class="col-5 p-1 d-flex">
+                                        Rp
+                                        <span
+                                            class="{{ $job && $jobPrice !== null ? 'value-fill' : 'dotted-fill' }} text-end">
+                                            @if($job && $jobPrice !== null)
+                                                {{ number_format((int) $jobPrice, 0, ',', '.') }}
+                                            @endif
+                                        </span>
+                                    </div>
+                                </div>
+                            @endfor
 
 
 
@@ -735,12 +735,10 @@
                     </div>
 
                     <div class="section-header text-start px-2 border-top border-2">Keluhan Konsumen</div>
-                    <div style="height: 35px; border-bottom: 2px solid #000; padding: 5px;">
-                        {{ $advisor->booking->complaint }}
-                    </div>
+                    <div style="min-height: 60px; word-wrap: break-word; white-space: pre-wrap; border-bottom: 2px solid #000; padding: 5px;">{{ trim($advisor->booking->complaint) }}</div>
 
                     <div class="section-header text-start px-2">Analisa Service Advisor</div>
-                    <div style="height: 40px; padding: 5px;">{{ $advisor->advisor_notes }}</div>
+                    <div style="min-height: 60px; word-wrap: break-word; white-space: pre-wrap; padding: 5px;">{{ trim($advisor->advisor_notes) }}</div>
 
                 </div>
                 <div class="col-4">
@@ -830,17 +828,17 @@
                 <span class="cb">
                     @php
                         if ($advisor->pkb_approval === 'hubungi') {
-                            echo '&#9745;'; 
+                            echo '&#9745;';
                         } else {
                             echo '&#9744;';
                         }
                     @endphp
-                </span> Konfirmasi dulu / telp ke <span class="value-fill"
-                    style="flex-grow: 0;">+62 851-4300-8033</span>
+                </span> Konfirmasi dulu / telp ke <span class="value-fill" style="flex-grow: 0;">+62
+                    851-4300-8033</span>
                 <span class="cb ms-3">
                     @php
                         if ($advisor->pkb_approval === 'langsung') {
-                            echo '&#9745;'; 
+                            echo '&#9745;';
                         } else {
                             echo '&#9744;';
                         }
@@ -912,7 +910,7 @@
                 <div class="d-flex" style="height: 50px;">
                     <div class="flex-grow-1 border-end border-dark p-1"></div>
                     <div class="d-flex align-items-end p-1" style="width: 150px; font-size: 9px;">
-                        Nama Mekanik : <div class="dotted-fill"></div>
+                        Nama Mekanik : {{ $advisor->nama_mekanik }}
                     </div>
                 </div>
             </div>
