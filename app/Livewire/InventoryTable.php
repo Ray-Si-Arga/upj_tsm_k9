@@ -46,6 +46,11 @@ class InventoryTable extends Component
         $this->resetValidation();
     }
 
+    public function resetInputErrors()
+    {
+        $this->resetValidation();
+    }
+
     public function edit($id)
     {
         $this->resetValidation();

@@ -1,17 +1,17 @@
-﻿@extends('layouts.app')
-@push('styles')
+﻿
+<?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
-    @php
+<?php $__env->startSection('content'); ?>
+    <?php
         $totalItem = $Inventory->count();
         $totalStok = $Inventory->sum('jumlah_barang');
         $nilaiModal = $Inventory->sum(fn($i) => $i->harga_beli * $i->jumlah_barang);
         $nilaiJual = $Inventory->sum(fn($i) => $i->harga_jual * $i->jumlah_barang);
         $potensiLaba = $nilaiJual - $nilaiModal;
         $stokMenipis = $Inventory->where('jumlah_barang', '<=', 6)->count();
-    @endphp
+    ?>
 
     <style>
         /* ==============================
@@ -675,19 +675,21 @@
 
     <div class="container inv-wrap">
 
-        {{-- ==================== ALERTS ==================== --}}
-        @if (session('success'))
+        
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('success')): ?>
             <div class="alert alert-success border-0 rounded-3 shadow-sm mb-4 au">
-                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-            </div>
-        @endif
-        @if (session('error'))
-            <div class="alert alert-danger border-0 rounded-3 shadow-sm mb-4 au">
-                <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-            </div>
-        @endif
+                <i class="fas fa-check-circle me-2"></i><?php echo e(session('success')); ?>
 
-        {{-- ==================== PAGE HEADER (Konsisten dengan Dashboard) ==================== --}}
+            </div>
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('error')): ?>
+            <div class="alert alert-danger border-0 rounded-3 shadow-sm mb-4 au">
+                <i class="fas fa-exclamation-circle me-2"></i><?php echo e(session('error')); ?>
+
+            </div>
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+        
         <div class="page-header au">
             <div>
                 <div class="header-eyebrow">
@@ -707,56 +709,131 @@
             </div>
         </div>
 
-        {{-- ==================== SUMMARY CARDS ==================== --}}
+        
         <div class="cards-grid">
 
-            {{-- Total Item --}}
+            
             <div class="summary-card card-item au d1">
                 <div class="card-icon-wrap"><i class="fas fa-tags"></i></div>
                 <div class="card-label">Total Jenis Item</div>
-                <div class="card-amount">{{ $totalItem }}</div>
+                <div class="card-amount"><?php echo e($totalItem); ?></div>
                 <div class="card-meta">Jenis sparepart tercatat</div>
                 <div class="card-badge"><i class="fas fa-database" style="font-size:.6rem;"></i> Master data</div>
             </div>
 
 
-            {{-- Nilai Modal --}}
+            
             <div class="summary-card card-modal au d3">
                 <div class="card-icon-wrap"><i class="fas fa-arrow-trend-down"></i></div>
                 <div class="card-label">Nilai Modal</div>
-                <div class="card-amount sm">Rp {{ number_format($nilaiModal, 0, ',', '.') }}</div>
+                <div class="card-amount sm">Rp <?php echo e(number_format($nilaiModal, 0, ',', '.')); ?></div>
                 <div class="card-meta">Total harga beli stok</div>
                 <div class="card-badge"><i class="fas fa-receipt" style="font-size:.6rem;"></i> Modal tersimpan</div>
             </div>
 
-            {{-- Potensi Laba --}}
+            
             <div class="summary-card card-laba au d4">
                 <div class="card-icon-wrap"><i class="fas fa-arrow-trend-up"></i></div>
                 <div class="card-label">Potensi Laba</div>
-                <div class="card-amount sm">Rp {{ number_format($potensiLaba, 0, ',', '.') }}</div>
+                <div class="card-amount sm">Rp <?php echo e(number_format($potensiLaba, 0, ',', '.')); ?></div>
                 <div class="card-meta">Jika semua stok terjual</div>
                 <div class="card-badge"><i class="fas fa-chart-line" style="font-size:.6rem;"></i> Estimasi profit</div>
             </div>
 
-            {{-- Stok Menipis --}}
+            
             <div class="summary-card card-tipis au d5">
                 <div class="card-icon-wrap"><i class="fas fa-triangle-exclamation"></i></div>
                 <div class="card-label">Stok Menipis</div>
-                <div class="card-amount">{{ $stokMenipis }}</div>
+                <div class="card-amount"><?php echo e($stokMenipis); ?></div>
                 <div class="card-meta">Item 6 unit tersisa</div>
                 <div class="card-badge"><i class="fas fa-bell" style="font-size:.6rem;"></i> Perlu restock</div>
             </div>
         </div>
 
-        {{-- ==================== TOOLBAR (LIVEWIRE REUSABLE COMPONENTS) ==================== --}}
+        
         <div class="toolbar au d5">
-            @livewire('search-bar', ['placeholder' => 'Cari nama barang...'])
+            <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('search-bar', ['placeholder' => 'Cari nama barang...']);
 
-            @livewire('stok-filter')
+$__keyOuter = $__key ?? null;
+
+$__key = null;
+$__componentSlots = [];
+
+$__key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-2540586956-0', $__key);
+
+$__html = app('livewire')->mount($__name, $__params, $__key, $__componentSlots);
+
+echo $__html;
+
+unset($__html);
+unset($__key);
+$__key = $__keyOuter;
+unset($__keyOuter);
+unset($__name);
+unset($__params);
+unset($__componentSlots);
+unset($__split);
+?>
+
+            <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('stok-filter');
+
+$__keyOuter = $__key ?? null;
+
+$__key = null;
+$__componentSlots = [];
+
+$__key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-2540586956-1', $__key);
+
+$__html = app('livewire')->mount($__name, $__params, $__key, $__componentSlots);
+
+echo $__html;
+
+unset($__html);
+unset($__key);
+$__key = $__keyOuter;
+unset($__keyOuter);
+unset($__name);
+unset($__params);
+unset($__componentSlots);
+unset($__split);
+?>
         </div>
 
-        {{-- ==================== LIVEWIRE COMPONENT ==================== --}}
-        @livewire('inventory-table')
+        
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('inventory-table');
+
+$__keyOuter = $__key ?? null;
+
+$__key = null;
+$__componentSlots = [];
+
+$__key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-2540586956-2', $__key);
+
+$__html = app('livewire')->mount($__name, $__params, $__key, $__componentSlots);
+
+echo $__html;
+
+unset($__html);
+unset($__key);
+$__key = $__keyOuter;
+unset($__keyOuter);
+unset($__name);
+unset($__params);
+unset($__componentSlots);
+unset($__split);
+?>
 
     </div>
 
@@ -783,4 +860,5 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Dokumen Sekolah 12\PKL\upj_tsm_k9\resources\views/inventory/index.blade.php ENDPATH**/ ?>

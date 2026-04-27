@@ -1,9 +1,9 @@
-﻿@extends('layouts.app')
-@push('styles')
+﻿
+<?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <style>
         :root {
@@ -569,9 +569,7 @@
     <div class="lv-wrap">
         <div class="container-fluid px-3 px-md-4">
 
-            {{-- =========================================================
-            PAGE HEADER
-            ========================================================= --}}
+            
             <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
                     <div class="header-eyebrow">
@@ -587,45 +585,40 @@
                 </div>
             </div>
 
-            {{-- =========================================================
-            STAT CARDS
-            ========================================================= --}}
-            @php
+            
+            <?php
                 $totalLayanan = $services->count();
                 $totalPaket = $services->where('type', 'paket')->count();
                 $totalSatuan = $services->where('type', 'satuan')->count();
-            @endphp
+            ?>
             <div class="stat-grid">
                 <div class="stat-card stat-navy">
                     <div class="stat-icon"><i class="fas fa-list-ul"></i></div>
                     <div class="stat-label">Total Layanan</div>
-                    <div class="stat-val">{{ $totalLayanan }}</div>
+                    <div class="stat-val"><?php echo e($totalLayanan); ?></div>
                 </div>
                 <div class="stat-card stat-red">
                     <div class="stat-icon"><i class="fas fa-box-open"></i></div>
                     <div class="stat-label">Paket Spesial</div>
-                    <div class="stat-val">{{ $totalPaket }}</div>
+                    <div class="stat-val"><?php echo e($totalPaket); ?></div>
                 </div>
                 <div class="stat-card stat-green">
                     <div class="stat-icon"><i class="fas fa-wrench"></i></div>
                     <div class="stat-label">Layanan Satuan</div>
-                    <div class="stat-val">{{ $totalSatuan }}</div>
+                    <div class="stat-val"><?php echo e($totalSatuan); ?></div>
                 </div>
             </div>
 
-            {{-- =========================================================
-            ALERT
-            ========================================================= --}}
-            @if (session('success'))
+            
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('success')): ?>
                 <div class="alert-custom">
                     <i class="fas fa-circle-check"></i>
-                    {{ session('success') }}
-                </div>
-            @endif
+                    <?php echo e(session('success')); ?>
 
-            {{-- =========================================================
-            FILTER BAR
-            ========================================================= --}}
+                </div>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+            
             <div class="filter-bar">
                 <div class="search-wrap">
                     <i class="fas fa-search"></i>
@@ -638,15 +631,13 @@
                 </div>
             </div>
 
-            {{-- =========================================================
-            DESKTOP TABLE
-            ========================================================= --}}
+            
             <div class="panel desktop-table">
                 <div class="panel-hdr">
                     <div class="panel-title">
                         <i class="fas fa-table-list" style="color:var(--honda-red)"></i>
                         Daftar Layanan
-                        <span class="panel-badge">{{ $totalLayanan }} item</span>
+                        <span class="panel-badge"><?php echo e($totalLayanan); ?> item</span>
                     </div>
                 </div>
                 <table class="lv-table" id="layananTable">
@@ -661,49 +652,49 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($services as $i => $service)
-                            <tr data-type="{{ $service->type }}" data-name="{{ strtolower($service->name) }}">
-                                <td style="color:#94a3b8;font-weight:700;">{{ $i + 1 }}</td>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                            <tr data-type="<?php echo e($service->type); ?>" data-name="<?php echo e(strtolower($service->name)); ?>">
+                                <td style="color:#94a3b8;font-weight:700;"><?php echo e($i + 1); ?></td>
                                 <td>
-                                    <div class="svc-name">{{ $service->name }}</div>
+                                    <div class="svc-name"><?php echo e($service->name); ?></div>
                                 </td>
                                 <td>
-                                    @if ($service->type == 'paket')
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($service->type == 'paket'): ?>
                                         <span class="badge-paket"><i class="fas fa-star me-1"></i>Paket Spesial</span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="badge-satuan"><i class="fas fa-wrench me-1"></i>Satuan</span>
-                                    @endif
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                 </td>
                                 <td>
-                                    <span class="price-badge">Rp {{ number_format($service->price, 0, ',', '.') }}</span>
+                                    <span class="price-badge">Rp <?php echo e(number_format($service->price, 0, ',', '.')); ?></span>
                                 </td>
                                 <td>
-                                    @if ($service->type === 'paket')
-                                        <span class="svc-desc">{{ Str::limit($service->description ?? '-', 55) }}</span>
-                                    @endif
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($service->type === 'paket'): ?>
+                                        <span class="svc-desc"><?php echo e(Str::limit($service->description ?? '-', 55)); ?></span>
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
                                         <a href="javascript:void(0)" class="btn-edit"
                                             onclick="event.preventDefault(); editLayanan(this)"
-                                            data-url="{{ route('layanan.update', $service->id) }}" data-id="{{ $service->id }}"
-                                            data-name="{{ $service->name }}" data-type="{{ $service->type }}"
-                                            data-price="{{ $service->price }}" data-description="{{ $service->description }}">
+                                            data-url="<?php echo e(route('layanan.update', $service->id)); ?>" data-id="<?php echo e($service->id); ?>"
+                                            data-name="<?php echo e($service->name); ?>" data-type="<?php echo e($service->type); ?>"
+                                            data-price="<?php echo e($service->price); ?>" data-description="<?php echo e($service->description); ?>">
                                             <i class="fas fa-pen-to-square"></i> Edit
                                         </a>
 
-                                        <form action="{{ route('layanan.destroy', $service->id) }}" method="POST"
+                                        <form action="<?php echo e(route('layanan.destroy', $service->id)); ?>" method="POST"
                                             class="d-inline">
-                                            @csrf @method('DELETE')
+                                            <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
                                             <button type="submit" class="btn-del"
-                                                onclick="return confirm('Hapus layanan \'{{ $service->name }}\'?')">
+                                                onclick="return confirm('Hapus layanan \'<?php echo e($service->name); ?>\'?')">
                                                 <i class="fas fa-trash-can"></i> Hapus
                                             </button>
                                         </form>
                                     </div>
                                 </td>
                             </tr>
-                        @empty
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                             <tr>
                                 <td colspan="6">
                                     <div class="empty-state">
@@ -712,60 +703,58 @@
                                     </div>
                                 </td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </tbody>
                 </table>
             </div>
 
-            {{-- =========================================================
-            MOBILE CARD LIST
-            ========================================================= --}}
+            
             <div class="mobile-list" id="mobileList">
-                @forelse ($services as $service)
-                    <div class="mob-card" data-type="{{ $service->type }}" data-name="{{ strtolower($service->name) }}">
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                    <div class="mob-card" data-type="<?php echo e($service->type); ?>" data-name="<?php echo e(strtolower($service->name)); ?>">
                         <div class="mob-card-header">
-                            <div class="mob-name">{{ $service->name }}</div>
-                            @if ($service->type == 'paket')
+                            <div class="mob-name"><?php echo e($service->name); ?></div>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($service->type == 'paket'): ?>
                                 <span class="badge-paket">Paket</span>
-                            @else
+                            <?php else: ?>
                                 <span class="badge-satuan">Satuan</span>
-                            @endif
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </div>
-                        <div class="mob-price">Rp {{ number_format($service->price, 0, ',', '.') }}</div>
+                        <div class="mob-price">Rp <?php echo e(number_format($service->price, 0, ',', '.')); ?></div>
                         <div class="mob-desc-box">
                             <div class="mob-desc-label">Deskripsi</div>
-                            <div class="mob-desc-text">{{ $service->description ?? 'Tidak ada deskripsi' }}</div>
+                            <div class="mob-desc-text"><?php echo e($service->description ?? 'Tidak ada deskripsi'); ?></div>
                         </div>
                         <div class="mob-actions">
 
                             <a href="javascript:void(0)" class="btn-edit" onclick="editLayanan(this)"
-                                data-id="{{ $service->id }}" data-name="{{ $service->name }}" data-type="{{ $service->type }}"
-                                data-price="{{ $service->price }}" data-description="{{ $service->description }}">
+                                data-id="<?php echo e($service->id); ?>" data-name="<?php echo e($service->name); ?>" data-type="<?php echo e($service->type); ?>"
+                                data-price="<?php echo e($service->price); ?>" data-description="<?php echo e($service->description); ?>">
                                 <i class="fas fa-pen-to-square"></i> Edit
                             </a>
 
 
-                            <form action="{{ route('layanan.destroy', $service->id) }}" method="POST" class="mob-btn">
-                                @csrf @method('DELETE')
+                            <form action="<?php echo e(route('layanan.destroy', $service->id)); ?>" method="POST" class="mob-btn">
+                                <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
                                 <button type="submit" class="btn-del w-100"
-                                    onclick="return confirm('Hapus layanan \'{{ $service->name }}\'?')">
+                                    onclick="return confirm('Hapus layanan \'<?php echo e($service->name); ?>\'?')">
                                     <i class="fas fa-trash-can"></i> Hapus
                                 </button>
                             </form>
                         </div>
                     </div>
-                @empty
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                     <div class="empty-state">
                         <div class="empty-icon"><i class="fas fa-box-open"></i></div>
                         <p>Belum ada data layanan.</p>
                     </div>
-                @endforelse
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </div>
         </div>
     </div>
 
 
-    {{-- Modal pop up tambah layanan --}}
+    
     <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0 shadow-md" style="border-radius: 20px;">
@@ -777,8 +766,8 @@
                 </div>
 
                 <div class="modal-body px-4 pb-4">
-                    <form action="{{ route('layanan.store') }}" method="POST">
-                        @csrf
+                    <form action="<?php echo e(route('layanan.store')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -828,7 +817,7 @@
         </div>
     </div>
 
-    {{-- Modal Edit --}}
+    
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
@@ -838,7 +827,7 @@
                 </div>
                 <div class="modal-body px-4 pb-4">
                     <form id="editForm" action="" method="POST">
-                        @csrf @method('PUT')
+                        <?php echo csrf_field(); ?> <?php echo method_field('PUT'); ?>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold small text-muted">Nama Layanan</label>
@@ -877,9 +866,7 @@
         </div>
     </div>
 
-    {{-- ============================================================
-    JAVASCRIPT: Live search & filter tabs
-    ============================================================ --}}
+    
     <script>
         // 1. FILTER LOGIC (Tetap)
         (function () {
@@ -961,4 +948,5 @@
         }
     </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Dokumen Sekolah 12\PKL\upj_tsm_k9\resources\views/layanan/index.blade.php ENDPATH**/ ?>

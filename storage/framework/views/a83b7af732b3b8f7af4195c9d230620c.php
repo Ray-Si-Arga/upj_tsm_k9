@@ -1,178 +1,183 @@
-﻿@extends('layouts.app')
-@push('styles')
+﻿
+<?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
-    @php
-        $totalItem = $Inventory->count();
-        $totalStok = $Inventory->sum('jumlah_barang');
-        $nilaiModal = $Inventory->sum(fn($i) => $i->harga_beli * $i->jumlah_barang);
-        $nilaiJual = $Inventory->sum(fn($i) => $i->harga_jual * $i->jumlah_barang);
-        $potensiLaba = $nilaiJual - $nilaiModal;
-        $stokMenipis = $Inventory->where('jumlah_barang', '<=', 6)->count();
-    @endphp
+<?php $__env->startSection('content'); ?>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-        /* ==============================
-                           ROOT & BASE
-                        ============================== */
+        /* =========================================
+                                                               TOKENS
+                                                            ========================================= */
         :root {
             --honda-red: #B10000;
             --honda-red-dark: #8B0000;
             --honda-red-soft: rgba(177, 0, 0, 0.08);
-            --emerald: #064e3b;
-            --emerald-mid: #047857;
             --navy: #0f172a;
             --navy-mid: #1e293b;
+            --emerald: #064e3b;
+            --emerald-mid: #047857;
             --amber: #78350f;
-            --amber-mid: #92400e;
-            --bg: #f4f6f9;
-            --border: #e2e8f0;
-            --text: #1e293b;
+            --amber-mid: #b45309;
+            --red-soft: rgba(177, 0, 0, .09);
+            --red-border: rgba(177, 0, 0, .18);
+            --navy: #0b1120;
+            --navy-mid: #14213d;
+            --navy-soft: #1d2e4a;
+
+            --bg: #f1f5fb;
+            --surface: #ffffff;
+            --border: #e4eaf3;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --subtle: #94a3b8;
+
+            --blue-soft: rgba(29, 78, 216, .07);
+            --blue: #1d4ed8;
         }
 
         body {
-            background: var(--bg);
             font-family: 'Inter', system-ui, sans-serif;
-            color: var(--text);
+            background: var(--bg);
+            color: var(--ink);
         }
 
-        .inv-wrap {
-            padding: 28px 0;
+        .page-wrap {
+            padding: 2rem 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        /* 
-            PAGE HEADER
-        */
-
+        /* ============================
+                    PAGE HEADER 
+            ===============================*/
         .page-header {
             background: linear-gradient(135deg, var(--navy) 0%, #16213e 50%, #0f172a 100%);
             border-radius: 20px;
-            padding: 30px 36px;
+            padding: 28px 34px;
             color: white;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             position: relative;
             overflow: hidden;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            border: none; /* Menghilangkan border default jika ada */
         }
 
         .page-header::before {
             content: '';
-            position: absolute; top: -80px; right: -80px;
-            width: 300px; height: 300px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(177,0,0,.25) 0%, transparent 70%);
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(177, 0, 0, .25) 0%, transparent 70%);
         }
 
         .page-header::after {
             content: '';
-            position: absolute; bottom: -50px; left: 20%;
-            width: 200px; height: 200px; border-radius: 50%;
-            background: rgba(255,255,255,.03);
+            position: absolute;
+            bottom: -50px;
+            left: 25%;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .03);
         }
 
         .header-eyebrow {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(177,0,0,.25); border: 1px solid rgba(177,0,0,.35);
-            color: #fca5a5; border-radius: 20px;
-            padding: 4px 14px; font-size: .72rem; font-weight: 800;
-            text-transform: uppercase; letter-spacing: 1.2px;
-            margin-bottom: 10px; position: relative; z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(177, 0, 0, .35);
+            border: 1px solid rgba(177, 0, 0, .5);
+            color: #fca5a5;
+            font-size: .7rem;
+            font-weight: 800;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
         }
 
-        .page-title {
-            font-size: 1.75rem !important; 
-            font-weight: 800; 
-            color: #fff !important; 
-            margin: 0 0 5px;
-            letter-spacing: -.6px; 
-            position: relative; 
+        .header-title {
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -.5px;
+            margin: 0 0 4px;
+            position: relative;
             z-index: 1;
         }
 
-        .page-subtitle {
-            font-size: .85rem !important; 
-            color: rgba(255,255,255,.5) !important;
-            margin: 0; 
-            font-weight: 500; 
-            position: relative; 
+        .header-sub {
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .5);
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-actions {
+            position: relative;
             z-index: 1;
         }
 
         .btn-add {
-            position: relative;
-            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             background: var(--honda-red);
             color: #fff;
-            box-shadow: 0 4px 16px rgba(177,0,0,.35);
+            padding: 10px 22px;
+            border-radius: 12px;
+            font-size: .83rem;
+            font-weight: 800;
             border: none;
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-weight: 700;
-            transition: all .2s;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background .18s, transform .18s, box-shadow .18s;
+            box-shadow: 0 4px 14px rgba(177, 0, 0, .3);
+            position: relative;
+            z-index: 1;
         }
 
         .btn-add:hover {
             background: var(--honda-red-dark);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(177, 0, 0, .4);
             color: #fff;
         }
-        /* 
-            SUMMARY CARDS
-        */
+
+        /* ==============================
+                        SUMMARY CARDS
+                ============================== */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
             margin-bottom: 28px;
         }
 
         .summary-card {
-            border-radius: 18px;
-            padding: 22px 24px;
+            border-radius: 16px;
+            padding: 20px 22px;
             color: #fff;
             position: relative;
             overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform .2s, box-shadow .2s;
         }
 
         .summary-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.13);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, .14);
         }
 
-        /* Card colours */
-        .card-item {
-            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
-            box-shadow: 0 6px 24px rgba(15, 23, 42, .28);
-        }
-
-        .card-stok {
-            background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald-mid) 100%);
-            box-shadow: 0 6px 24px rgba(6, 78, 59, .28);
-        }
-
-        .card-modal {
-            background: linear-gradient(135deg, #881337 0%, var(--honda-red) 100%);
-            box-shadow: 0 6px 24px rgba(136, 19, 55, .28);
-        }
-
-        .card-laba {
-            background: linear-gradient(135deg, var(--amber) 0%, var(--amber-mid) 100%);
-            box-shadow: 0 6px 24px rgba(120, 53, 15, .28);
-        }
-
-        .card-tipis {
-            background: linear-gradient(135deg, #4c0519 0%, #881337 100%);
-            box-shadow: 0 6px 24px rgba(76, 5, 25, .28);
-        }
-
-        /* Decorative circle */
         .summary-card::before {
             content: '';
             position: absolute;
@@ -181,7 +186,7 @@
             width: 140px;
             height: 140px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, .06);
         }
 
         .summary-card::after {
@@ -192,77 +197,82 @@
             width: 110px;
             height: 110px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, .04);
+        }
+
+        .card-total {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+            box-shadow: 0 6px 24px rgba(15, 23, 42, .28);
+        }
+
+        .card-pending {
+            background: linear-gradient(135deg, #78350f 0%, var(--amber-mid) 100%);
+            box-shadow: 0 6px 24px rgba(120, 53, 15, .28);
+        }
+
+        .card-progress {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+            box-shadow: 0 6px 24px rgba(30, 58, 138, .28);
+        }
+
+        .card-done {
+            background: linear-gradient(135deg, var(--emerald) 0%, var(--emerald-mid) 100%);
+            box-shadow: 0 6px 24px rgba(6, 78, 59, .28);
+        }
+
+        .card-upcoming {
+            background: linear-gradient(135deg, #4c0519 0%, var(--honda-red) 100%);
+            box-shadow: 0 6px 24px rgba(177, 0, 0, .28);
         }
 
         .card-icon-wrap {
-            width: 42px;
-            height: 42px;
-            border-radius: 11px;
-            background: rgba(255, 255, 255, 0.14);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, .14);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: #fff;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             position: relative;
             z-index: 1;
-            backdrop-filter: blur(4px);
         }
 
         .card-label {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: rgba(255, 255, 255, .58);
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             position: relative;
             z-index: 1;
         }
 
         .card-amount {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 800;
             color: #fff;
-            line-height: 1.2;
-            letter-spacing: -0.5px;
+            line-height: 1;
+            letter-spacing: -1px;
             position: relative;
             z-index: 1;
         }
 
-        .card-amount.sm {
-            font-size: 1.25rem;
-        }
-
         .card-meta {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: rgba(255, 255, 255, .5);
-            margin-top: 7px;
+            margin-top: 6px;
             position: relative;
             z-index: 1;
             font-weight: 500;
         }
 
-        .card-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(255, 255, 255, .14);
-            color: rgba(255, 255, 255, .85);
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-top: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* 
-            SEARCH + FILTER BAR
-        */
+        /* ==============================
+                                       SEARCH + FILTER BAR
+                                    ============================== */
         .toolbar {
             background: #fff;
             border-radius: 14px;
@@ -341,9 +351,9 @@
             border-color: #fcd34d;
         }
 
-        /* 
-            TABLE CARD
-        */
+        /* ==============================
+                                       TABLE CARD
+                                    ============================== */
         .table-card {
             background: #fff;
             border-radius: 18px;
@@ -575,9 +585,9 @@
             font-size: 0.9rem;
         }
 
-        /* 
-            MOBILE CARDS
-        */
+        /* ==============================
+                                       MOBILE CARDS
+                                    ============================== */
         .mobile-card {
             background: #fff;
             border-radius: 14px;
@@ -594,13 +604,13 @@
             margin-bottom: 12px;
         }
 
-        /* 
-            ANIMATIONS
-        */
+        /* =========================================
+                                                               ANIMATIONS
+                                                            ========================================= */
         @keyframes fadeUp {
             from {
                 opacity: 0;
-                transform: translateY(14px);
+                transform: translateY(16px);
             }
 
             to {
@@ -629,158 +639,129 @@
             animation-delay: .20s;
         }
 
-        .d5 {
-            animation-delay: .25s;
-        }
-
-        .d6 {
-            animation-delay: .30s;
-        }
-
-        /* 
-            ADD BUTTON
-        */
-        .btn-add {
-            background: linear-gradient(135deg, var(--honda-red) 0%, var(--honda-red-dark) 100%);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 9px 20px;
-            font-size: 0.88rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            transition: all .2s;
-            box-shadow: 0 4px 12px rgba(177, 0, 0, .25);
-        }
-
-        .btn-add:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(177, 0, 0, .3);
-            color: #fff;
-        }
-
-        @media (max-width: 576px) {
-            .card-amount {
-                font-size: 1.2rem;
+        /* =========================================
+                        RESPONSIVE
+        ========================================= */
+        @media (max-width: 768px) {
+            .page-wrap {
+                padding: 1.25rem 1rem 3rem;
             }
 
-            .cards-grid {
-                grid-template-columns: 1fr 1fr;
+            .banner-pills {
+                display: none;
+            }
+
+            .banner-title {
+                font-size: 1.3rem;
+            }
+
+            .col-alamat {
+                display: none;
             }
         }
     </style>
 
-    <div class="container inv-wrap">
+    <main class="page-wrap">
 
-        {{-- ==================== ALERTS ==================== --}}
-        @if (session('success'))
-            <div class="alert alert-success border-0 rounded-3 shadow-sm mb-4 au">
-                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-            </div>
-        @endif
-        @if (session('error'))
-            <div class="alert alert-danger border-0 rounded-3 shadow-sm mb-4 au">
-                <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-            </div>
-        @endif
-
-        {{-- ==================== PAGE HEADER (Konsisten dengan Dashboard) ==================== --}}
-        <div class="page-header au">
+        
+        <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <div>
                 <div class="header-eyebrow">
-                    Inventory System
+                    Administrator
                 </div>
-                <h1 class="page-title">Inventori Spare-Part</h1>
-                <p class="page-subtitle">Kelola stok, harga beli, dan potensi keuntungan bengkel.</p>
+                <h1 class="header-title">Akun</h1>
+                <p class="header-sub">Kelola Akun Pengguna Dan Akun Administrator yang Terdaftar Sistem</p>
             </div>
-            
-            <div>
-                <button onclick="window.dispatchEvent(new CustomEvent('open-create-modal'))" 
-                    data-bs-toggle="modal"
-                    data-bs-target="#formModal" 
-                    class="btn-add">
-                    <i class="fas fa-plus me-2"></i> Tambah Barang
+            <div class="header-actions">
+                <button type="button" class="btn-add" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                    <i class="fas fa-plus"></i> Tambah Pengguna
                 </button>
             </div>
         </div>
 
-        {{-- ==================== SUMMARY CARDS ==================== --}}
+        
         <div class="cards-grid">
-
-            {{-- Total Item --}}
-            <div class="summary-card card-item au d1">
-                <div class="card-icon-wrap"><i class="fas fa-tags"></i></div>
-                <div class="card-label">Total Jenis Item</div>
-                <div class="card-amount">{{ $totalItem }}</div>
-                <div class="card-meta">Jenis sparepart tercatat</div>
-                <div class="card-badge"><i class="fas fa-database" style="font-size:.6rem;"></i> Master data</div>
+            <div class="summary-card card-total au d1">
+                <div class="card-icon-wrap"><i class="fas fa-users"></i></div>
+                <div class="card-label">Total Customer</div>
+                <div class="card-amount"><?php echo e($totalCustomers); ?></div>
             </div>
-
-
-            {{-- Nilai Modal --}}
-            <div class="summary-card card-modal au d3">
-                <div class="card-icon-wrap"><i class="fas fa-arrow-trend-down"></i></div>
-                <div class="card-label">Nilai Modal</div>
-                <div class="card-amount sm">Rp {{ number_format($nilaiModal, 0, ',', '.') }}</div>
-                <div class="card-meta">Total harga beli stok</div>
-                <div class="card-badge"><i class="fas fa-receipt" style="font-size:.6rem;"></i> Modal tersimpan</div>
+            <div class="summary-card card-progress au d2">
+                <div class="card-icon-wrap"><i class="fas fa-user-plus"></i></div>
+                <div class="card-label">Customer Baru</div>
+                <div class="card-amount"><?php echo e($newCustomers); ?></div>
             </div>
-
-            {{-- Potensi Laba --}}
-            <div class="summary-card card-laba au d4">
-                <div class="card-icon-wrap"><i class="fas fa-arrow-trend-up"></i></div>
-                <div class="card-label">Potensi Laba</div>
-                <div class="card-amount sm">Rp {{ number_format($potensiLaba, 0, ',', '.') }}</div>
-                <div class="card-meta">Jika semua stok terjual</div>
-                <div class="card-badge"><i class="fas fa-chart-line" style="font-size:.6rem;"></i> Estimasi profit</div>
+            <div class="summary-card card-upcoming au d3">
+                <div class="card-icon-wrap"><i class="fas fa-user-shield"></i></div>
+                <div class="card-label">Total Admin</div>
+                <div class="card-amount"><?php echo e($totalAdmins); ?></div>
             </div>
-
-            {{-- Stok Menipis --}}
-            <div class="summary-card card-tipis au d5">
-                <div class="card-icon-wrap"><i class="fas fa-triangle-exclamation"></i></div>
-                <div class="card-label">Stok Menipis</div>
-                <div class="card-amount">{{ $stokMenipis }}</div>
-                <div class="card-meta">Item 6 unit tersisa</div>
-                <div class="card-badge"><i class="fas fa-bell" style="font-size:.6rem;"></i> Perlu restock</div>
+            <div class="summary-card card-pending au d4">
+                <div class="card-icon-wrap"><i class="fas fa-shield-alt"></i></div>
+                <div class="card-label">Admin Baru</div>
+                <div class="card-amount"><?php echo e($newAdmins); ?></div>
             </div>
         </div>
 
-        {{-- ==================== TOOLBAR (LIVEWIRE REUSABLE COMPONENTS) ==================== --}}
-        <div class="toolbar au d5">
-            @livewire('search-bar', ['placeholder' => 'Cari nama barang...'])
+        
+        <div class="toolbar au d2">
+            <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('search-bar', ['placeholder' => 'Cari nama, email, atau no telepon...']);
 
-            @livewire('stok-filter')
+$__keyOuter = $__key ?? null;
+
+$__key = null;
+$__componentSlots = [];
+
+$__key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-856849449-0', $__key);
+
+$__html = app('livewire')->mount($__name, $__params, $__key, $__componentSlots);
+
+echo $__html;
+
+unset($__html);
+unset($__key);
+$__key = $__keyOuter;
+unset($__keyOuter);
+unset($__name);
+unset($__params);
+unset($__componentSlots);
+unset($__split);
+?>
         </div>
 
-        {{-- ==================== LIVEWIRE COMPONENT ==================== --}}
-        @livewire('inventory-table')
+        
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('customer-table');
 
-    </div>
+$__keyOuter = $__key ?? null;
 
-    <script>
-        document.addEventListener('livewire:initialized', () => {
-            Livewire.on('close-modal', (event) => {
-                let modalEl = document.getElementById('formModal');
-                if (modalEl) {
-                    let modal = bootstrap.Modal.getInstance(modalEl);
-                    if (modal) {
-                        modal.hide();
+$__key = null;
+$__componentSlots = [];
 
-                        // Hapus backdrop jika masih ada
-                        let backdrop = document.querySelector('.modal-backdrop');
-                        if (backdrop) {
-                            backdrop.remove();
-                        }
+$__key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-856849449-1', $__key);
 
-                        document.body.classList.remove('modal-open');
-                        document.body.style.overflow = '';
-                        document.body.style.paddingRight = '';
-                    }
-                }
-            });
-        });
-    </script>
-@endsection
+$__html = app('livewire')->mount($__name, $__params, $__key, $__componentSlots);
+
+echo $__html;
+
+unset($__html);
+unset($__key);
+$__key = $__keyOuter;
+unset($__keyOuter);
+unset($__name);
+unset($__params);
+unset($__componentSlots);
+unset($__split);
+?>
+
+    </main>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Dokumen Sekolah 12\PKL\upj_tsm_k9\resources\views/customers/index.blade.php ENDPATH**/ ?>
