@@ -691,7 +691,7 @@
         <div class="page-header au">
             <div>
                 <div class="header-eyebrow">
-                    Inventory System
+                    Inventory
                 </div>
                 <h1 class="page-title">Inventori Spare-Part</h1>
                 <p class="page-subtitle">Kelola stok, harga beli, dan potensi keuntungan bengkel.</p>

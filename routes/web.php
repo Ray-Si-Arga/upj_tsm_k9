@@ -21,21 +21,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// ── Otentikasi & Registrasi ───────────────────────────────────────
+// ── Otentikasi & Registrasi
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginPost'])
     ->name('login.post')
-    ->middleware('throttle:5,1');                   // [+] max 5x login/menit
+    ->middleware('throttle:5,1');
 
 Route::get('/register', [AuthController::class, 'publicRegister'])->name('public.register');
 Route::post('/register', [AuthController::class, 'publicRegisterPost'])
     ->name('public.register.post')
-    ->middleware('throttle:3,1');                   // [+] max 3x register/menit
+    ->middleware('throttle:3,1');
 
-// [+] logout via POST (bukan GET)
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// ── Rute Yang Diharuskan Autentikasi ─────────────────────────────
 Route::middleware(['auth'])->group(function () {
 
     // ── Pelanggan / Customer ──────────────────────────────────
@@ -43,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pelanggan/service', [BookingController::class, 'create'])->name('pelanggan.service');
     Route::post('/pelanggan/service', [BookingController::class, 'store'])
         ->name('customer.booking.store')
-        ->middleware('no_duplicate');               // [+] anti double submit
+        ->middleware('no_duplicate');
     Route::get('/pelanggan/history', [BookingController::class, 'pelangganHistory'])->name('pelanggan.history');
     Route::get('/cek-jadwal', [BookingController::class, 'checkDate'])->name('check.date');
 
@@ -67,7 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/booking/create', [BookingController::class, 'createWalkIn'])->name('booking.walkin')->middleware('admin');
     Route::post('admin/booking/store', [BookingController::class, 'storeWalkIn'])
         ->name('booking.storeWalkIn')
-        ->middleware(['admin', 'no_duplicate']);    // [+] admin + anti double submit
+        ->middleware(['admin', 'no_duplicate']);
 
     // ── Dashboard & Jadwal (admin only) ───────────────────────
     Route::get('/dashboard', [BookingController::class, 'adminDashboard'])->name('admin.dashboard')->middleware('admin');

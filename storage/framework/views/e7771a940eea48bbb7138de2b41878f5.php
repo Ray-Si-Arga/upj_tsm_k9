@@ -1,4 +1,3 @@
-﻿
 <?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 <?php $__env->stopPush(); ?>
@@ -771,8 +770,11 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold small text-muted">Nama Layanan</label>
-                                <input type="text" name="name" class="form-control form-control-md honda-input" maxlength="64"
+                                <div class="d-flex justify-content-between align-items-end mb-1">
+                                    <label class="form-label fw-bold small text-muted mb-0">Nama Layanan</label>
+                                    <small class="text-muted" id="addNameCount">0/25</small>
+                                </div>
+                                <input type="text" name="name" id="addName" class="form-control form-control-md honda-input" maxlength="25"
                                     placeholder="Contoh: Paket Servis Ganti Oli" required>
                             </div>
 
@@ -830,8 +832,11 @@
                         <?php echo csrf_field(); ?> <?php echo method_field('PUT'); ?>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold small text-muted">Nama Layanan</label>
-                                <input type="text" name="name" id="editName" class="form-control honda-input" maxlength="64" required>
+                                <div class="d-flex justify-content-between align-items-end mb-1">
+                                    <label class="form-label fw-bold small text-muted mb-0">Nama Layanan</label>
+                                    <small class="text-muted" id="editNameCount">0/25</small>
+                                </div>
+                                <input type="text" name="name" id="editName" class="form-control honda-input" maxlength="25" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold small text-muted">Tipe Layanan</label>
@@ -944,8 +949,33 @@
 
             toggleDescription(document.getElementById('typeSelectEdit'), 'descriptionBoxEdit');
 
+            // Update character count on edit
+            const editName = document.getElementById('editName');
+            const editNameCount = document.getElementById('editNameCount');
+            if (editName && editNameCount) {
+                editNameCount.innerText = `${editName.value.length}/25`;
+            }
+
             new bootstrap.Modal(document.getElementById('editModal')).show();
         }
+
+        // Initialize character counters
+        function initCharCounter(inputId, countId, maxLength) {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById(countId);
+            
+            if (input && counter) {
+                counter.innerText = `${input.value.length}/${maxLength}`;
+                input.addEventListener('input', function() {
+                    counter.innerText = `${this.value.length}/${maxLength}`;
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharCounter('addName', 'addNameCount', 25);
+            initCharCounter('editName', 'editNameCount', 25);
+        });
     </script>
 
 <?php $__env->stopSection(); ?>

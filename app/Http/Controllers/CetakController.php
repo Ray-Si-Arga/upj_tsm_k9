@@ -26,10 +26,11 @@ class CetakController extends Controller
         //     ->screenshot();
 
         $PDFContent = Browsershot::html($html)
-            // ->setChromePath('/usr/bin/google-chrome-stable')
-            // ->addArgs(['--no-sandbox', '--disable-setuid-sandbox'])
+            ->setChromePath('C:\Program Files\Google\Chrome\Application\chrome.exe')
+            ->addChromiumArguments(['no-sandbox', 'disable-setuid-sandbox'])
             ->format('A4')
             ->showBackground()
+            ->timeout(120)
             ->pdf();
 
         return response($PDFContent)
