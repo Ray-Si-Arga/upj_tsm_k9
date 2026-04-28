@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AHASS Service Form - Pure CSS</title>
+    <title>AHASS Service - Print</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Semi+Condensed:wght@400;600;700;900&display=swap"
@@ -639,7 +639,8 @@
                             <div class="section-header py-1">Kondisi Awal SMH</div>
                             <div class="p-2 text-center">
                                 <div class="mb-2">
-                                    <img src="<?php echo e(asset('images/fuel_icon.png')); ?>" alt="Fuel Icon" style="height: 80px;">
+                                    <img src="<?php echo e(asset('images/fuel_icon.png')); ?>" alt="Fuel Icon"
+                                        style="height: 80px;">
                                 </div>
                                 <div class="text-start fw-bold mt-3">Catatan Lain :</div>
                                 <div style="height: 120px; width: 100%;"></div>
@@ -934,15 +935,7 @@
             </div>
         </div>
 
-        <div class="row mt-2 align-items-end">
-            <div class="col-8" style="font-size: 9px;">
-                <strong>Garansi :</strong><br>
-                - 500 Km / 1 minggu untuk Servis Reguler<br>
-                - 1.000 Km / 1 Bulan untuk Bongkar Mesin Reguler<br>
-                - 1.000 Km / 1 Bulan untuk Servis CBR 250 dan PCX 150<br>
-                <br>
-            </div>
-        </div>
+        
 
     </div>
 

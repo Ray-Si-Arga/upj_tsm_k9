@@ -314,8 +314,6 @@
             </p>
         </div>
 
-        {{-- Table Section --}}
-        {{-- Table Section (Livewire) --}}
         @livewire('advisor-table')
 
             {{-- Pagination Modern --}}

@@ -10,7 +10,7 @@ use App\Http\Controllers\ServiceAdvisorController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\CetakController;
 
-// Rute Dashboard
+// Rute Dashboard Jika User Sudah Masuk Ke Aplikasi Dan Belum Logout
 Route::get('/', function () {
     if (Auth::check()) {
         if (Auth::user()->role === 'admin') {
@@ -21,7 +21,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// ── Otentikasi & Registrasi
+// Autentikasi
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginPost'])
     ->name('login.post')
@@ -36,7 +36,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
 
-    // ── Pelanggan / Customer ──────────────────────────────────
+    // Pelanggan
     Route::get('/pelanggan/dashboard', [BookingController::class, 'pelangganDashboard'])->name('pelanggan.dashboard');
     Route::get('/pelanggan/service', [BookingController::class, 'create'])->name('pelanggan.service');
     Route::post('/pelanggan/service', [BookingController::class, 'store'])
@@ -45,44 +45,44 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pelanggan/history', [BookingController::class, 'pelangganHistory'])->name('pelanggan.history');
     Route::get('/cek-jadwal', [BookingController::class, 'checkDate'])->name('check.date');
 
-    // ── Advisor ───────────────────────────────────────────────
+    // Advisor
     Route::prefix('advisor')->name('advisor.')->group(function () {
         Route::get('/index', [ServiceAdvisorController::class, 'index'])->name('index');
         Route::get('/create', [ServiceAdvisorController::class, 'create'])->name('create');
         Route::post('/store', [ServiceAdvisorController::class, 'store'])->name('store');
         Route::get('/edit/{id}', [ServiceAdvisorController::class, 'edit'])->name('edit');
         Route::put('/update/{id}', [ServiceAdvisorController::class, 'update'])->name('update');
-        Route::get('/print/{id}', [CetakController::class, 'print'])->name('print');
+        Route::get('/preview/{id}', [CetakController::class, 'preview'])->name('preview');
     });
 
-    // ── Service Layanan (admin only) ──────────────────────────
+    // Service Layanan
     Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index')->middleware('admin');
     Route::post('/layanan/store', [LayananController::class, 'store'])->name('layanan.store')->middleware('admin');
     Route::put('/layanan/update/{id}', [LayananController::class, 'update'])->name('layanan.update')->middleware('admin');
     Route::delete('/layanan/delete/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy')->middleware('admin');
 
-    // ── Booking Walk In (admin only) ──────────────────────────
+    // Booking Walk In
     Route::get('admin/booking/create', [BookingController::class, 'createWalkIn'])->name('booking.walkin')->middleware('admin');
     Route::post('admin/booking/store', [BookingController::class, 'storeWalkIn'])
         ->name('booking.storeWalkIn')
         ->middleware(['admin', 'no_duplicate']);
 
-    // ── Dashboard & Jadwal (admin only) ───────────────────────
+    // Dashboard & Jadwal
     Route::get('/dashboard', [BookingController::class, 'adminDashboard'])->name('admin.dashboard')->middleware('admin');
     Route::get('/jadwal', [BookingController::class, 'jadwal'])->name('admin.jadwal')->middleware('admin');
     Route::post('/jadwal/store', [BookingController::class, 'storeJadwal'])->name('jadwal.store')->middleware('admin');
     Route::delete('/jadwal/{date}', [BookingController::class, 'deleteJadwal'])->name('jadwal.delete')->middleware('admin');
 
-    // ── Inventory (admin only) ────────────────────────────────
+    // Inventory
     Route::prefix('inventory')->name('inventory.')->middleware('admin')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('index');
     });
 
-    // ── Profile ───────────────────────────────────────────────
+    // Profile
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile', [AuthController::class, 'profileUpdate'])->name('profile.update');
 
-    // ── Booking ───────────────────────────────────────────────
+    // Booking
     Route::prefix('booking')->name('booking.')->group(function () {
 
         // Fixed segment (harus di atas {id})
@@ -100,11 +100,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}', [BookingController::class, 'show'])->name('show');
         Route::post('/{id}/update-status', [BookingController::class, 'updateStatus'])->name('updateStatus')->middleware('admin');
         Route::get('/{id}/history', [BookingController::class, 'historyDetail'])->name('history.detail');
-
         Route::delete('/destroy/{id}', [BookingController::class, 'destroy'])->name('destroy')->middleware('admin');
     });
 
-    // ── Keuangan (admin only) ─────────────────────────────────
+    // Keuangan
     Route::prefix('keuangan')->name('keuangan.')->middleware('admin')->group(function () {
         Route::get('/', [KeuanganController::class, 'index'])->name('index');
         Route::post('/store', [KeuanganController::class, 'store'])->name('store');
@@ -112,7 +111,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/cetak', [KeuanganController::class, 'cetak'])->name('cetak');
     });
 
-    // ── Customers (admin only) ────────────────────────────────
+    // Customers
     Route::prefix('customers')->name('customers.')->middleware('admin')->group(function () {
         Route::get('/', [BookingController::class, 'customers'])->name('index');
         Route::get('/{id}/bookings', [BookingController::class, 'customerBookings'])->name('bookings');
@@ -120,6 +119,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/mark-checked', [BookingController::class, 'markCustomersChecked'])->name('mark-checked');
     });
 
-    // ── Hapus user (admin only) ───────────────────────────────
+    // Hapus User
     Route::delete('/hapus/{id}', [AuthController::class, 'hapus'])->name('hapus')->middleware('admin');
 });

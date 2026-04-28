@@ -75,7 +75,7 @@
 
                             </td>
                             <td class="text-center">
-                                <a href="<?php echo e(route('advisor.print', $data->id)); ?>" class="btn btn-print btn-sm" title="Cetak PDF">
+                                <a href="<?php echo e(route('advisor.preview', $data->id)); ?>" target="_blank" class="btn btn-print btn-sm" title="Cetak / Print">
                                     <i class="fas fa-file-pdf text-danger"></i>
                                 </a>
                                 <a href="<?php echo e(route('advisor.edit', $data->id)); ?>" class="btn btn-outline-primary btn-sm" title="Edit">
