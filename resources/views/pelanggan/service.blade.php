@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 @endpush
@@ -134,23 +134,12 @@
         .desc-full {
             display: none;
             /* Sembunyikan deskripsi panjang */
-            color: var(--text-main);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            line-height: 1.5;
-        }
+            width: 100%;
 
-        .desc-short {
-            display: block;
-            /* Tampilkan deskripsi pendek */
+            margin-top: 1rem;
         }
 
         /* 2. Logika Saat Dipilih (Checked) */
-
-        /* Sembunyikan deskripsi pendek */
-        .btn-check:checked+.service-card-label .desc-short {
-            display: none;
-        }
 
         /* Tampilkan deskripsi panjang dengan animasi */
         .btn-check:checked+.service-card-label .desc-full {
@@ -416,10 +405,10 @@
                                                         Rp {{ number_format($paket->price, 0, ',', '.') }}
                                                     </span>
                                                 </div>
-                                                <div class="text-muted small border-top pt-3 mt-auto">
-                                                    <span
-                                                        class="desc-short">{{ Str::limit($paket->description, 60, '...') }}</span>
-                                                    <span class="desc-full">{{ $paket->description }}</span>
+                                                <div class="desc-full mt-auto">
+                                                    <div class="p-3 text-muted small lh-base shadow-sm text-break">
+                                                        {{ $paket->description }}
+                                                    </div>
                                                 </div>
                                             </label>
                                         </div>
