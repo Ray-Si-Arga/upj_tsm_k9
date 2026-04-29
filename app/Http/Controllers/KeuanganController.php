@@ -64,7 +64,7 @@ class KeuanganController extends Controller
 
         // 5. Chart data
         $chartData = $this->getChartData($periode, $now);
-
+        
         return view('keuangan.index', compact(
             'periode',
             'labelPeriode',
@@ -146,20 +146,28 @@ class KeuanganController extends Controller
         $bulan = $request ? $request->get('bulan', $now->month) : $now->month;
 
         switch ($periode) {
-            case 'mingguan':
-    $mingguKe = $request ? $request->get('minggu', 1) : 1;
-    $bulanPilihan = $request ? $request->get('bulan', $now->month) : $now->month;
-    $tahunPilihan = $request ? $request->get('tahun', $now->year) : $now->year;
+            case 'harian':
+                $startDate = $now->copy()->startOfDay();
+                $endDate = $now->copy()->endOfDay();
+                $label = "Hari Ini (" . $now->translatedFormat('d F Y') . ")";
+                break;
 
-    // Mulai dari tanggal 1 bulan terpilih
-    $startOfMonth = Carbon::create($tahunPilihan, $bulanPilihan, 1)->startOfMonth();
-    
-    // Cari hari senin pertama di bulan itu sebagai patokan minggu ke-1
-    $startDate = $startOfMonth->copy()->addWeeks($mingguKe - 1)->startOfWeek(Carbon::MONDAY);
-    $endDate = $startDate->copy()->endOfWeek(Carbon::SUNDAY);
-    
-    $label = "Minggu ke-$mingguKe, " . $startOfMonth->translatedFormat('F Y');
-    break;
+            case 'mingguan':
+                if ($request && $request->has('minggu')) {
+                    $mingguKe = $request->get('minggu');
+                    $bulanPilihan = $request->get('bulan', $now->month);
+                    $tahunPilihan = $request->get('tahun', $now->year);
+
+                    $startOfMonth = Carbon::create($tahunPilihan, $bulanPilihan, 1)->startOfMonth();
+                    $startDate = $startOfMonth->copy()->addWeeks($mingguKe - 1)->startOfWeek(Carbon::MONDAY);
+                    $endDate = $startDate->copy()->endOfWeek(Carbon::SUNDAY);
+                    $label = "Minggu ke-$mingguKe, " . $startOfMonth->translatedFormat('F Y');
+                } else {
+                    $startDate = $now->copy()->startOfWeek(Carbon::MONDAY);
+                    $endDate = $now->copy()->endOfWeek(Carbon::SUNDAY);
+                    $label = "Minggu Ini (" . $startDate->translatedFormat('d M') . " - " . $endDate->translatedFormat('d M Y') . ")";
+                }
+                break;
 
             case 'tahunan':
                 $startDate = Carbon::create($tahun, 1, 1)->startOfYear();
@@ -182,7 +190,8 @@ class KeuanganController extends Controller
         }
 
         return [$startDate, $endDate, $label];
-    }    // ──────────────────────────────────────────────────────────
+    }
+    // ──────────────────────────────────────────────────────────
     // PRIVATE — Data untuk grafik chart
     // ──────────────────────────────────────────────────────────
     private function getChartData(string $periode, Carbon $now): array

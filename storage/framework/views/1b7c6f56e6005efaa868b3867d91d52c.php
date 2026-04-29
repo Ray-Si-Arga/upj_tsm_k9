@@ -1,9 +1,9 @@
-@extends('layouts.app')
-@push('styles')
+﻿
+<?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.css">
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
@@ -139,47 +139,49 @@
     <main class="py-4">
         <div class="container">
 
-            {{-- HEADER HALAMAN --}}
+            
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <div>
                     <h4 class="fw-bold text-dark mb-1">Service Advisor</h4>
                     <p class="text-muted small mb-0 d-none d-md-block">Formulir penerimaan unit dan pengecekan kendaraan.</p>
                 </div>
                 <div class="text-end text-muted small">
-                    <i class="far fa-calendar-alt me-1"></i> {{ date('d M Y') }}
+                    <i class="far fa-calendar-alt me-1"></i> <?php echo e(date('d M Y')); ?>
+
                 </div>
             </div>
 
-            @if (session('error'))
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('error')): ?>
                 <div class="alert alert-danger border-0 shadow-sm mb-4 rounded-3">
-                    <i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}
+                    <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e(session('error')); ?>
+
                 </div>
-            @endif
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-            <form action="{{ route('advisor.store') }}" method="POST">
-                @csrf
+            <form action="<?php echo e(route('advisor.store')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
 
-                {{-- PILIH BOOKING --}}
+                
                 <div class="booking-selector-area">
                     <label class="form-label fw-bold text-primary mb-2">Pilih Antrian / Booking</label>
                     <select name="booking_id" id="bookingSelect" class="form-select form-select-lg" required onchange="handleBookingChange()">
     <option value="" data-complaint="" data-queue="" data-date="" data-plate="" data-type="" data-name="" data-phone="">
         -- Pilih Customer --
     </option>
-    @foreach ($bookings as $data)
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $bookings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
         <option
-            value="{{ $data->id }}"
-            data-complaint="{{ $data->complaint }}"
-            data-queue="{{ $data->queue_number }}"
-            data-date="{{ \Carbon\Carbon::parse($data->booking_date)->format('d M Y') }}"
-            data-plate="{{ strtoupper($data->plate_number) }}"
-            data-type="{{ $data->vehicle_type }}"
-            data-name="{{ $data->customer_name }}"
-            data-phone="{{ $data->customer_whatsapp }}"
-            data-services='@json($data->services->map(fn($s) => ["name" => $s->name, "price" => (int) $s->price]))'>
-            No. {{ $data->queue_number }} - {{ $data->customer_name }} ({{ strtoupper($data->plate_number) }})
+            value="<?php echo e($data->id); ?>"
+            data-complaint="<?php echo e($data->complaint); ?>"
+            data-queue="<?php echo e($data->queue_number); ?>"
+            data-date="<?php echo e(\Carbon\Carbon::parse($data->booking_date)->format('d M Y')); ?>"
+            data-plate="<?php echo e(strtoupper($data->plate_number)); ?>"
+            data-type="<?php echo e($data->vehicle_type); ?>"
+            data-name="<?php echo e($data->customer_name); ?>"
+            data-phone="<?php echo e($data->customer_whatsapp); ?>"
+            data-services='<?php echo json_encode($data->services->map(fn($s) => ["name" => $s->name, "price" => (int) $s->price]), 512) ?>'>
+            No. <?php echo e($data->queue_number); ?> - <?php echo e($data->customer_name); ?> (<?php echo e(strtoupper($data->plate_number)); ?>)
         </option>
-    @endforeach
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
 </select>
 
                     <div class="mt-3 p-3 rounded-3 bg-light border border-warning"
@@ -194,15 +196,15 @@
                     </div>
                 </div>
 
-                {{-- CARD 1: DATA PELANGGAN --}}
+                
                 <div class="form-card">
                     <div class="form-header-title">
                         <i class="fas fa-user-friends me-2"></i> Data Pelanggan
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-4">
-                            {{-- KIRI: Pembawa --}}
-                            {{-- Class col-12 col-md-6 artinya: HP full width, Laptop setengah --}}
+                            
+                            
                             <div class="col-12 col-md-6 border-end-md">
                                 <div class="section-label text-primary">Data Pembawa (Saat Ini)</div>
 
@@ -238,7 +240,7 @@
                                 </div>
                             </div>
 
-                            {{-- KANAN: Pemilik --}}
+                            
                             <div class="col-12 col-md-6">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <div class="section-label text-success mb-0">Data Pemilik (STNK)</div>
@@ -289,13 +291,13 @@
                     </div>
                 </div>
 
-                {{-- CARD 2: DATA KENDARAAN --}}
+                
                 <div class="form-card">
                     <div class="form-header-title">
                         <i class="fas fa-motorcycle me-2"></i> Data Kendaraan
                     </div>
                     <div class="card-body p-4">
-                        {{-- Baris 1: Readonly Data --}}
+                        
                         <div class="p-3 mb-4 rounded-3" style="background-color: #f8f9fa;">
                             <div class="row g-3">
                                 <div class="col-6 col-md-3">
@@ -321,7 +323,7 @@
                             </div>
                         </div>
 
-                        {{-- Baris 2: Input Manual --}}
+                        
                         <div class="section-label">Pengecekan Fisik</div>
                         <div class="row g-3">
                             <div class="col-6 col-md-3">
@@ -343,14 +345,14 @@
                                 <input type="text" name="chassis_number" class="form-control" placeholder="Opsional">
                             </div>
 
-                            <!-- {{-- INDIKATOR BENSIN (RESPONSIVE FLEX WRAP) --}}
+                            <!-- 
                             <div class="col-12 mt-3">
                                 <label class="form-label-custom mb-2">Indikator Bensin</label>
-                                {{-- flex-wrap agar tombol turun ke bawah di HP kecil --}}
+                                
                                 <div class="d-flex flex-wrap gap-2 align-items-center p-2 rounded-3 bg-light border">
                                     <span class="fw-bold small me-2">E</span>
 
-                                    {{-- flex-grow-1 agar tombol mengisi ruang --}}
+                                    
                                     <input type="radio" class="btn-check" name="fuel_level" id="fuel0"
                                         value="0" required>
                                     <label class="btn btn-outline-danger btn-sm flex-grow-1" for="fuel0"
@@ -418,7 +420,7 @@
                     </div>
                 </div>
 
-                {{-- CARD 3: PERSETUJUAN --}}
+                
                 <div class="form-card">
                     <div class="form-header-title bg-warning text-dark">
                         <i class="fas fa-handshake me-2"></i> Persetujuan
@@ -468,7 +470,7 @@
                     </div>
                 </div>
 
-                {{-- CARD 4: DAFTAR PEKERJAAN --}}
+                
 <div class="form-card">
     <div class="form-header-title">
         <i class="fas fa-tools me-2"></i> Daftar Pekerjaan
@@ -505,13 +507,13 @@
     </div>
 </div>
 
-                {{-- CARD 5: SPAREPART --}}
+                
                 <div class="form-card mt-4">
                     <div class="form-header-title" style="background-color: #198754;">
                         <i class="fas fa-boxes me-2"></i> Sparepart
                     </div>
                     <div class="card-body p-4">
-                        {{-- Tambahkan table-responsive --}}
+                        
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover align-middle mb-0" id="sparepartTable"
                                 style="min-width: 500px;">
@@ -559,31 +561,31 @@
         </div>
     </main>
 
-    {{-- SCRIPT --}}
+    
     <script src="https://cdn.jsdelivr.net/npm/simple-notify@1.0.6/dist/simple-notify.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            @if (session('print_invoice_id'))
+            <?php if(session('print_invoice_id')): ?>
                 new Notify({
                     status: 'success',
                     title: 'Berhasil',
-                    text: 'Membuka halaman cetak...',
+                    text: 'Invoice didownload...',
                     effect: 'slide',
                     autotimeout: 4000
                 });
                 setTimeout(() => {
-                    window.open("{{ route('advisor.preview', session('print_invoice_id')) }}", '_blank');
+                    window.location.href = "<?php echo e(route('advisor.print', session('print_invoice_id'))); ?>";
                 }, 1000);
-            @endif
-            @if (session('success') && !session('print_invoice_id'))
+            <?php endif; ?>
+            <?php if(session('success') && !session('print_invoice_id')): ?>
                 new Notify({
                     status: 'success',
                     title: 'Berhasil',
-                    text: '{{ session('success') }}',
+                    text: '<?php echo e(session('success')); ?>',
                     effect: 'slide',
                     autotimeout: 3000
                 });
-            @endif
+            <?php endif; ?>
         });
 
         // Odometer Logic
@@ -692,7 +694,7 @@
 
         // JOB LOGIC
 let jobRowIdx = 0;
-const servicesData = @json($services ?? []);
+const servicesData = <?php echo json_encode($services ?? [], 15, 512) ?>;
 
 function fillJobPrice(rowId, val) {
     const svc = servicesData.find(s => s.name === val);
@@ -805,7 +807,7 @@ function calcJobTotal() {
 }
 
         // SPAREPART LOGIC
-        const inventoryData = @json($spareparts);
+        const inventoryData = <?php echo json_encode($spareparts, 15, 512) ?>;
         let rowIdx = 0;
 
         function addSparepartRow() {
@@ -896,4 +898,6 @@ function calcJobTotal() {
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Dokumen Sekolah 12\PKL\upj_tsm_k9\resources\views/advisor/create.blade.php ENDPATH**/ ?>

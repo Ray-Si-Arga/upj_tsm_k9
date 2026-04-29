@@ -483,15 +483,15 @@
             <div class="d-flex align-items-center justify-content-between mb-1"
                 style="border-bottom: 2px solid #000; padding: 5px 15px;">
                 <div>
-                    <img src="{{ asset('images/honda_logo.png') }}" alt="Honda Logo" style="height: 60px;">
+                    <img src="<?php echo e(asset('images/honda_logo.png')); ?>" alt="Honda Logo" style="height: 60px;">
                 </div>
                 <div style="width: 60%; text-align: center;">
-                    <div style="font-size: 16px; font-weight: 900;">SMKN 9 Malang</div>
-                    <div>Jl. Sampurna No.1, Cemorokandang, Kec. Kedungkandang, Kota Malang, Jawa Timur 65138</div>
-                    <div class="fw-bold">BOOKING SERVICE : 0812345678910 , 0812345678910</div>
+                    <div style="font-size: 16px; font-weight: 900;">AHASS 00126 - CV. SINAR BARU</div>
+                    <div>Jl. Stadion No. 132 Pamekasan Telp. (0324) 321119</div>
+                    <div class="fw-bold">BOOKING SERVICE : 087701704, 08780330487</div>
                 </div>
                 <div>
-                    <img src="{{ asset('images/ahass_logo.png') }}" alt="AHASS Logo" style="height: 50px;">
+                    <img src="<?php echo e(asset('images/ahass_logo.png')); ?>" alt="AHASS Logo" style="height: 50px;">
                 </div>
             </div>
 
@@ -502,68 +502,69 @@
                 <div class="col-4 p-1">
                     <div class="fw-bold mb-1">Data Motor</div>
                     <div class="row-compact"><span class="label-col">No. Urut</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->booking->queue_number ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->booking->queue_number ?? '-'); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col">Tanggal Servis</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->created_at->format('d-m-Y') }}</div>
+                        <div class="value-fill"><?php echo e($advisor->created_at->format('d-m-Y')); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col">No. Mesin</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->engine_number ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->engine_number ?? '-'); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col">No. Rangka</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->chassis_number ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->chassis_number ?? '-'); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col">No. Polisi</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->booking->plate_number ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->booking->plate_number ?? '-'); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col">Type</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->booking->vehicle_type ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->booking->vehicle_type ?? '-'); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col">Tahun</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->vehicle_year ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->vehicle_year ?? '-'); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col">KM</span><span>:</span>
                         <div class="value-fill">
-                            {{ $advisor->odometer ? number_format($advisor->odometer, 0, ',', '.') : '-' }}
+                            <?php echo e($advisor->odometer ? number_format($advisor->odometer, 0, ',', '.') : '-'); ?>
+
                         </div>
                     </div>
                     <div class="row-compact"><span class="label-col">* Email</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->booking->user->email ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->booking->user->email ?? '-'); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col">* Sosmed</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->customer_social ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->customer_social ?? '-'); ?></div>
                     </div>
                 </div>
 
                 <div class="col-4 p-1">
                     <div class="fw-bold mb-1">Data Pembawa</div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Nama</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->carrier_name ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->carrier_name ?? '-'); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Alamat</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->carrier_address ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->carrier_address ?? '-'); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Kel/Kec</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->carrier_area ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->carrier_area ?? '-'); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">No. HP</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->carrier_phone ?? '-' }}</div>
+                        <div class="value-fill"><?php echo e($advisor->carrier_phone ?? '-'); ?></div>
                     </div>
 
                     <div class="my-2 border-top" style="margin: 8px 0;"></div>
 
                     <div class="fw-bold mb-1">Data Pemilik</div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Nama</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->owner_name }}</div>
+                        <div class="value-fill"><?php echo e($advisor->owner_name); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Alamat</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->owner_address }}</div>
+                        <div class="value-fill"><?php echo e($advisor->owner_address); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">Kel/Kec</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->owner_area }}</div>
+                        <div class="value-fill"><?php echo e($advisor->owner_area); ?></div>
                     </div>
                     <div class="row-compact"><span class="label-col" style="width:60px">No. HP</span><span>:</span>
-                        <div class="value-fill">{{ $advisor->owner_phone }}</div>
+                        <div class="value-fill"><?php echo e($advisor->owner_phone); ?></div>
                     </div>
                 </div>
 
@@ -572,54 +573,55 @@
                         <span class="me-2">Dari Dealer Sendiri</span>
                         <span class="me-1">:</span>
                         <span class="cb">
-                            @if ($advisor->is_own_dealer === 1)
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($advisor->is_own_dealer === 1): ?>
                                 &#9745;
-                            @else
+                            <?php else: ?>
                                 &#9744;
-                            @endif
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </span> Ya
                         <span class="cb ms-2">
-                            @if ($advisor->is_own_dealer === 0)
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($advisor->is_own_dealer === 0): ?>
                                 &#9745;
-                            @else
+                            <?php else: ?>
                                 &#9744;
-                            @endif
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </span> Tidak
                     </div>
                     <div class="mb-2">
                         <div class="d-flex row-compact">
                             <span>Hubungan Pembawa & Pemilik :</span>
-                            <div class="value-fill">{{ $advisor->relationship ?? '-' }}</div>
+                            <div class="value-fill"><?php echo e($advisor->relationship ?? '-'); ?></div>
                         </div>
                     </div>
 
                     <div class="fw-bold">Alasan ke AHASS</div>
                     <div><span
-                            class="fw-bold">{!! $advisor->visit_reason === 'Inisiatif Sendiri' ? '&#10004;' : 'a.' !!}</span>
+                            class="fw-bold"><?php echo $advisor->visit_reason === 'Inisiatif Sendiri' ? '&#10004;' : 'a.'; ?></span>
                         Inisiatif Sendiri</div>
                     <div><span
-                            class="fw-bold">{!! $advisor->visit_reason === 'SMS Reminder' ? '&#10004;' : 'b.' !!}</span>
+                            class="fw-bold"><?php echo $advisor->visit_reason === 'SMS Reminder' ? '&#10004;' : 'b.'; ?></span>
                         SMS Reminder</div>
                     <div><span
-                            class="fw-bold">{!! $advisor->visit_reason === 'Telp Reminder' ? '&#10004;' : 'c.' !!}</span>
+                            class="fw-bold"><?php echo $advisor->visit_reason === 'Telp Reminder' ? '&#10004;' : 'c.'; ?></span>
                         Telp Reminder</div>
                     <div><span
-                            class="fw-bold">{!! $advisor->visit_reason === 'Sticker Reminder' ? '&#10004;' : 'd.' !!}</span>
+                            class="fw-bold"><?php echo $advisor->visit_reason === 'Sticker Reminder' ? '&#10004;' : 'd.'; ?></span>
                         Sticker Reminder</div>
                     <div class="row-compact">
-                        @php
+                        <?php
                             $isLainnya = !in_array($advisor->visit_reason, ['Inisiatif Sendiri', 'SMS Reminder', 'Telp Reminder', 'Sticker Reminder']);
-                        @endphp
+                        ?>
                         <span
-                            class="fw-bold me-1">{!! $isLainnya && $advisor->visit_reason ? '&#10004;' : 'e.' !!}</span>
+                            class="fw-bold me-1"><?php echo $isLainnya && $advisor->visit_reason ? '&#10004;' : 'e.'; ?></span>
                         Lainnya
-                        @if($isLainnya && $advisor->visit_reason)
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isLainnya && $advisor->visit_reason): ?>
                             <div class="dotted-fill text-start" style="padding-left: 5px; font-weight: bold;">
-                                {{ $advisor->visit_reason }}
+                                <?php echo e($advisor->visit_reason); ?>
+
                             </div>
-                        @else
+                        <?php else: ?>
                             <div class="dotted-fill"></div>
-                        @endif
+                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -637,7 +639,7 @@
                             <div class="section-header py-1">Kondisi Awal SMH</div>
                             <div class="p-2 text-center">
                                 <div class="mb-2">
-                                    <img src="{{ asset('images/fuel_icon.png') }}" alt="Fuel Icon"
+                                    <img src="<?php echo e(asset('images/fuel_icon.png')); ?>" alt="Fuel Icon"
                                         style="height: 80px;">
                                 </div>
                                 <div class="text-start fw-bold mt-3">Catatan Lain :</div>
@@ -653,7 +655,7 @@
                                 <div class="col-5 py-1">Estimasi Biaya</div>
                             </div>
                             <!-- List Pekerjaan -->
-                            @php
+                            <?php
                                 // Ambil jobs: bisa array (JSON baru) atau string lama
                                 $rawJobs = $advisor->jobs;
 
@@ -670,30 +672,31 @@
 
                                 // Tentukan jumlah baris minimum (6 agar form tidak terlihat kosong)
                                 $totalJobRows = max(6, count($jobsArray));
-                            @endphp
+                            ?>
 
-                            @for ($j = 0; $j < $totalJobRows; $j++)
-                                @php
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php for($j = 0; $j < $totalJobRows; $j++): ?>
+                                <?php
                                     $job = $jobsArray[$j] ?? null;
                                     $jobName = $job ? data_get($job, 'name', '') : '';
                                     $jobPrice = $job ? data_get($job, 'price', null) : null;
-                                @endphp
+                                ?>
                                 <div class="row g-0">
                                     <div class="col-7 border-end border-dark p-1 d-flex border-2">
-                                        {{ $j + 1 }}. <span
-                                            class="{{ $job ? 'value-fill' : 'dotted-fill' }}">{{ $jobName }}</span>
+                                        <?php echo e($j + 1); ?>. <span
+                                            class="<?php echo e($job ? 'value-fill' : 'dotted-fill'); ?>"><?php echo e($jobName); ?></span>
                                     </div>
                                     <div class="col-5 p-1 d-flex">
                                         Rp
                                         <span
-                                            class="{{ $job && $jobPrice !== null ? 'value-fill' : 'dotted-fill' }} text-end">
-                                            @if($job && $jobPrice !== null)
-                                                {{ number_format((int) $jobPrice, 0, ',', '.') }}
-                                            @endif
+                                            class="<?php echo e($job && $jobPrice !== null ? 'value-fill' : 'dotted-fill'); ?> text-end">
+                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($job && $jobPrice !== null): ?>
+                                                <?php echo e(number_format((int) $jobPrice, 0, ',', '.')); ?>
+
+                                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                         </span>
                                     </div>
                                 </div>
-                            @endfor
+                            <?php endfor; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
 
 
@@ -706,40 +709,40 @@
                             </div>
 
                             <!-- List Suku Cadang -->
-                            @php
+                            <?php
                                 $parts = $advisor->spareparts ?? [];
                                 if (!is_array($parts) && !is_object($parts))
                                     $parts = [];
                                 $totalPartRows = max(5, count($parts));
-                            @endphp
+                            ?>
 
-                            @for ($k = 0; $k < $totalPartRows; $k++)
-                                @php $part = isset($parts[$k]) ? $parts[$k] : null; @endphp
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php for($k = 0; $k < $totalPartRows; $k++): ?>
+                                <?php $part = isset($parts[$k]) ? $parts[$k] : null; ?>
                                 <div class="row g-0">
-                                    <div class="col-7 border-end border-dark p-1 d-flex border-2">{{ $k + 1 }}. <span
-                                            class="{{ $part ? 'value-fill' : 'dotted-fill' }}">{{ $part ? data_get($part, 'name', '-') : '' }}</span>
+                                    <div class="col-7 border-end border-dark p-1 d-flex border-2"><?php echo e($k + 1); ?>. <span
+                                            class="<?php echo e($part ? 'value-fill' : 'dotted-fill'); ?>"><?php echo e($part ? data_get($part, 'name', '-') : ''); ?></span>
                                     </div>
                                     <div class="col-5 p-1 d-flex">Rp <span
-                                            class="{{ $part ? 'value-fill' : 'dotted-fill' }} text-end">{{ $part ? number_format(is_numeric(data_get($part, 'price')) ? data_get($part, 'price') : 0, 0, ',', '.') : '' }}</span>
+                                            class="<?php echo e($part ? 'value-fill' : 'dotted-fill'); ?> text-end"><?php echo e($part ? number_format(is_numeric(data_get($part, 'price')) ? data_get($part, 'price') : 0, 0, ',', '.') : ''); ?></span>
                                     </div>
                                 </div>
-                            @endfor
+                            <?php endfor; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                             <!-- Total Harga -->
                             <div class="row g-0 fw-bold border-top border-dark border-2">
                                 <div class="col-7 border-end border-dark p-1 text-start border-2">Total Harga</div>
                                 <div class="col-5 p-1 d-flex">Rp <span
-                                        class="value-fill text-end">{{ number_format($advisor->total_estimation ?? 0, 0, ',', '.') }}</span>
+                                        class="value-fill text-end"><?php echo e(number_format($advisor->total_estimation ?? 0, 0, ',', '.')); ?></span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="section-header text-start px-2 border-top border-2">Keluhan Konsumen</div>
-                    <div style="min-height: 60px; word-wrap: break-word; white-space: pre-wrap; border-bottom: 2px solid #000; padding: 5px;">{{ trim($advisor->booking->complaint) }}</div>
+                    <div style="min-height: 60px; word-wrap: break-word; white-space: pre-wrap; border-bottom: 2px solid #000; padding: 5px;"><?php echo e(trim($advisor->booking->complaint)); ?></div>
 
                     <div class="section-header text-start px-2">Analisa Service Advisor</div>
-                    <div style="min-height: 60px; word-wrap: break-word; white-space: pre-wrap; padding: 5px;">{{ trim($advisor->advisor_notes) }}</div>
+                    <div style="min-height: 60px; word-wrap: break-word; white-space: pre-wrap; padding: 5px;"><?php echo e(trim($advisor->advisor_notes)); ?></div>
 
                 </div>
                 <div class="col-4">
@@ -827,23 +830,23 @@
             <div>*Apabila ada tambahan <strong>PEKERJAAN / PERGANTIAN PART</strong> di luar daftar diatas maka :</div>
             <div class="d-flex align-items-center mt-1">
                 <span class="cb">
-                    @php
+                    <?php
                         if ($advisor->pkb_approval === 'hubungi') {
                             echo '&#9745;';
                         } else {
                             echo '&#9744;';
                         }
-                    @endphp
+                    ?>
                 </span> Konfirmasi dulu / telp ke <span class="value-fill" style="flex-grow: 0;">+62
                     851-4300-8033</span>
                 <span class="cb ms-3">
-                    @php
+                    <?php
                         if ($advisor->pkb_approval === 'langsung') {
                             echo '&#9745;';
                         } else {
                             echo '&#9744;';
                         }
-                    @endphp
+                    ?>
                 </span> Langsung
                 dikerjakan
             </div>
@@ -911,7 +914,8 @@
                 <div class="d-flex" style="height: 50px;">
                     <div class="flex-grow-1 border-end border-dark p-1"></div>
                     <div class="d-flex align-items-end p-1" style="width: 150px; font-size: 9px;">
-                        Nama Mekanik : {{ $advisor->nama_mekanik }}
+                        Nama Mekanik : <?php echo e($advisor->nama_mekanik); ?>
+
                     </div>
                 </div>
             </div>
@@ -931,17 +935,7 @@
             </div>
         </div>
 
-        {{--
-        <div class="row mt-2 align-items-end">
-            <div class="col-8" style="font-size: 9px;">
-                <strong>Garansi :</strong><br>
-                - 500 Km / 1 minggu untuk Servis Reguler<br>
-                - 1.000 Km / 1 Bulan untuk Bongkar Mesin Reguler<br>
-                - 1.000 Km / 1 Bulan untuk Servis CBR 250 dan PCX 150<br>
-                <br>
-            </div>
-        </div>
-        --}}
+        
 
     </div>
 
@@ -954,4 +948,4 @@
 
 </body>
 
-</html>
+</html><?php /**PATH D:\Dokumen Sekolah 12\PKL\upj_tsm_k9\resources\views/cetak/cetak_booking.blade.php ENDPATH**/ ?>

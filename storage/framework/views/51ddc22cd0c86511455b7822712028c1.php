@@ -1,9 +1,8 @@
-@extends('layouts.app')
-@push('styles')
+<?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
@@ -272,24 +271,25 @@
     <main class="py-5">
         <div class="container-xl">
 
-            {{-- Errors --}}
-            @if ($errors->any())
+            
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($errors->any()): ?>
                 <div class="alert alert-danger shadow-sm border-0 rounded-3 mb-4 animate__animated animate__fadeIn">
                     <ul class="mb-0 ps-3">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                     </ul>
                 </div>
-            @endif
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-            @if (session('error'))
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('error')): ?>
                 <div class="alert alert-danger shadow-sm border-0 rounded-3 mb-4">
-                    <i class="fas fa-exclamation-triangle me-2"></i>{{ session('error') }}
-                </div>
-            @endif
+                    <i class="fas fa-exclamation-triangle me-2"></i><?php echo e(session('error')); ?>
 
-            {{-- Page Header --}}
+                </div>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+            
             <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
                 <div>
                     <div class="page-header-badge">
@@ -298,22 +298,22 @@
                     <h4 class="fw-bold text-dark mb-1">Booking Manual oleh Admin</h4>
                     <p class="text-muted small mb-0">Untuk pelanggan yang datang langsung ke bengkel.</p>
                 </div>
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-light border fw-semibold">
+                <a href="<?php echo e(route('admin.dashboard')); ?>" class="btn btn-light border fw-semibold">
                     <i class="fas fa-arrow-left me-2 text-muted"></i>Kembali
                 </a>
             </div>
 
-            {{-- Info Antrean --}}
+            
             <div class="info-box-red">
                 <i class="fas fa-circle-info mt-1"></i>
                 <div>
                     <strong>Info Antrian Hari Ini:</strong>
-                    Saat ini ada <strong>{{ $todayactive }}</strong> antrian aktif. Slot terbatas <strong>2 motor/jam</strong> booking akan ditolak otomatis jika slot penuh.
+                    Saat ini ada <strong><?php echo e($todayactive); ?></strong> antrian aktif. Slot terbatas <strong>2 motor/jam</strong> booking akan ditolak otomatis jika slot penuh.
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('booking.storeWalkIn') }}" id="bookingForm">
-                @csrf
+            <form method="POST" action="<?php echo e(route('booking.storeWalkIn')); ?>" id="bookingForm">
+                <?php echo csrf_field(); ?>
 
                 <div class="row g-4 align-items-start">
 
@@ -321,7 +321,7 @@
                     <div class="col-lg-4">
                         <div class="sticky-desktop">
 
-                            {{-- Card Data Pelanggan --}}
+                            
                             <div class="card-modern mb-4">
                                 <div class="section-header">
                                     <i class="fas fa-id-card"></i>
@@ -329,7 +329,7 @@
                                 </div>
                                 <div class="card-body p-4">
 
-                                    {{-- Pilih Pelanggan (dropdown user terdaftar) --}}
+                                    
                                     <div class="mb-3">
                                         <label class="form-label-custom">Nama Pelanggan</label>
                                         <div class="input-group">
@@ -337,20 +337,21 @@
                                             <select name="user_id" id="userSelect" class="form-select" required
                                                     onchange="fillUserData(this)">
                                                 <option value="" data-wa="" data-name="">-- Pilih Pelanggan --</option>
-                                                @foreach ($customers as $customer)
+                                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $customers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
                                                     <option
-                                                        value="{{ $customer->id }}"
-                                                        data-name="{{ $customer->name }}"
-                                                        data-wa="{{ $customer->phone ?? '' }}"
-                                                        {{ old('user_id') == $customer->id ? 'selected' : '' }}>
-                                                        {{ $customer->name }}
+                                                        value="<?php echo e($customer->id); ?>"
+                                                        data-name="<?php echo e($customer->name); ?>"
+                                                        data-wa="<?php echo e($customer->phone ?? ''); ?>"
+                                                        <?php echo e(old('user_id') == $customer->id ? 'selected' : ''); ?>>
+                                                        <?php echo e($customer->name); ?>
+
                                                     </option>
-                                                @endforeach
+                                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                                             </select>
                                         </div>
-                                        {{-- Hidden input untuk customer_name (dibaca controller) --}}
+                                        
                                         <input type="hidden" name="customer_name" id="customerNameHidden"
-                                               value="{{ old('customer_name') }}">
+                                               value="<?php echo e(old('customer_name')); ?>">
                                         <div class="form-text small text-muted mt-1">
                                             <small>
                                                 <i class="fas fa-info-circle me-1"></i>
@@ -359,7 +360,7 @@
                                         </div>
                                     </div>
 
-                                    {{-- WhatsApp --}}
+                                    
                                     <div class="mb-3">
                                         <label class="form-label-custom">WhatsApp / HP
                                             <small class="text-muted fw-normal normal-case">(Opsional)</small>
@@ -379,15 +380,15 @@
                                         </div>
                                     </div>
 
-                                    {{-- Jenis Motor & Plat Nomor --}}
+                                    
                                     <div class="row g-3 mb-3">
                                         <div class="col-6">
                                             <label class="form-label-custom">Jenis Motor</label>
                                             <select class="form-select" name="vehicle_type" required>
-                                                <option value="" disabled {{ old('vehicle_type') ? '' : 'selected' }}>Pilih...</option>
-                                                <option value="bebek" {{ old('vehicle_type') == 'bebek' ? 'selected' : '' }}>Bebek</option>
-                                                <option value="sport" {{ old('vehicle_type') == 'sport' ? 'selected' : '' }}>Sport</option>
-                                                <option value="matic" {{ old('vehicle_type') == 'matic' ? 'selected' : '' }}>Matic</option>
+                                                <option value="" disabled <?php echo e(old('vehicle_type') ? '' : 'selected'); ?>>Pilih...</option>
+                                                <option value="bebek" <?php echo e(old('vehicle_type') == 'bebek' ? 'selected' : ''); ?>>Bebek</option>
+                                                <option value="sport" <?php echo e(old('vehicle_type') == 'sport' ? 'selected' : ''); ?>>Sport</option>
+                                                <option value="matic" <?php echo e(old('vehicle_type') == 'matic' ? 'selected' : ''); ?>>Matic</option>
                                             </select>
                                         </div>
                                         <div class="col-6">
@@ -398,33 +399,33 @@
                                                 class="form-control text-uppercase fw-medium"
                                                 placeholder="N **** **"
                                                 maxlength="8"
-                                                value="{{ old('plate_number') }}"
+                                                value="<?php echo e(old('plate_number')); ?>"
                                                 required
                                             >
                                         </div>
                                     </div>
 
-                                    {{-- Tanggal & Jam Booking --}}
+                                    
                                     <div class="mb-3">
                                         <label class="form-label-custom">Tanggal & Jam Booking <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="fas fa-calendar-day text-danger"></i></span>
                                             <input type="datetime-local" name="booking_date" class="form-control" required
-                                                   value="{{ old('booking_date', now()->format('Y-m-d\TH:i')) }}">
+                                                   value="<?php echo e(old('booking_date', now()->format('Y-m-d\TH:i'))); ?>">
                                         </div>
                                         <div class="form-text small text-danger mt-1">
                                             <small><i class="fas fa-info-circle me-1"></i> Slot terbatas 2 motor/jam.</small>
                                         </div>
                                     </div>
 
-                                    {{-- Keluhan --}}
+                                    
                                     <div class="mb-3">
                                         <label class="form-label-custom">Keluhan / Catatan</label>
                                         <textarea name="complaint" class="form-control" rows="3"
-                                                  placeholder="Contoh: Rem bunyi, Bocor alus, Rantai soak...">{{ old('complaint') }}</textarea>
+                                                  placeholder="Contoh: Rem bunyi, Bocor alus, Rantai soak..."><?php echo e(old('complaint')); ?></textarea>
                                     </div>
 
-                                    {{-- Estimasi Durasi --}}
+                                    
                                     <div class="estimasi-box">
                                         <label class="form-label-custom mb-2">
                                             Estimasi Durasi <small class="text-muted fw-normal">(Opsional)</small>
@@ -434,7 +435,7 @@
                                                 <div class="input-group">
                                                     <input type="number" name="estimation_hours" class="form-control"
                                                            placeholder="0" min="0"
-                                                           value="{{ old('estimation_hours') }}">
+                                                           value="<?php echo e(old('estimation_hours')); ?>">
                                                     <span class="input-group-text bg-white text-muted small">Jam</span>
                                                 </div>
                                             </div>
@@ -442,7 +443,7 @@
                                                 <div class="input-group">
                                                     <input type="number" name="estimation_minutes" class="form-control"
                                                            placeholder="0" min="0" max="59"
-                                                           value="{{ old('estimation_minutes') }}">
+                                                           value="<?php echo e(old('estimation_minutes')); ?>">
                                                     <span class="input-group-text bg-white text-muted small">Menit</span>
                                                 </div>
                                             </div>
@@ -452,7 +453,7 @@
                                 </div>
                             </div>
 
-                            {{-- [DESKTOP ONLY] Ringkasan Pesanan --}}
+                            
                             <div class="d-none d-lg-block">
                                 <div class="summary-box">
                                     <h5 class="fw-bold mb-4 d-flex align-items-center">
@@ -482,9 +483,9 @@
                         </div>
                     </div>
 
-                    {{-- ============================== --}}
-                    {{-- KOLOM KANAN: Pilih Layanan     --}}
-                    {{-- ============================== --}}
+                    
+                    
+                    
                     <div class="col-lg-8">
                         <div class="card-modern mb-4">
                             <div class="section-header justify-content-between">
@@ -499,80 +500,90 @@
 
                             <div class="card-body p-4 p-md-5">
 
-                                @error('service_ids')
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['service_ids'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
                                     <div class="alert alert-danger py-2 small mb-3">
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ $message }}
-                                    </div>
-                                @enderror
+                                        <i class="fas fa-exclamation-circle me-1"></i><?php echo e($message); ?>
 
-                                {{-- Paket Spesial --}}
+                                    </div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+                                
                                 <div class="category-divider">
                                     <span class="text-danger"><i class="fas fa-star me-2"></i>Paket Spesial</span>
                                 </div>
                                 <div class="row g-4 mb-5 align-items-start">
-                                    @foreach ($services->where('type', 'paket') as $paket)
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $services->where('type', 'paket'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $paket): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
                                         <div class="col-md-6">
                                             <input type="checkbox" class="btn-check service-checkbox"
                                                    name="service_ids[]"
-                                                   id="service_{{ $paket->id }}"
-                                                   value="{{ $paket->id }}"
-                                                   data-name="{{ $paket->name }}"
-                                                   data-price="{{ $paket->price }}"
-                                                   {{ in_array($paket->id, old('service_ids', [])) ? 'checked' : '' }}>
+                                                   id="service_<?php echo e($paket->id); ?>"
+                                                   value="<?php echo e($paket->id); ?>"
+                                                   data-name="<?php echo e($paket->name); ?>"
+                                                   data-price="<?php echo e($paket->price); ?>"
+                                                   <?php echo e(in_array($paket->id, old('service_ids', [])) ? 'checked' : ''); ?>>
 
-                                            <label class="service-card-label h-100" for="service_{{ $paket->id }}">
+                                            <label class="service-card-label h-100" for="service_<?php echo e($paket->id); ?>">
                                                 <div class="d-flex justify-content-between align-items-start w-100 mb-2">
-                                                    <h6 class="fw-bold text-dark mb-0 fs-6">{{ $paket->name }}</h6>
+                                                    <h6 class="fw-bold text-dark mb-0 fs-6"><?php echo e($paket->name); ?></h6>
                                                     <i class="fas fa-check-circle check-icon"></i>
                                                 </div>
                                                 <div class="mb-3">
                                                     <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2">
-                                                        Rp {{ number_format($paket->price, 0, ',', '.') }}
+                                                        Rp <?php echo e(number_format($paket->price, 0, ',', '.')); ?>
+
                                                     </span>
                                                 </div>
                                                 <div class="text-muted small border-top pt-3 mt-auto">
-                                                    <span class="desc-short">{{ Str::limit($paket->description, 60, '...') }}</span>
-                                                    <span class="desc-full">{{ $paket->description }}</span>
+                                                    <span class="desc-short"><?php echo e(Str::limit($paket->description, 60, '...')); ?></span>
+                                                    <span class="desc-full"><?php echo e($paket->description); ?></span>
                                                 </div>
                                             </label>
                                         </div>
-                                    @endforeach
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                                 </div>
 
-                                {{-- Layanan Regular --}}
+                                
                                 <div class="category-divider">
                                     <span class="text-primary"><i class="fas fa-wrench me-2"></i>Layanan Regular</span>
                                 </div>
                                 <div class="row g-3">
-                                    @foreach ($services->where('type', 'non_paket') as $layanan)
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $services->where('type', 'non_paket'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $layanan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
                                         <div class="col-md-4 col-sm-6">
                                             <input type="checkbox" class="btn-check service-checkbox"
                                                    name="service_ids[]"
-                                                   id="service_{{ $layanan->id }}"
-                                                   value="{{ $layanan->id }}"
-                                                   data-name="{{ $layanan->name }}"
-                                                   data-price="{{ $layanan->price }}"
-                                                   {{ in_array($layanan->id, old('service_ids', [])) ? 'checked' : '' }}>
+                                                   id="service_<?php echo e($layanan->id); ?>"
+                                                   value="<?php echo e($layanan->id); ?>"
+                                                   data-name="<?php echo e($layanan->name); ?>"
+                                                   data-price="<?php echo e($layanan->price); ?>"
+                                                   <?php echo e(in_array($layanan->id, old('service_ids', [])) ? 'checked' : ''); ?>>
 
-                                            <label class="service-card-label" for="service_{{ $layanan->id }}">
+                                            <label class="service-card-label" for="service_<?php echo e($layanan->id); ?>">
                                                 <div class="d-flex justify-content-between align-items-start mb-2">
-                                                    <div class="fw-bold text-dark small">{{ $layanan->name }}</div>
+                                                    <div class="fw-bold text-dark small"><?php echo e($layanan->name); ?></div>
                                                     <i class="fas fa-check-circle check-icon"></i>
                                                 </div>
                                                 <div class="mt-auto pt-2">
                                                     <span class="fw-bold text-secondary">
-                                                        Rp {{ number_format($layanan->price, 0, ',', '.') }}
+                                                        Rp <?php echo e(number_format($layanan->price, 0, ',', '.')); ?>
+
                                                     </span>
                                                 </div>
                                             </label>
                                         </div>
-                                    @endforeach
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                                 </div>
 
                             </div>
                         </div>
 
-                        {{-- [MOBILE ONLY] Ringkasan Pesanan --}}
+                        
                         <div class="d-block d-lg-none">
                             <div class="summary-box">
                                 <h5 class="fw-bold mb-4 d-flex align-items-center">
@@ -598,6 +609,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </form>
@@ -665,4 +677,5 @@
             updateSummary();
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Dokumen Sekolah 12\PKL\upj_tsm_k9\resources\views/booking/admin_create.blade.php ENDPATH**/ ?>

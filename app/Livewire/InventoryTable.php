@@ -51,17 +51,6 @@ class InventoryTable extends Component
         $this->resetValidation();
     }
 
-    public function edit($id)
-    {
-        $this->resetValidation();
-        $inventory = Inventory::findOrFail($id);
-        $this->inventory_id = $inventory->id;
-        $this->nama_barang = $inventory->nama_barang;
-        $this->jumlah_barang = $inventory->jumlah_barang;
-        $this->harga_beli = $inventory->harga_beli;
-        $this->harga_jual = $inventory->harga_jual;
-    }
-
     public function store()
     {
         $this->validate();
