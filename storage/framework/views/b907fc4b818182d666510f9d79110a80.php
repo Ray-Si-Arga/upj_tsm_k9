@@ -1,9 +1,9 @@
-﻿@extends('layouts.app')
-@push('styles')
+﻿
+<?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <style>
         /* ---- Google Font ---- */
@@ -841,13 +841,13 @@
 
     <div class="keuangan-wrap">
 
-        {{-- ======================== PAGE HEADER ======================== --}}
+        
         <div class="hero-section">
             <div class="page-header animate-up d-flex flex-wrap justify-content-between align-items-center">
 
                 <div>
                     <h1 class="page-title">Keuangan</h1>
-                    <p class="page-subtitle">Financial Transaction {{ $labelPeriode }}</p>
+                    <p class="page-subtitle">Financial Transaction <?php echo e($labelPeriode); ?></p>
                     <span class="header-sub">Kelola transaksi dengan mudah dengan filter Harian, Mingguan, Bulanan dan Tahunan</span>
                 </div>
 
@@ -857,63 +857,66 @@
 
                 <div style="flex-basis: 100%" class="d-flex justify-content-center mt-4">
                     <div class="filter-tabs">
-                        @foreach(['harian' => 'Harian', 'mingguan' => 'Mingguan', 'bulanan' => 'Bulanan', 'tahunan' => 'Tahunan'] as $key => $label)
-                            <a href="{{ route('keuangan.index', ['periode' => $key]) }}"
-                                class="filter-tab {{ $periode === $key ? 'active' : '' }}">
-                                {{ $label }}
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = ['harian' => 'Harian', 'mingguan' => 'Mingguan', 'bulanan' => 'Bulanan', 'tahunan' => 'Tahunan']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                            <a href="<?php echo e(route('keuangan.index', ['periode' => $key])); ?>"
+                                class="filter-tab <?php echo e($periode === $key ? 'active' : ''); ?>">
+                                <?php echo e($label); ?>
+
                             </a>
-                        @endforeach
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                     </div>
                 </div>
 
             </div>
         </div>
 
-        {{-- ======================== SUMMARY CARDS ======================== --}}
+        
         <div class="cards-grid">
 
-            {{-- SALDO --}}
+            
             <div class="summary-card card-saldo animate-up delay-1">
                 <div class="card-icon-wrap"><i class="fa-solid fa-scale-balanced"></i></div>
                 <div class="card-label">Saldo Bersih</div>
-                <div class="card-amount {{ $saldo < 0 ? 'negative' : '' }}">
-                    {{ $saldo < 0 ? '-' : '' }}Rp {{ number_format(abs($saldo), 0, ',', '.') }}
+                <div class="card-amount <?php echo e($saldo < 0 ? 'negative' : ''); ?>">
+                    <?php echo e($saldo < 0 ? '-' : ''); ?>Rp <?php echo e(number_format(abs($saldo), 0, ',', '.')); ?>
+
                 </div>
                 <div class="card-meta">Pemasukan - Pengeluaran pada periode ini</div>
                 <div class="card-badge">
                     <i class="fa-solid fa-circle-dot"
-                        style="font-size:0.6rem; color: {{ $saldo >= 0 ? '#6ee7b7' : '#fca5a5' }};"></i>
-                    {{ $saldo >= 0 ? 'Surplus' : 'Defisit' }}
+                        style="font-size:0.6rem; color: <?php echo e($saldo >= 0 ? '#6ee7b7' : '#fca5a5'); ?>;"></i>
+                    <?php echo e($saldo >= 0 ? 'Surplus' : 'Defisit'); ?>
+
                 </div>
             </div>
 
-            {{-- PEMASUKAN --}}
+            
             <div class="summary-card card-pemasukan animate-up delay-2">
                 <div class="card-icon-wrap"><i class="fa-solid fa-arrow-trend-up"></i></div>
                 <div class="card-label">Total Pemasukan</div>
-                <div class="card-amount">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</div>
+                <div class="card-amount">Rp <?php echo e(number_format($totalPemasukan, 0, ',', '.')); ?></div>
                 <div class="card-meta">Dari hasil service kendaraan</div>
                 <div class="card-badge">
                     <i class="fa-solid fa-wrench" style="font-size:0.65rem;"></i>
-                    {{ $jumlahTransaksiService }} transaksi service
+                    <?php echo e($jumlahTransaksiService); ?> transaksi service
                 </div>
             </div>
 
-            {{-- PENGELUARAN --}}
+            
             <div class="summary-card card-pengeluaran animate-up delay-3">
                 <div class="card-icon-wrap"><i class="fa-solid fa-arrow-trend-down"></i></div>
                 <div class="card-label">Total Pengeluaran</div>
-                <div class="card-amount">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</div>
+                <div class="card-amount">Rp <?php echo e(number_format($totalPengeluaran, 0, ',', '.')); ?></div>
                 <div class="card-meta">Estimasi nilai stok sparepart</div>
                 <div class="card-badge">
                     <i class="fa-solid fa-boxes-stacked" style="font-size:0.65rem;"></i>
-                    {{ $jumlahItemInventory }} item inventory
+                    <?php echo e($jumlahItemInventory); ?> item inventory
                 </div>
             </div>
         </div>
 
         <div class="card-filter-cetak mb-4">
-            <form action="{{ route('keuangan.cetak') }}" method="GET" target="_blank">
+            <form action="<?php echo e(route('keuangan.cetak')); ?>" method="GET" target="_blank">
                 <div class="filter-grid">
                     <div class="filter-group">
                         <label> Mode Laporan</label>
@@ -929,28 +932,29 @@
                     <div class="filter-group" id="bulanField">
                         <label>Bulan</label>
                         <select name="bulan" class="custom-select-finance">
-                            @foreach(range(1, 12) as $m)
-                                <option value="{{ $m }}" {{ date('m') == $m ? 'selected' : '' }}>
-                                    {{ Carbon\Carbon::create(null, $m, 1)->translatedFormat('F') }}
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = range(1, 12); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                <option value="<?php echo e($m); ?>" <?php echo e(date('m') == $m ? 'selected' : ''); ?>>
+                                    <?php echo e(Carbon\Carbon::create(null, $m, 1)->translatedFormat('F')); ?>
+
                                 </option>
-                            @endforeach
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                         </select>
                     </div>
 
                     <div class="filter-group" id="tahunField">
                         <label>Tahun</label>
                         <select name="tahun" class="custom-select-finance">
-                            @foreach(range(date('Y') - 3, date('Y')) as $y)
-                                <option value="{{ $y }}" {{ date('Y') == $y ? 'selected' : '' }}>{{ $y }}</option>
-                            @endforeach
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = range(date('Y') - 3, date('Y')); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $y): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                                <option value="<?php echo e($y); ?>" <?php echo e(date('Y') == $y ? 'selected' : ''); ?>><?php echo e($y); ?></option>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                         </select>
                     </div>
 
                     <div class="filter-group d-none" id="mingguField">
                         <label>Minggu Ke</label>
                         <select name="minggu" class="custom-select-finance">
-                            @for($i = 1; $i <= 5; $i++)
-                            <option value="{{ $i }}">Minggu {{ $i }}</option> @endfor
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php for($i = 1; $i <= 5; $i++): ?>
+                            <option value="<?php echo e($i); ?>">Minggu <?php echo e($i); ?></option> <?php endfor; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </select>
                     </div>
 
@@ -971,27 +975,27 @@
             </form>
         </div>
 
-        {{-- ======================== CHART ======================== --}}
+        
         <div class="chart-container animate-up delay-4">
     <div class="chart-header">
         <span class="chart-title">
             <i class="fa-solid fa-chart-area me-2" style="color:#0f172a;"></i>
             Grafik Keuangan
         </span>
-        <span class="chart-period-label">{{ $labelPeriode }}</span>
+        <span class="chart-period-label"><?php echo e($labelPeriode); ?></span>
     </div>
  
-    {{-- CHECKBOX TOGGLE DATASET --}}
+    
     <div class="d-flex flex-wrap gap-3 mb-4" id="chartLegendToggles">
  
-        {{-- Pemasukan --}}
+        
         <label class="chart-toggle-label" for="togglePemasukan">
             <input type="checkbox" id="togglePemasukan" checked>
             <span class="toggle-dot" style="background:#059669;"></span>
             <span class="toggle-text">Pemasukan</span>
         </label>
  
-        {{-- Pengeluaran --}}
+        
         <label class="chart-toggle-label" for="togglePengeluaran">
             <input type="checkbox" id="togglePengeluaran" checked>
             <span class="toggle-dot" style="background:#e11d48;"></span>
@@ -1053,26 +1057,27 @@
 .chart-toggle-label:has(#togglePengeluaran:checked) { border-color: #e11d48; background: rgba(225,29,72,.06); }
 </style>
 
-        {{-- ======================== HISTORY TABLE ======================== --}}
+        
         <div class="history-card animate-up delay-5">
             <div class="history-header">
                 <div class="history-title">
                     <i class="fa-solid fa-clock-rotate-left" style="color:#64748b;"></i>
                     Riwayat Transaksi
-                    <span class="history-count">{{ $historyTransaksi->count() }} entri</span>
+                    <span class="history-count"><?php echo e($historyTransaksi->count()); ?> entri</span>
                 </div>
                 <span style="font-size:0.78rem; color:#94a3b8; font-weight:500;">
-                    <i class="fa-regular fa-calendar me-1"></i>{{ $labelPeriode }}
+                    <i class="fa-regular fa-calendar me-1"></i><?php echo e($labelPeriode); ?>
+
                 </span>
             </div>
 
             <div class="table-scroll">
-                @if($historyTransaksi->isEmpty())
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($historyTransaksi->isEmpty()): ?>
                     <div class="empty-state">
                         <i class="fa-regular fa-folder-open"></i>
                         <p>Belum ada transaksi pada periode ini.</p>
                     </div>
-                @else
+                <?php else: ?>
                     <table class="fin-table">
                         <thead>
                             <tr>
@@ -1085,59 +1090,65 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($historyTransaksi as $i => $transaksi)
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $historyTransaksi; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $transaksi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
                                 <tr>
-                                    {{-- No --}}
-                                    <td style="text-align:center; color:#cbd5e1; font-weight:600;">{{ $i + 1 }}</td>
+                                    
+                                    <td style="text-align:center; color:#cbd5e1; font-weight:600;"><?php echo e($i + 1); ?></td>
 
-                                    {{-- Tanggal --}}
+                                    
                                     <td>
                                         <div style="font-weight:600; color:#1e293b; font-size:0.85rem;">
-                                            {{ \Carbon\Carbon::parse($transaksi['tanggal'])->translatedFormat('d M Y') }}
+                                            <?php echo e(\Carbon\Carbon::parse($transaksi['tanggal'])->translatedFormat('d M Y')); ?>
+
                                         </div>
                                         <div style="font-size:0.75rem; color:#94a3b8;">
-                                            {{ \Carbon\Carbon::parse($transaksi['tanggal'])->format('H:i') }} WIB
+                                            <?php echo e(\Carbon\Carbon::parse($transaksi['tanggal'])->format('H:i')); ?> WIB
                                         </div>
                                     </td>
 
-                                    {{-- Tipe --}}
+                                    
                                     <td>
-                                        <span class="tipe-badge {{ $transaksi['tipe'] }}">
-                                            <i class="fa-solid {{ $transaksi['icon'] }}" style="font-size:0.7rem;"></i>
-                                            {{ ucfirst($transaksi['tipe']) }}
+                                        <span class="tipe-badge <?php echo e($transaksi['tipe']); ?>">
+                                            <i class="fa-solid <?php echo e($transaksi['icon']); ?>" style="font-size:0.7rem;"></i>
+                                            <?php echo e(ucfirst($transaksi['tipe'])); ?>
+
                                         </span>
                                     </td>
 
-                                    {{-- Deskripsi --}}
+                                    
                                     <td>
-                                        <div class="desc-main">{{ $transaksi['deskripsi'] }}</div>
-                                        @if($transaksi['tipe'] === 'pemasukan' && $transaksi['mekanik'] !== '-')
+                                        <div class="desc-main"><?php echo e($transaksi['deskripsi']); ?></div>
+                                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($transaksi['tipe'] === 'pemasukan' && $transaksi['mekanik'] !== '-'): ?>
                                             <div class="desc-sub">
                                                 <i class="fa-solid fa-user-tie" style="font-size:0.65rem;"></i>
-                                                {{ $transaksi['mekanik'] }}
+                                                <?php echo e($transaksi['mekanik']); ?>
+
                                             </div>
-                                        @endif
+                                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                     </td>
 
-                                    {{-- Info Tambahan --}}
+                                    
                                     <td>
                                         <div class="desc-sub" style="font-size:0.8rem; color:#64748b;">
-                                            {{ $transaksi['sub_info'] }}
+                                            <?php echo e($transaksi['sub_info']); ?>
+
                                         </div>
                                     </td>
 
-                                    {{-- Nominal --}}
+                                    
                                     <td style="text-align:right;">
-                                        <span class="nominal-{{ $transaksi['tipe'] }}">
-                                            {{ $transaksi['tipe'] === 'pemasukan' ? '+' : '-' }}
-                                            Rp {{ number_format($transaksi['nominal'], 0, ',', '.') }}
+                                        <span class="nominal-<?php echo e($transaksi['tipe']); ?>">
+                                            <?php echo e($transaksi['tipe'] === 'pemasukan' ? '+' : '-'); ?>
+
+                                            Rp <?php echo e(number_format($transaksi['nominal'], 0, ',', '.')); ?>
+
                                         </span>
                                     </td>
                                 </tr>
-                            @endforeach
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                         </tbody>
 
-                        {{-- FOOTER TOTAL --}}
+                        
                         <tfoot>
                             <tr style="background:#f8fafc; border-top: 2px solid #e2e8f0;">
                                 <td colspan="5" style="padding: 14px 20px; font-weight:700; color:#0f172a; font-size:0.875rem;">
@@ -1145,39 +1156,41 @@
                                 </td>
                                 <td style="padding: 14px 20px; text-align:right;">
                                     <span
-                                        style="font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:800; color: {{ $saldo >= 0 ? '#059669' : '#e11d48' }};">
-                                        {{ $saldo < 0 ? '-' : '+' }}
-                                        Rp {{ number_format(abs($saldo), 0, ',', '.') }}
+                                        style="font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:800; color: <?php echo e($saldo >= 0 ? '#059669' : '#e11d48'); ?>;">
+                                        <?php echo e($saldo < 0 ? '-' : '+'); ?>
+
+                                        Rp <?php echo e(number_format(abs($saldo), 0, ',', '.')); ?>
+
                                     </span>
                                 </td>
                             </tr>
                         </tfoot>
                     </table>
-                @endif
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </div>
         </div>
 
-        {{-- Modal Tambah Transaksi Keuangan --}}
+        
         <div class="modal-overlay" id="modalTambahTransaksi" onclick="handleOverlayClick(event)">
             <div class="modal-box">
 
-                {{-- Tombol Close --}}
+                
                 <button class="modal-close" onclick="closeModalKeuangan()" type="button">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
 
-                {{-- Header Modal --}}
+                
                 <div class="modal-title"><i class="fa-solid fa-money-bill-transfer me-2" style="color:#0f172a;"></i>Tambah
                     Transaksi</div>
                 <div class="modal-subtitle">Catat pemasukan atau pengeluaran secara manual</div>
 
-                {{-- Form --}}
-                <form method="POST" action="{{ route('keuangan.store') }}" id="formTambahTransaksi">
-                    @csrf
-                    <input type="hidden" name="periode" value="{{ $periode }}">
+                
+                <form method="POST" action="<?php echo e(route('keuangan.store')); ?>" id="formTambahTransaksi">
+                    <?php echo csrf_field(); ?>
+                    <input type="hidden" name="periode" value="<?php echo e($periode); ?>">
                     <input type="hidden" name="tipe" id="inputTipe" value="pemasukan">
 
-                    {{-- Toggle Tipe --}}
+                    
                     <div class="tipe-toggle">
                         <button type="button" class="tipe-btn active-masuk" id="btnMasuk" onclick="setTipe('pemasukan')">
                             <i class="fa-solid fa-arrow-trend-up"></i> Pemasukan
@@ -1187,14 +1200,14 @@
                         </button>
                     </div>
 
-                    {{-- Judul / Keterangan Singkat --}}
+                    
                     <div class="modal-form-group">
                         <label class="modal-label" for="inputJudul">Judul Transaksi</label>
                         <input type="text" id="inputJudul" name="judul" class="modal-input"
                             placeholder="cth: Dana BOS Jurusan, Gaji Karyawan..." required autocomplete="off">
                     </div>
 
-                    {{-- Nominal --}}
+                    
                     <div class="modal-form-group">
                         <label class="modal-label" for="inputNominalView">Nominal</label>
                         <div class="modal-input-group">
@@ -1205,7 +1218,7 @@
                         <input type="hidden" id="inputNominal" name="nominal">
                     </div>
 
-                    {{-- Keterangan (Opsional) --}}
+                    
                     <div class="modal-form-group">
                         <label class="modal-label" for="inputKeterangan">Keterangan <span
                                 style="color:#94a3b8;font-weight:500;text-transform:none;">(opsional)</span></label>
@@ -1213,7 +1226,7 @@
                             placeholder="Tambahkan catatan jika perlu..." style="resize:none;"></textarea>
                     </div>
 
-                    {{-- Submit --}}
+                    
                     <button type="submit" class="btn-submit-modal masuk" id="btnSubmitModal">
                         <i class="fa-solid fa-plus-circle"></i>
                         <span id="submitLabel">Simpan Pemasukan</span>
@@ -1225,13 +1238,13 @@
 
     </div>
 
-    {{-- ======================== CHART.JS ======================== --}}
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const labels      = @json($chartData['labels']);
-    const dataPemasukan   = @json($chartData['pemasukan']);
-    const dataPengeluaran = @json($chartData['pengeluaran']);
+    const labels      = <?php echo json_encode($chartData['labels'], 15, 512) ?>;
+    const dataPemasukan   = <?php echo json_encode($chartData['pemasukan'], 15, 512) ?>;
+    const dataPengeluaran = <?php echo json_encode($chartData['pengeluaran'], 15, 512) ?>;
  
     const ctx = document.getElementById('keuanganChart').getContext('2d');
  
@@ -1446,20 +1459,21 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // â”€â”€ Auto-buka modal jika ada validasi error dari server â”€â”€
-        @if($errors->any())
+        <?php if($errors->any()): ?>
             document.addEventListener('DOMContentLoaded', () => openModalKeuangan());
-        @endif
+        <?php endif; ?>
 
         // â”€â”€ Auto-close success message â”€â”€
-        @if(session('success'))
+        <?php if(session('success')): ?>
             setTimeout(() => {
                 const alert = document.querySelector('.alert-success');
                 if (alert) alert.style.opacity = '0';
             }, 3000);
-        @endif
+        <?php endif; ?>
     </script>
 
 
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\HP\Downloads\upj_tsm_k9\resources\views/keuangan/index.blade.php ENDPATH**/ ?>

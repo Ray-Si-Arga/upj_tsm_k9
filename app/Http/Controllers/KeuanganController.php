@@ -186,70 +186,113 @@ class KeuanganController extends Controller
     // PRIVATE — Data untuk grafik chart
     // ──────────────────────────────────────────────────────────
     private function getChartData(string $periode, Carbon $now): array
-    {
-        $labels    = [];
-        $pemasukan = [];
-
-        switch ($periode) {
-            case 'harian':
-                for ($i = 5; $i >= 0; $i--) {
-                    $jam         = $now->copy()->subHours($i);
-                    $labels[]    = $jam->format('H:00');
-                    $pemasukan[] = Keuangan::pemasukan()
-                        ->whereBetween('created_at', [
-                            $jam->copy()->startOfHour(),
-                            $jam->copy()->endOfHour(),
-                        ])->sum('nominal');
-                }
-                break;
-
-            case 'mingguan':
-                $startWeek = $now->copy()->startOfWeek(Carbon::MONDAY);
-                for ($i = 0; $i < 7; $i++) {
-                    $hari        = $startWeek->copy()->addDays($i);
-                    $labels[]    = $hari->translatedFormat('D');
-                    $pemasukan[] = Keuangan::pemasukan()
-                        ->whereDate('created_at', $hari->toDateString())
-                        ->sum('nominal');
-                }
-                break;
-
-            case 'tahunan':
-                for ($i = 1; $i <= 12; $i++) {
-                    $bulan       = Carbon::create($now->year, $i, 1);
-                    $labels[]    = $bulan->translatedFormat('M');
-                    $pemasukan[] = Keuangan::pemasukan()
-                        ->whereYear('created_at', $now->year)
-                        ->whereMonth('created_at', $i)
-                        ->sum('nominal');
-                }
-                break;
-
-            case 'bulanan':
-            default:
-                $startMonth = $now->copy()->startOfMonth();
-                $endMonth   = $now->copy()->endOfMonth();
-                $current    = $startMonth->copy();
-                $week       = 1;
-                while ($current->lte($endMonth)) {
-                    $weekEnd  = $current->copy()->endOfWeek(Carbon::SUNDAY);
-                    if ($weekEnd->gt($endMonth)) $weekEnd = $endMonth->copy();
-
-                    $labels[]    = 'W' . $week;
-                    $pemasukan[] = Keuangan::pemasukan()
-                        ->whereBetween('created_at', [
-                            $current->copy()->startOfDay(),
-                            $weekEnd->copy()->endOfDay(),
-                        ])->sum('nominal');
-
-                    $current = $weekEnd->copy()->addDay();
-                    $week++;
-                }
-                break;
-        }
-
-        return compact('labels', 'pemasukan');
+{
+    $labels    = [];
+    $pemasukan = [];
+    $pengeluaran = [];
+    $saldo     = [];
+ 
+    switch ($periode) {
+        case 'harian':
+            for ($i = 5; $i >= 0; $i--) {
+                $jam         = $now->copy()->subHours($i);
+                $labels[]    = $jam->format('H:00');
+ 
+                $p = Keuangan::pemasukan()
+                    ->whereBetween('created_at', [
+                        $jam->copy()->startOfHour(),
+                        $jam->copy()->endOfHour(),
+                    ])->sum('nominal');
+ 
+                $k = Keuangan::pengeluaran()
+                    ->whereBetween('created_at', [
+                        $jam->copy()->startOfHour(),
+                        $jam->copy()->endOfHour(),
+                    ])->sum('nominal');
+ 
+                $pemasukan[]   = $p;
+                $pengeluaran[] = $k;
+                $saldo[]       = $p - $k;
+            }
+            break;
+ 
+        case 'mingguan':
+            $startWeek = $now->copy()->startOfWeek(Carbon::MONDAY);
+            for ($i = 0; $i < 7; $i++) {
+                $hari        = $startWeek->copy()->addDays($i);
+                $labels[]    = $hari->translatedFormat('D');
+ 
+                $p = Keuangan::pemasukan()
+                    ->whereDate('created_at', $hari->toDateString())
+                    ->sum('nominal');
+ 
+                $k = Keuangan::pengeluaran()
+                    ->whereDate('created_at', $hari->toDateString())
+                    ->sum('nominal');
+ 
+                $pemasukan[]   = $p;
+                $pengeluaran[] = $k;
+                $saldo[]       = $p - $k;
+            }
+            break;
+ 
+        case 'tahunan':
+            for ($i = 1; $i <= 12; $i++) {
+                $bulan       = Carbon::create($now->year, $i, 1);
+                $labels[]    = $bulan->translatedFormat('M');
+ 
+                $p = Keuangan::pemasukan()
+                    ->whereYear('created_at', $now->year)
+                    ->whereMonth('created_at', $i)
+                    ->sum('nominal');
+ 
+                $k = Keuangan::pengeluaran()
+                    ->whereYear('created_at', $now->year)
+                    ->whereMonth('created_at', $i)
+                    ->sum('nominal');
+ 
+                $pemasukan[]   = $p;
+                $pengeluaran[] = $k;
+                $saldo[]       = $p - $k;
+            }
+            break;
+ 
+        case 'bulanan':
+        default:
+            $startMonth = $now->copy()->startOfMonth();
+            $endMonth   = $now->copy()->endOfMonth();
+            $current    = $startMonth->copy();
+            $week       = 1;
+            while ($current->lte($endMonth)) {
+                $weekEnd  = $current->copy()->endOfWeek(Carbon::SUNDAY);
+                if ($weekEnd->gt($endMonth)) $weekEnd = $endMonth->copy();
+ 
+                $labels[] = 'W' . $week;
+ 
+                $p = Keuangan::pemasukan()
+                    ->whereBetween('created_at', [
+                        $current->copy()->startOfDay(),
+                        $weekEnd->copy()->endOfDay(),
+                    ])->sum('nominal');
+ 
+                $k = Keuangan::pengeluaran()
+                    ->whereBetween('created_at', [
+                        $current->copy()->startOfDay(),
+                        $weekEnd->copy()->endOfDay(),
+                    ])->sum('nominal');
+ 
+                $pemasukan[]   = $p;
+                $pengeluaran[] = $k;
+                $saldo[]       = $p - $k;
+ 
+                $current = $weekEnd->copy()->addDay();
+                $week++;
+            }
+            break;
     }
+ 
+    return compact('labels', 'pemasukan', 'pengeluaran', 'saldo');
+}
 
     public function cetak(Request $request) 
     {
