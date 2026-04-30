@@ -23,11 +23,23 @@ class LayananController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|min:3|max:64',
             'type' => 'required|in:paket,non_paket',
             'price' => 'required|numeric|min:0',
-            'description' => 'nullable|string', // Wajib diisi jika type = paket (bisa diatur logic di view)
-        ]);
+            'description' => 'nullable|string|max:500',
+        ],
+        [
+            'name.required' => 'Nama layanan harus diisi.',
+            'name.min' => 'Nama layanan minimal 3 karakter.',
+            'name.max' => 'Nama layanan maksimal 64 karakter.',
+            'type.required' => 'Tipe layanan harus diisi.',
+            'type.in' => 'Tipe layanan harus paket atau non_paket.',
+            'price.required' => 'Harga layanan harus diisi.',
+            'price.numeric' => 'Harga layanan harus berupa angka.',
+            'price.min' => 'Harga layanan minimal Rp 0.',
+            'description.max' => 'Deskripsi layanan maksimal 500 karakter.',
+        ]
+    );
 
         Service::create($request->all());
 

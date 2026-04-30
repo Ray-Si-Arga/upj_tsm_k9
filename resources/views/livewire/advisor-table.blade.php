@@ -73,7 +73,7 @@
                                 Rp{{ number_format($data->total_estimation, 0, ',', '.') }}
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('advisor.print', $data->id) }}" class="btn btn-print btn-sm" title="Cetak PDF">
+                                <a href="{{ route('advisor.preview', $data->id) }}" target="_blank" class="btn btn-print btn-sm" title="Cetak / Print">
                                     <i class="fas fa-file-pdf text-danger"></i>
                                 </a>
                                 <a href="{{ route('advisor.edit', $data->id) }}" class="btn btn-outline-primary btn-sm" title="Edit">

@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 @endpush
@@ -567,12 +567,12 @@
                 new Notify({
                     status: 'success',
                     title: 'Berhasil',
-                    text: 'Invoice didownload...',
+                    text: 'Membuka halaman cetak...',
                     effect: 'slide',
                     autotimeout: 4000
                 });
                 setTimeout(() => {
-                    window.location.href = "{{ route('advisor.print', session('print_invoice_id')) }}";
+                    window.open("{{ route('advisor.preview', session('print_invoice_id')) }}", '_blank');
                 }, 1000);
             @endif
             @if (session('success') && !session('print_invoice_id'))

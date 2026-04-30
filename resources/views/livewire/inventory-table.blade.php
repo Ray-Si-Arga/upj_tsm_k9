@@ -1,4 +1,28 @@
-<div @open-create-modal.window="$wire.create()">
+<div x-data="{ 
+    inventory_id: @entangle('inventory_id'),
+    nama_barang: @entangle('nama_barang'),
+    jumlah_barang: @entangle('jumlah_barang'),
+    harga_beli: @entangle('harga_beli'),
+    harga_jual: @entangle('harga_jual'),
+    
+    resetForm() {
+        this.inventory_id = null;
+        this.nama_barang = '';
+        this.jumlah_barang = 0;
+        this.harga_beli = 0;
+        this.harga_jual = 0;
+        $wire.resetInputErrors();
+    },
+    
+    fillForm(data) {
+        this.resetForm();
+        this.inventory_id = data.id;
+        this.nama_barang = data.nama;
+        this.jumlah_barang = data.stok;
+        this.harga_beli = data.beli;
+        this.harga_jual = data.jual;
+    }
+}" @open-create-modal.window="resetForm()">
     {{-- ==================== TABLE COMPONENT ==================== --}}
     <div class="table-card au d6 d-none d-md-block">
         <div class="table-header-bar">
@@ -13,8 +37,8 @@
         </div>
 
         <div class="table-scroll" style="position: relative;">
-            {{-- Loading Spinner hanya untuk event update tabel --}}
-            <div wire:loading wire:target="updateSearch, updateFilter, gotoPage, nextPage, previousPage"
+            {{-- Loading Spinner --}}
+            <div wire:loading
                 wire:loading.class="d-flex"
                 class="position-absolute w-100 h-100 justify-content-center align-items-center"
                 style="background: rgba(255,255,255,0.7); z-index: 10;">
@@ -101,7 +125,15 @@
                             {{-- Aksi --}}
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
-                                    <button wire:click="edit({{ $data->id }})" data-bs-toggle="modal"
+                                    <button 
+                                        x-on:click="fillForm({
+                                            id: {{ $data->id }},
+                                            nama: '{{ addslashes($data->nama_barang) }}',
+                                            stok: {{ $data->jumlah_barang }},
+                                            beli: {{ $data->harga_beli }},
+                                            jual: {{ $data->harga_jual }}
+                                        })" 
+                                        data-bs-toggle="modal"
                                         data-bs-target="#formModal" class="btn-act btn-edit" title="Edit">
                                         <i class="fas fa-pencil"></i>
                                     </button>
@@ -120,7 +152,7 @@
                                     <i class="fas fa-box-open"></i>
                                     <p>Belum ada data inventori.</p>
                                     @if(empty($search))
-                                        <button wire:click="create" data-bs-toggle="modal" data-bs-target="#formModal"
+                                        <button x-on:click="resetForm()" data-bs-toggle="modal" data-bs-target="#formModal"
                                             class="btn-add mt-2">
                                             Tambah Sekarang
                                         </button>
@@ -140,7 +172,7 @@
     {{-- ==================== MOBILE CARDS ==================== --}}
     <div class="d-md-none au d6 position-relative bg-white p-3 rounded-4 shadow-sm border"
         style="border-color: #e2e8f0;">
-        <div wire:loading wire:target="updateSearch, updateFilter, gotoPage, nextPage, previousPage"
+        <div wire:loading
             wire:loading.class="d-flex" class="position-absolute w-100 h-100 justify-content-center align-items-center"
             style="background: rgba(255,255,255,0.7); z-index: 10; border-radius: 1rem;">
             <div class="spinner-border text-danger" role="status">
@@ -214,7 +246,15 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button wire:click="edit({{ $data->id }})" data-bs-toggle="modal" data-bs-target="#formModal"
+                    <button 
+                        x-on:click="fillForm({
+                            id: {{ $data->id }},
+                            nama: '{{ addslashes($data->nama_barang) }}',
+                            stok: {{ $data->jumlah_barang }},
+                            beli: {{ $data->harga_beli }},
+                            jual: {{ $data->harga_jual }}
+                        })"
+                        data-bs-toggle="modal" data-bs-target="#formModal"
                         class="btn-act btn-edit flex-fill justify-content-center"
                         style="width:auto; height:auto; padding:8px;">
                         <i class="fas fa-pencil me-1"></i> Edit
@@ -292,7 +332,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body position-relative">
-                    <div wire:loading wire:target="edit, create" wire:loading.class="d-flex"
+                    <div wire:loading wire:target="store" wire:loading.class="d-flex"
                         class="position-absolute w-100 h-100 top-0 start-0 justify-content-center align-items-center"
                         style="background: rgba(255,255,255,0.8); z-index: 10;">
                         <div class="spinner-border text-danger" role="status">
@@ -303,14 +343,14 @@
                     <form wire:submit.prevent="store">
                         <div class="mb-3">
                             <label class="form-label">Nama Barang</label>
-                            <input type="text" wire:model="nama_barang" class="form-control"
+                            <input type="text" x-model="nama_barang" class="form-control"
                                 placeholder="Contoh: Oli Mesin MPX 2">
                             @error('nama_barang') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Jumlah Stok Barang</label>
-                            <input type="number" wire:model="jumlah_barang" class="form-control" placeholder="0"
+                            <input type="number" x-model="jumlah_barang" class="form-control" placeholder="0"
                                 min="0">
                             @error('jumlah_barang') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
@@ -319,7 +359,7 @@
                             <label class="form-label">Harga Beli</label>
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
-                                <input type="number" wire:model="harga_beli" class="form-control" placeholder="0"
+                                <input type="number" x-model="harga_beli" class="form-control" placeholder="0"
                                     min="0">
                             </div>
                             @error('harga_beli') <span class="text-danger small">{{ $message }}</span> @enderror
@@ -329,7 +369,7 @@
                             <label class="form-label">Harga Jual</label>
                             <div class="input-group">
                                 <span class="input-group-text">Rp</span>
-                                <input type="number" wire:model="harga_jual" class="form-control" placeholder="0"
+                                <input type="number" x-model="harga_jual" class="form-control" placeholder="0"
                                     min="0">
                             </div>
                             @error('harga_jual') <span class="text-danger small">{{ $message }}</span> @enderror

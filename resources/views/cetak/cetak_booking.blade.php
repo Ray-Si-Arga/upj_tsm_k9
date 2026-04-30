@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AHASS Service Form - Pure CSS</title>
+    <title>AHASS Service - Print</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Semi+Condensed:wght@400;600;700;900&display=swap"
@@ -486,9 +486,9 @@
                     <img src="{{ asset('images/honda_logo.png') }}" alt="Honda Logo" style="height: 60px;">
                 </div>
                 <div style="width: 60%; text-align: center;">
-                    <div style="font-size: 16px; font-weight: 900;">AHASS 00126 - CV. SINAR BARU</div>
-                    <div>Jl. Stadion No. 132 Pamekasan Telp. (0324) 321119</div>
-                    <div class="fw-bold">BOOKING SERVICE : 087701704, 08780330487</div>
+                    <div style="font-size: 16px; font-weight: 900;">SMKN 9 Malang</div>
+                    <div>Jl. Sampurna No.1, Cemorokandang, Kec. Kedungkandang, Kota Malang, Jawa Timur 65138</div>
+                    <div class="fw-bold">BOOKING SERVICE : 0812345678910 , 0812345678910</div>
                 </div>
                 <div>
                     <img src="{{ asset('images/ahass_logo.png') }}" alt="AHASS Logo" style="height: 50px;">
@@ -637,7 +637,8 @@
                             <div class="section-header py-1">Kondisi Awal SMH</div>
                             <div class="p-2 text-center">
                                 <div class="mb-2">
-                                    <img src="{{ asset('images/fuel_icon.png') }}" alt="Fuel Icon" style="height: 80px;">
+                                    <img src="{{ asset('images/fuel_icon.png') }}" alt="Fuel Icon"
+                                        style="height: 80px;">
                                 </div>
                                 <div class="text-start fw-bold mt-3">Catatan Lain :</div>
                                 <div style="height: 120px; width: 100%;"></div>
@@ -930,6 +931,7 @@
             </div>
         </div>
 
+        {{--
         <div class="row mt-2 align-items-end">
             <div class="col-8" style="font-size: 9px;">
                 <strong>Garansi :</strong><br>
@@ -939,6 +941,7 @@
                 <br>
             </div>
         </div>
+        --}}
 
     </div>
 

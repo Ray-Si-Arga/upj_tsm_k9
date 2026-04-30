@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 @endpush
@@ -94,6 +94,7 @@
             background: #fff;
             transition: all 0.2s;
             position: relative;
+            word-break: break-word;
         }
 
         .service-card-label:hover {
@@ -123,8 +124,20 @@
             transform: scale(1);
         }
 
-        .desc-full  { display: none; color: var(--text-main); font-size: 0.88rem; margin-top: 0.5rem; line-height: 1.5; }
-        .desc-short { display: block; }
+        .desc-full  { 
+            display: none; 
+            color: var(--text-main); 
+            font-size: 0.88rem; 
+            margin-top: 0.5rem; 
+            line-height: 1.5; 
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+        .desc-short { 
+            display: block; 
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
 
         .btn-check:checked + .service-card-label .desc-short { display: none; }
         .btn-check:checked + .service-card-label .desc-full  { display: block !important; animation: fadeInDown 0.4s ease forwards; }
@@ -304,9 +317,7 @@
 
                 <div class="row g-4 align-items-start">
 
-                    {{-- ============================== --}}
-                    {{-- KOLOM KIRI: Data Pelanggan     --}}
-                    {{-- ============================== --}}
+                    
                     <div class="col-lg-4">
                         <div class="sticky-desktop">
 
@@ -320,7 +331,7 @@
 
                                     {{-- Pilih Pelanggan (dropdown user terdaftar) --}}
                                     <div class="mb-3">
-                                        <label class="form-label-custom">Nama Pelanggan <span class="text-danger">*</span></label>
+                                        <label class="form-label-custom">Nama Pelanggan</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                                             <select name="user_id" id="userSelect" class="form-select" required
@@ -341,8 +352,10 @@
                                         <input type="hidden" name="customer_name" id="customerNameHidden"
                                                value="{{ old('customer_name') }}">
                                         <div class="form-text small text-muted mt-1">
-                                            <i class="fas fa-info-circle me-1"></i>
-                                            Pelanggan harus sudah terdaftar untuk booking walk-in.
+                                            <small>
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Pelanggan harus sudah terdaftar untuk booking walk-in.
+                                            </small>
                                         </div>
                                     </div>
 
@@ -353,16 +366,23 @@
                                         </label>
                                         <div class="input-group">
                                             <span class="input-group-text text-success"><i class="fab fa-whatsapp"></i></span>
-                                            <input type="text" name="customer_whatsapp" id="customerWa"
-                                                   class="form-control" placeholder="08xxxxxxxxxx"
-                                                   value="{{ old('customer_whatsapp') }}">
+                                            <input 
+                                                type="text" 
+                                                class="form-control" 
+                                                inputmode="numeric"
+                                                maxlength="12"
+                                                name="customer_whatsapp" 
+                                                id="customerWa" 
+                                                placeholder="08xxxxxxxxxx"
+                                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                            >
                                         </div>
                                     </div>
 
                                     {{-- Jenis Motor & Plat Nomor --}}
                                     <div class="row g-3 mb-3">
                                         <div class="col-6">
-                                            <label class="form-label-custom">Jenis Motor <span class="text-danger">*</span></label>
+                                            <label class="form-label-custom">Jenis Motor</label>
                                             <select class="form-select" name="vehicle_type" required>
                                                 <option value="" disabled {{ old('vehicle_type') ? '' : 'selected' }}>Pilih...</option>
                                                 <option value="bebek" {{ old('vehicle_type') == 'bebek' ? 'selected' : '' }}>Bebek</option>
@@ -371,11 +391,16 @@
                                             </select>
                                         </div>
                                         <div class="col-6">
-                                            <label class="form-label-custom">Plat Nomor <span class="text-danger">*</span></label>
-                                            <input type="text" name="plate_number"
-                                                   class="form-control text-uppercase fw-medium"
-                                                   placeholder="N **** **" required
-                                                   value="{{ old('plate_number') }}">
+                                            <label class="form-label-custom">Plat Nomor</label>
+                                            <input 
+                                                type="text" 
+                                                name="plate_number"
+                                                class="form-control text-uppercase fw-medium"
+                                                placeholder="N **** **"
+                                                maxlength="8"
+                                                value="{{ old('plate_number') }}"
+                                                required
+                                            >
                                         </div>
                                     </div>
 
@@ -388,7 +413,7 @@
                                                    value="{{ old('booking_date', now()->format('Y-m-d\TH:i')) }}">
                                         </div>
                                         <div class="form-text small text-danger mt-1">
-                                            <i class="fas fa-info-circle me-1"></i> Slot terbatas 2 motor/jam.
+                                            <small><i class="fas fa-info-circle me-1"></i> Slot terbatas 2 motor/jam.</small>
                                         </div>
                                     </div>
 
@@ -573,7 +598,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </form>

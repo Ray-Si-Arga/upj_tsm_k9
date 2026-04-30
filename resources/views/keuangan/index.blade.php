@@ -433,7 +433,7 @@
             font-size: 0.9rem;
         }
 
-        /* â”€â”€ Modal Overlay â”€â”€ */
+        /* Modal Overlay */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -450,7 +450,7 @@
             display: flex;
         }
 
-        /* â”€â”€ Modal Box â”€â”€ */
+        /* Modal Box */
         .modal-box {
             background: #fff;
             border-radius: 20px;
@@ -511,7 +511,7 @@
             margin-bottom: 24px;
         }
 
-        /* â”€â”€ Tipe Toggle â”€â”€ */
+        /* Tipe Toggle */
         .tipe-toggle {
             display: flex;
             gap: 8px;
@@ -550,7 +550,7 @@
             box-shadow: 0 2px 8px rgba(225, 29, 72, 0.15);
         }
 
-        /* â”€â”€ Form Fields â”€â”€ */
+        /* Form Fields */
         .modal-label {
             display: block;
             font-size: 0.78rem;
@@ -619,7 +619,7 @@
             margin-bottom: 16px;
         }
 
-        /* â”€â”€ Submit Button â”€â”€ */
+        /* Submit Button */
         .btn-submit-modal {
             width: 100%;
             padding: 13px;
@@ -973,13 +973,85 @@
 
         {{-- ======================== CHART ======================== --}}
         <div class="chart-container animate-up delay-4">
-            <div class="chart-header">
-                <span class="chart-title"><i class="fa-solid fa-chart-area me-2" style="color:#0f172a;"></i>Grafik
-                    Pemasukan</span>
-                <span class="chart-period-label">{{ $labelPeriode }}</span>
-            </div>
-            <canvas id="keuanganChart" height="80"></canvas>
-        </div>
+    <div class="chart-header">
+        <span class="chart-title">
+            <i class="fa-solid fa-chart-area me-2" style="color:#0f172a;"></i>
+            Grafik Keuangan
+        </span>
+        <span class="chart-period-label">{{ $labelPeriode }}</span>
+    </div>
+ 
+    {{-- CHECKBOX TOGGLE DATASET --}}
+    <div class="d-flex flex-wrap gap-3 mb-4" id="chartLegendToggles">
+ 
+        {{-- Pemasukan --}}
+        <label class="chart-toggle-label" for="togglePemasukan">
+            <input type="checkbox" id="togglePemasukan" checked>
+            <span class="toggle-dot" style="background:#059669;"></span>
+            <span class="toggle-text">Pemasukan</span>
+        </label>
+ 
+        {{-- Pengeluaran --}}
+        <label class="chart-toggle-label" for="togglePengeluaran">
+            <input type="checkbox" id="togglePengeluaran" checked>
+            <span class="toggle-dot" style="background:#e11d48;"></span>
+            <span class="toggle-text">Pengeluaran</span>
+        </label>
+ 
+    </div>
+ 
+    <canvas id="keuanganChart" height="80"></canvas>
+</div>
+ 
+<style>
+/* ── Chart Toggle Checkbox Styling ── */
+.chart-toggle-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    background: #f8fafc;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #334155;
+    user-select: none;
+    transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
+}
+ 
+.chart-toggle-label:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+ 
+.chart-toggle-label input[type="checkbox"] {
+    display: none; /* sembunyikan native checkbox */
+}
+ 
+.chart-toggle-label .toggle-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    transition: opacity 0.2s;
+}
+ 
+/* Saat checkbox TIDAK dicentang → abu-abu */
+.chart-toggle-label input:not(:checked) ~ .toggle-dot {
+    opacity: 0.25;
+}
+ 
+.chart-toggle-label input:not(:checked) ~ .toggle-text {
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+ 
+/* Saat dicentang → tampilkan border berwarna */
+.chart-toggle-label:has(#togglePemasukan:checked)   { border-color: #059669; background: rgba(5,150,105,.07); }
+.chart-toggle-label:has(#togglePengeluaran:checked) { border-color: #e11d48; background: rgba(225,29,72,.06); }
+</style>
 
         {{-- ======================== HISTORY TABLE ======================== --}}
         <div class="history-card animate-up delay-5">
@@ -1155,82 +1227,127 @@
 
     {{-- ======================== CHART.JS ======================== --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const labels = @json($chartData['labels']);
-            const pemasukan = @json($chartData['pemasukan']);
-
-            const ctx = document.getElementById('keuanganChart').getContext('2d');
-
-            // Gradient fill
-            const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-            gradient.addColorStop(0, 'rgba(5, 150, 105, 0.25)');
-            gradient.addColorStop(1, 'rgba(5, 150, 105, 0.00)');
-
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Pemasukan',
-                        data: pemasukan,
-                        borderColor: '#059669',
-                        backgroundColor: gradient,
-                        borderWidth: 2.5,
-                        pointBackgroundColor: '#059669',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
-                        tension: 0.45,
-                        fill: true,
-                    }]
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const labels      = @json($chartData['labels']);
+    const dataPemasukan   = @json($chartData['pemasukan']);
+    const dataPengeluaran = @json($chartData['pengeluaran']);
+ 
+    const ctx = document.getElementById('keuanganChart').getContext('2d');
+ 
+    // ── Gradients ──
+    const gGreen = ctx.createLinearGradient(0, 0, 0, 250);
+    gGreen.addColorStop(0, 'rgba(5,150,105,.22)');
+    gGreen.addColorStop(1, 'rgba(5,150,105,.00)');
+ 
+    const gRed = ctx.createLinearGradient(0, 0, 0, 250);
+    gRed.addColorStop(0, 'rgba(225,29,72,.18)');
+    gRed.addColorStop(1, 'rgba(225,29,72,.00)');
+ 
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Pemasukan',
+                    data: dataPemasukan,
+                    borderColor: '#059669',
+                    backgroundColor: gGreen,
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#059669',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    tension: 0.42,
+                    fill: true,
                 },
-                options: {
-                    responsive: true,
-                    interaction: { intersect: false, mode: 'index' },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#0f172a',
-                            titleColor: '#94a3b8',
-                            bodyColor: '#f1f5f9',
-                            padding: 12,
-                            cornerRadius: 10,
-                            callbacks: {
-                                label: function (context) {
-                                    return ' Rp ' + new Intl.NumberFormat('id-ID').format(context.raw);
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: {
-                                color: '#94a3b8',
-                                font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' }
-                            },
-                            border: { display: false }
-                        },
-                        y: {
-                            grid: { color: '#f1f5f9', drawBorder: false },
-                            ticks: {
-                                color: '#94a3b8',
-                                font: { family: 'JetBrains Mono', size: 10 },
-                                callback: function (val) {
-                                    if (val >= 1000000) return 'Rp ' + (val / 1000000).toFixed(1) + 'jt';
-                                    if (val >= 1000) return 'Rp ' + (val / 1000).toFixed(0) + 'rb';
-                                    return 'Rp ' + val;
-                                }
-                            },
-                            border: { display: false }
+                {
+                    label: 'Pengeluaran',
+                    data: dataPengeluaran,
+                    borderColor: '#e11d48',
+                    backgroundColor: gRed,
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#e11d48',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    tension: 0.42,
+                    fill: true,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: { intersect: false, mode: 'index' },
+            plugins: {
+                legend: { display: false }, // pakai custom checkbox kita sendiri
+                tooltip: {
+                    backgroundColor: '#0f172a',
+                    titleColor: '#94a3b8',
+                    bodyColor: '#f1f5f9',
+                    padding: 14,
+                    cornerRadius: 10,
+                    callbacks: {
+                        label: function (context) {
+                            const val = context.raw;
+                            const prefix = val < 0 ? '-' : '';
+                            return ` ${context.dataset.label}: ${prefix}Rp ${new Intl.NumberFormat('id-ID').format(Math.abs(val))}`;
                         }
                     }
                 }
-            });
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        color: '#94a3b8',
+                        font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' }
+                    },
+                    border: { display: false }
+                },
+                y: {
+                    grid: { color: '#f1f5f9', drawBorder: false },
+                    ticks: {
+                        color: '#94a3b8',
+                        font: { family: 'JetBrains Mono', size: 10 },
+                        callback: function (val) {
+                            if (val < 0) return '-Rp ' + formatShort(Math.abs(val));
+                            return 'Rp ' + formatShort(val);
+                        }
+                    },
+                    border: { display: false }
+                }
+            }
+        }
+    });
+ 
+    function formatShort(val) {
+        if (val >= 1_000_000) return (val / 1_000_000).toFixed(1) + 'jt';
+        if (val >= 1_000)     return (val / 1_000).toFixed(0) + 'rb';
+        return val;
+    }
+ 
+    // ── Toggle Checkbox Logic ──
+    const toggleMap = {
+        togglePemasukan:   0,
+        togglePengeluaran: 1
+    };
+ 
+    Object.entries(toggleMap).forEach(([checkboxId, datasetIndex]) => {
+        const checkbox = document.getElementById(checkboxId);
+        if (!checkbox) return;
+ 
+        checkbox.addEventListener('change', function () {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            meta.hidden = !this.checked;
+            chart.update();
         });
-    </script>
+    });
+});
+</script>
 
 
 
