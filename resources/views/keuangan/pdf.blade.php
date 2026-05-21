@@ -82,5 +82,11 @@
     <div class="footer">
         Dicetak pada: {{ now()->translatedFormat('d F Y H:i') }}
     </div>
+
+    <script>
+        window.onload = function() {
+            window.print();
+        }
+    </script>
 </body>
 </html>

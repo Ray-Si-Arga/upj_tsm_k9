@@ -24,13 +24,11 @@ Route::get('/', function () {
 // Autentikasi
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginPost'])
-    ->name('login.post')
-    ->middleware('throttle:5,1');
+    ->name('login.post');
 
 Route::get('/register', [AuthController::class, 'publicRegister'])->name('public.register');
 Route::post('/register', [AuthController::class, 'publicRegisterPost'])
-    ->name('public.register.post')
-    ->middleware('throttle:3,1');
+    ->name('public.register.post');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

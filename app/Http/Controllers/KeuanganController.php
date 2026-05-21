@@ -6,7 +6,6 @@ use App\Models\Keuangan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Spatie\Browsershot\Browsershot;
 
 class KeuanganController extends Controller
 {
@@ -318,19 +317,6 @@ class KeuanganController extends Controller
         $saldo = $totalPemasukan - $totalPengeluaran;
         $historyTransaksi = $baseQuery->orderBy('created_at', 'asc')->get();
 
-        $html = view('keuangan.pdf', compact('labelPeriode', 'totalPemasukan', 'totalPengeluaran', 'saldo', 'historyTransaksi'))->render();
-
-        // 1. Generate data PDF mentah
-        $pdfContent = Browsershot::html($html)
-            ->setChromePath('C:\Program Files\Google\Chrome\Application\chrome.exe') // Sesuaikan path Windows Anda
-            ->addChromiumArguments(['no-sandbox', 'disable-setuid-sandbox'])
-            ->emulateMedia('screen')
-            ->margins(10, 10, 10, 10)
-            ->format('A4')
-            ->pdf(); // Ini mengembalikan string biner PDF
-
-        return response($pdfContent)
-        ->header('Content-Type', 'application/pdf')
-        ->header('Content-Disposition', 'inline; filename="laporan-keuangan-' . $labelPeriode . '.pdf"');
+        return view('keuangan.pdf', compact('labelPeriode', 'totalPemasukan', 'totalPengeluaran', 'saldo', 'historyTransaksi'));
     }
 }

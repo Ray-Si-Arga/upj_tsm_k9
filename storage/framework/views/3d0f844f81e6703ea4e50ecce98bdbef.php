@@ -1,27 +1,16 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Booking Service</title>
-    <meta 
-        name="viewport" 
-        content="width=device-width, initial-scale=1.0"
-        >
-    @stack('styles')
-    <link 
-        rel="preconnect" 
-        href="https://fonts.googleapis.com">
-    <link 
-        rel="preconnect" 
-        href="https://fonts.gstatic.com" 
-        crossorigin
-        >
-    <link 
-        rel="stylesheet"
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php echo $__env->yieldPushContent('styles'); ?>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-        >
-    <link 
-        rel="stylesheet" 
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         :root {
             --honda-red: #B10000;
@@ -32,23 +21,31 @@
             --bg-color: #f3f4f6;
         }
 
+        /* --- Sidebar Container (FIXED LAYOUT) --- */
         .sidebar-container {
             width: var(--sidebar-width);
             background: var(--sidebar-bg);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+
+            /* Tinggi standar */
             height: 100vh;
+            /* Fallback canggih untuk HP (menghindari ketutup address bar) */
             height: 100dvh;
+
             position: fixed;
             left: 0;
             top: 0;
             z-index: 1000;
+
             display: flex;
             flex-direction: column;
+
             border-right: 1px solid rgba(0, 0, 0, 0.05);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* --- Header Section (Diam di Atas) --- */
         .sidebar-header {
             flex-shrink: 0;
             padding: 20px 32px;
@@ -93,6 +90,7 @@
             font-weight: 500;
         }
 
+        /* --- Menu Section (Bisa Scroll) --- */
         .sidebar-content {
             flex: 1;
             overflow-y: auto;
@@ -228,6 +226,7 @@
             box-sizing: border-box;
         }
 
+        /* --- KHUSUS HP (Mobile Fix) --- */
         @media (max-width: 991px) {
             .sidebar-header {
                 justify-content: flex-end;
@@ -240,6 +239,7 @@
             }
         }
 
+        /* 1. RESET & DASAR */
         body {
             background-color: #f4f6f9;
             overflow-x: hidden;
@@ -363,31 +363,32 @@
             }
         }
     </style>
+
 </head>
 
 <body>
 
-    {{-- SideBar --}}
+    
     <button id="sidebar-toggle" style="display: none;"><i class="fa-solid fa-bars"></i></button>
     <aside class="sidebar-container" id="sidebar">
 
         <div class="sidebar-header">
             <div class="sidebar-brand">
                 <span class="brand-title">Honda Service</span>
-                <span class="user-name">Hai, {{ Str::limit(Auth::user()->name ?? 'Guest', 15) }}</span>
+                <span class="user-name">Hai, <?php echo e(Str::limit(Auth::user()->name ?? 'Guest', 15)); ?></span>
             </div>
         </div>
 
         <div class="sidebar-content">
             <ul class="sidebar-menu">
 
-                {{-- Khusus Admin --}}
-                @if (auth()->check() && auth()->user()->role === 'admin')
+                
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->check() && auth()->user()->role === 'admin'): ?>
 
-                    {{-- Dashboard admin --}}
+                    
                     <li class="sidebar-menu-item">
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="sidebar-menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('admin.dashboard')); ?>"
+                            class="sidebar-menu-link <?php echo e(request()->routeIs('admin.dashboard') ? 'active' : ''); ?>">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-house"></i></div>
                             <span>Dashboard</span>
                         </a>
@@ -395,28 +396,28 @@
 
                     <li class="sidebar-divider"></li>
                     <li class="sidebar-label">Operasional</li>
-                    {{-- Inventory Admin --}}
+                    
                     <li class="sidebar-menu-item">
-                        <a href="{{ route('inventory.index') }}"
-                            class="sidebar-menu-link {{ request()->routeIs('inventory.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('inventory.index')); ?>"
+                            class="sidebar-menu-link <?php echo e(request()->routeIs('inventory.*') ? 'active' : ''); ?>">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-box"></i></div>
                             <span>Inventory</span>
                         </a>
                     </li>
 
-                    {{-- Keuangan Admin --}}
+                    
                     <li class="sidebar-menu-item">
-                        <a href="{{ route('keuangan.index') }}"
-                            class="sidebar-menu-link {{ request()->routeIs('keuangan.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('keuangan.index')); ?>"
+                            class="sidebar-menu-link <?php echo e(request()->routeIs('keuangan.*') ? 'active' : ''); ?>">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-wallet"></i></div>
                             <span>Keuangan</span>
                         </a>
                     </li>
 
-                    {{-- Jadwal Admin --}}
+                    
                     <li class="sidebar-menu-item">
-                        <a href="{{ route('admin.jadwal') }}"
-                            class="sidebar-menu-link {{ request()->routeIs('admin.jadwal') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('admin.jadwal')); ?>"
+                            class="sidebar-menu-link <?php echo e(request()->routeIs('admin.jadwal') ? 'active' : ''); ?>">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-calendar-alt"></i></div>
                             <span>Jadwal</span>
                         </a>
@@ -427,32 +428,32 @@
                     <!-- <li class="sidebar-label">Gudang</li> !-->
                     <li class="sidebar-label">Layanan</li>
 
-                    {{-- Daftar Booking Admin --}}
+                    
                     <li class="sidebar-menu-item">
-                        <a href="{{ route('booking.index') }}"
-                            class="sidebar-menu-link {{ request()->routeIs('booking.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('booking.index')); ?>"
+                            class="sidebar-menu-link <?php echo e(request()->routeIs('booking.*') ? 'active' : ''); ?>">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-calendar-check"></i></div>
                             <span>Booking</span>
-                            @php $pendingCount = \App\Models\Booking::where('status', 'pending')->count(); @endphp
-                            @if ($pendingCount > 0)
-                                <span class="sidebar-badge">{{ $pendingCount }}</span>
-                            @endif
+                            <?php $pendingCount = \App\Models\Booking::where('status', 'pending')->count(); ?>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($pendingCount > 0): ?>
+                                <span class="sidebar-badge"><?php echo e($pendingCount); ?></span>
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </a>
                     </li>
 
-                    {{-- Form Keluhan Admin --}}
+                    
                     <li class="sidebar-menu-item">
-                        <a href="{{ route('advisor.index') }}"
-                            class="sidebar-menu-link {{ request()->routeIs('advisor.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('advisor.index')); ?>"
+                            class="sidebar-menu-link <?php echo e(request()->routeIs('advisor.*') ? 'active' : ''); ?>">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-file-signature"></i></div>
                             <span>Advisor</span>
                         </a>
                     </li>
 
-                    {{-- Paket Dan Layanan Admin --}}
+                    
                     <li class="sidebar-menu-item">
-                        <a href="{{ route('layanan.index') }}"
-                            class="sidebar-menu-link {{ request()->routeIs('layanan.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('layanan.index')); ?>"
+                            class="sidebar-menu-link <?php echo e(request()->routeIs('layanan.*') ? 'active' : ''); ?>">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
                             <span>Paket & Layanan</span>
                         </a>
@@ -461,52 +462,45 @@
                     <li class="sidebar-divider"></li>
                     <li class="sidebar-label">Administrator</li>
 
-                    {{-- Registrasi Khusus Admin
-                    <li class="sidebar-menu-item">
-                        <a href="{{ route('admin.register') }}"
-                            class="sidebar-menu-link {{ request()->routeIs('admin.register') ? 'active' : '' }}">
-                            <div class="sidebar-menu-icon"><i class="fa-solid fa-user-plus"></i></div>
-                            <span>Registrasi</span>
-                        </a>
-                    </li> --}}
+                    
 
-                    {{-- Akun--}}
+                    
                     <li class="sidebar-menu-item">
-                        <a href="{{ route('customers.index') }}"
-                            class="sidebar-menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('customers.index')); ?>"
+                            class="sidebar-menu-link <?php echo e(request()->routeIs('customers.*') ? 'active' : ''); ?>">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-users"></i></div>
                             <span>Akun</span>
                         </a>
                     </li>
 
 
-                    {{-- KHUSUS PELANGGAN --}}
-                @else
-                    {{-- Dashboard Pelanggan --}}
+                    
+                <?php else: ?>
+                    
                     <li class="sidebar-menu-item">
-                        <a href="{{ route('pelanggan.dashboard') }}"
-                            class="sidebar-menu-link {{ request()->routeIs('pelanggan.dashboard') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('pelanggan.dashboard')); ?>"
+                            class="sidebar-menu-link <?php echo e(request()->routeIs('pelanggan.dashboard') ? 'active' : ''); ?>">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-house"></i></div>
                             <span>Dashboard</span>
                         </a>
                     </li>
 
-                    {{-- Service Pelanggan --}}
+                    
                     <li class="sidebar-menu-item">
-                        <a href="{{ route('pelanggan.service') }}"
-                            class="sidebar-menu-link {{ request()->routeIs('pelanggan.service') ? 'active' : '' }}">
+                        <a href="<?php echo e(route('pelanggan.service')); ?>"
+                            class="sidebar-menu-link <?php echo e(request()->routeIs('pelanggan.service') ? 'active' : ''); ?>">
                             <div class="sidebar-menu-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
                             <span>Service</span>
                         </a>
                     </li>
-                @endif
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </ul>
         </div>
 
         <div class="sidebar-logout">
             
-            <form action="{{ route('logout') }}" method="POST" style="display:inline;">
-    @csrf
+            <form action="<?php echo e(route('logout')); ?>" method="POST" style="display:inline;">
+    <?php echo csrf_field(); ?>
     <button type="submit" class="logout-btn">
         <i class="fas fa-right-from-bracket me-2"></i>Logout
     </button>
@@ -516,7 +510,7 @@
     </aside>
 
 
-    {{-- Main Content --}}
+    
     <button id="customSidebarToggle">
         <i class="fas fa-bars"></i>
     </button>
@@ -526,12 +520,12 @@
     <div>
         <main class="main-content" id="main-content">
             <div class="app-content-wrapper">
-                @yield('content')
+                <?php echo $__env->yieldContent('content'); ?>
             </div>
         </main>
     </div>
 
-    {{-- Javascript --}}
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -699,7 +693,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-    @yield('scripts')
+    <?php echo $__env->yieldContent('scripts'); ?>
 </body>
 
-</html>
+</html><?php /**PATH D:\Dokumen Sekolah 12\PKL\TSM\upj_tsm_k9\resources\views\layouts\app.blade.php ENDPATH**/ ?>

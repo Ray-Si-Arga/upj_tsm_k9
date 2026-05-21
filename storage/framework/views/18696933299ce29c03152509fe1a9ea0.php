@@ -1,10 +1,9 @@
-﻿@extends('layouts.app')
-
-@push('styles')
+﻿
+<?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -565,14 +564,14 @@
             .hero-title { font-size: 1.75rem; }
         }
     </style>
+<?php $__env->stopPush(); ?>
 
+<?php $__env->startSection('content'); ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <main class="hist-page">
 
-        {{-- ═══════════════════════════
-             HERO BANNER
-        ═══════════════════════════ --}}
+        
         <div class="hero-bar">
             <div class="hero-content">
                 <div>
@@ -583,35 +582,33 @@
                     <h1 class="hero-title">Histori Kendaraan</h1>
                     <p class="hero-sub">Semua catatan servis yang telah selesai</p>
                 </div>
-                <a href="{{ route('pelanggan.dashboard') }}" class="btn-back">
+                <a href="<?php echo e(route('pelanggan.dashboard')); ?>" class="btn-back">
                     <i class="fas fa-arrow-left" style="font-size:.8rem;"></i>
                 </a>
             </div>
 
             <div class="hero-stats">
-                @php
+                <?php
                     $totalAll   = $historyBookings->count();
                     $totalDone  = $historyBookings->where('status','done')->count();
                     $totalBatal = $historyBookings->where('status','cancelled')->count();
-                @endphp
+                ?>
                 <div class="hstat">
-                    <div class="hstat-num">{{ $totalAll }}</div>
+                    <div class="hstat-num"><?php echo e($totalAll); ?></div>
                     <div class="hstat-lbl">Total</div>
                 </div>
                 <div class="hstat">
-                    <div class="hstat-num" style="color:#4ade80;">{{ $totalDone }}</div>
+                    <div class="hstat-num" style="color:#4ade80;"><?php echo e($totalDone); ?></div>
                     <div class="hstat-lbl">Selesai</div>
                 </div>
                 <div class="hstat">
-                    <div class="hstat-num" style="color:#f87171;">{{ $totalBatal }}</div>
+                    <div class="hstat-num" style="color:#f87171;"><?php echo e($totalBatal); ?></div>
                     <div class="hstat-lbl">Dibatalkan</div>
                 </div>
             </div>
         </div>
 
-        {{-- ═══════════════════════════
-             FILTER CHIPS
-        ═══════════════════════════ --}}
+        
         <div class="filter-bar">
             <div class="chip active" onclick="filterCards('all', this)">
                 <i class="fas fa-layer-group" style="font-size:.65rem;"></i> Semua
@@ -624,108 +621,108 @@
             </div>
         </div>
 
-        {{-- ═══════════════════════════
-             HISTORY CARDS
-        ═══════════════════════════ --}}
-        @if ($historyBookings->isEmpty())
+        
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($historyBookings->isEmpty()): ?>
             <div class="empty-wrap">
                 <div class="empty-icon-ring">
                     <i class="fas fa-scroll"></i>
                 </div>
                 <div class="empty-title">Belum Ada Riwayat</div>
                 <p class="empty-sub">Kamu belum memiliki catatan servis yang selesai. Yuk buat booking pertama!</p>
-                <a href="{{ route('pelanggan.service') }}" class="btn-book-now">
+                <a href="<?php echo e(route('pelanggan.service')); ?>" class="btn-book-now">
                     <i class="fas fa-wrench" style="font-size:.75rem;"></i>
                     Booking Sekarang
                 </a>
             </div>
-        @else
+        <?php else: ?>
             <div class="hist-list" id="histList">
-                @foreach ($historyBookings as $history)
-                    <div class="hist-card" data-status="{{ $history->status }}">
-                        {{-- Color stripe top --}}
-                        <div class="card-stripe {{ $history->status == 'done' ? 'stripe-done' : 'stripe-cancelled' }}"></div>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $historyBookings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $history): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                    <div class="hist-card" data-status="<?php echo e($history->status); ?>">
+                        
+                        <div class="card-stripe <?php echo e($history->status == 'done' ? 'stripe-done' : 'stripe-cancelled'); ?>"></div>
 
                         <div class="card-body-area">
 
-                            {{-- Row 1: Date & Status --}}
+                            
                             <div class="card-row1">
                                 <div>
                                     <div class="card-date-main">
-                                        {{ \Carbon\Carbon::parse($history->booking_date)->locale('id')->translatedFormat('d F Y') }}
+                                        <?php echo e(\Carbon\Carbon::parse($history->booking_date)->locale('id')->translatedFormat('d F Y')); ?>
+
                                     </div>
                                     <div class="card-date-day">
                                         <i class="far fa-clock" style="font-size:.62rem; margin-right:3px;"></i>
-                                        {{ \Carbon\Carbon::parse($history->booking_date)->format('H:i') }} WIB
+                                        <?php echo e(\Carbon\Carbon::parse($history->booking_date)->format('H:i')); ?> WIB
                                     </div>
                                 </div>
 
-                                @if ($history->status == 'done')
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($history->status == 'done'): ?>
                                     <div class="status-pill pill-done">
                                         <span class="dot"></span> Selesai
                                     </div>
-                                @elseif ($history->status == 'cancelled')
+                                <?php elseif($history->status == 'cancelled'): ?>
                                     <div class="status-pill pill-cancelled">
                                         <span class="dot"></span> Dibatalkan
                                     </div>
-                                @endif
+                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                             </div>
 
-                            {{-- Row 2: Vehicle --}}
+                            
                             <div class="vehicle-row">
                                 <div class="vehicle-icon-box">
                                     <i class="fas fa-motorcycle"></i>
                                 </div>
                                 <div>
-                                    <div class="vehicle-name">{{ $history->vehicle_type }}</div>
-                                    <div class="vehicle-plate">{{ strtoupper($history->plate_number) }}</div>
+                                    <div class="vehicle-name"><?php echo e($history->vehicle_type); ?></div>
+                                    <div class="vehicle-plate"><?php echo e(strtoupper($history->plate_number)); ?></div>
                                 </div>
                             </div>
 
-                            {{-- Row 3: Services --}}
-                            @if ($history->services->count())
+                            
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($history->services->count()): ?>
                                 <div class="service-chips">
-                                    @foreach ($history->services as $svc)
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $history->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $svc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
                                         <span class="svc-chip">
                                             <i class="fas fa-check" style="font-size:.58rem;"></i>
-                                            {{ $svc->name }}
-                                        </span>
-                                    @endforeach
-                                </div>
-                            @endif
+                                            <?php echo e($svc->name); ?>
 
-                            {{-- Row 4: Complaint --}}
-                            @if ($history->complaint)
+                                        </span>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                                </div>
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+                            
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($history->complaint): ?>
                                 <div class="complaint-box">
                                     <i class="fas fa-comment-dots complaint-icon"></i>
-                                    <div class="complaint-text">"{{ $history->complaint }}"</div>
+                                    <div class="complaint-text">"<?php echo e($history->complaint); ?>"</div>
                                 </div>
-                            @endif
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                            {{-- Row 5: Action area --}}
-                            @if ($history->status == 'done')
+                            
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($history->status == 'done'): ?>
                                 <div class="done-strip">
                                     <i class="fas fa-shield-check" style="font-size:.8rem;"></i>
                                     Servis berhasil diselesaikan
                                 </div>
-                            @elseif ($history->status == 'cancelled')
+                            <?php elseif($history->status == 'cancelled'): ?>
                                 <button class="btn-reason" type="button"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#reasonModal{{ $history->id }}">
+                                    data-bs-target="#reasonModal<?php echo e($history->id); ?>">
                                     <span>
                                         <i class="fas fa-circle-info" style="margin-right:6px; font-size:.75rem;"></i>
                                         Lihat alasan pembatalan
                                     </span>
                                     <i class="fas fa-chevron-right chevron"></i>
                                 </button>
-                            @endif
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                        </div>{{-- end card-body-area --}}
-                    </div>{{-- end hist-card --}}
+                        </div>
+                    </div>
 
-                    {{-- Modal Reason (Cancelled) --}}
-                    @if ($history->status == 'cancelled')
-                        <div class="modal fade" id="reasonModal{{ $history->id }}" tabindex="-1" aria-hidden="true">
+                    
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($history->status == 'cancelled'): ?>
+                        <div class="modal fade" id="reasonModal<?php echo e($history->id); ?>" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-sm">
                                 <div class="modal-content">
                                     <div class="reason-header">
@@ -733,10 +730,12 @@
                                             Booking Dibatalkan
                                         </div>
                                         <div style="font-size:.95rem; font-weight:800; color:#fff; margin-bottom:2px;">
-                                            {{ \Carbon\Carbon::parse($history->booking_date)->locale('id')->translatedFormat('d F Y') }}
+                                            <?php echo e(\Carbon\Carbon::parse($history->booking_date)->locale('id')->translatedFormat('d F Y')); ?>
+
                                         </div>
                                         <div style="font-size:.72rem; color:rgba(255,255,255,.5);">
-                                            {{ strtoupper($history->plate_number) }} • {{ $history->vehicle_type }}
+                                            <?php echo e(strtoupper($history->plate_number)); ?> • <?php echo e($history->vehicle_type); ?>
+
                                         </div>
                                     </div>
                                     <div class="reason-body">
@@ -744,13 +743,13 @@
                                             Pesan dari Admin
                                         </div>
                                         <div class="reason-quote">
-                                            "{{ $history->rejection_reason ?? 'Maaf, booking dibatalkan tanpa catatan khusus.' }}"
+                                            "<?php echo e($history->rejection_reason ?? 'Maaf, booking dibatalkan tanpa catatan khusus.'); ?>"
                                         </div>
                                         <div class="reason-footer-btns">
                                             <button type="button" class="btn-close-modal" data-bs-dismiss="modal">
                                                 Tutup
                                             </button>
-                                            <a href="{{ route('pelanggan.service') }}" class="btn-rebook">
+                                            <a href="<?php echo e(route('pelanggan.service')); ?>" class="btn-rebook">
                                                 <i class="fas fa-redo" style="font-size:.72rem;"></i>
                                                 Booking Ulang
                                             </a>
@@ -759,11 +758,11 @@
                                 </div>
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                @endforeach
-            </div>{{-- end hist-list --}}
-        @endif
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+            </div>
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
     </main>
 
@@ -784,4 +783,5 @@
         }
     </script>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Dokumen Sekolah 12\PKL\TSM\upj_tsm_k9\resources\views\pelanggan\history.blade.php ENDPATH**/ ?>
